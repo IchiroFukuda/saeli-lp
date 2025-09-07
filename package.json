@@ -1,0 +1,30 @@
+{
+  "name": "saeli-website",
+  "version": "1.0.0",
+  "description": "合同会社SAELIの公式ウェブサイト - 海の光をテーマにしたランディングページ",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx live-server .",
+    "build": "echo 'Static site - no build required'",
+    "deploy": "echo 'Deploy to your hosting service'"
+  },
+  "keywords": [
+    "saeli",
+    "合同会社",
+    "ランディングページ",
+    "海の光",
+    "ウェブサイト"
+  ],
+  "author": "合同会社SAELI",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:IchiroFukuda/saeli-lp.git"
+  },
+  "homepage": "https://saeli.org",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.1"
+  }
+}

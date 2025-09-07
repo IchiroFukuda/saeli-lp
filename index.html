@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>合同会社SAELI | 海の光のように、人生に明かりを</title>
+  <meta name="description" content="合同会社SAELI（サエリ）は、海の光のように人の人生に明かりを照らす製品を提供します。深い藍色と差し込む光をテーマにした製品開発を行っています。">
+  <meta property="og:title" content="合同会社SAELI | 海の光のように、人生に明かりを">
+  <meta property="og:description" content="海の光のように人の人生に明かりを照らす製品を提供する合同会社SAELI。深い藍色と差し込む光をテーマにした製品開発。">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./config.js"></script>
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@type": "Organization", "name": "合同会社SAELI", "url": "https://example.com", "logo": "https://example.com/logo.png", "email": "hello@saeli.org", "sameAs": [], "contactPoint": [{"@type": "ContactPoint", "contactType": "customer support", "email": "hello@saeli.org", "areaServed": "JP"}]}
+  </script>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <div class="brand"><span class="brand-badge">S</span>合同会社SAELI</div>
+      <div class="nav-cta">
+        <a class="btn" href="./privacy.html">プライバシーポリシー</a>
+        <a class="btn" href="#contact">お問い合わせ</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-content">
+        <div class="ocean-light"></div>
+        <span class="badge">海の光のように、人生に明かりを</span>
+        <h1>深い藍色の海から<br>差し込む光のように</h1>
+        <p class="hero-description">合同会社SAELI（サエリ）は、<strong>海の光のように人の人生に明かりを照らす製品</strong>を提供します。<br>深い藍色と差し込む光をテーマに、あなたの人生をより豊かにするソリューションを開発しています。</p>
+        <div class="cta">
+          <a class="btn primary" href="#contact">お問い合わせ</a>
+          <a class="btn" href="#about">会社概要</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="ocean-waves">
+          <div class="wave wave-1"></div>
+          <div class="wave wave-2"></div>
+          <div class="wave wave-3"></div>
+        </div>
+        <div class="light-rays">
+          <div class="ray ray-1"></div>
+          <div class="ray ray-2"></div>
+          <div class="ray ray-3"></div>
+        </div>
+      </div>
+    </header>
+
+    <section class="section">
+      <h2>私たちの理念</h2>
+      <div class="grid features">
+        <div class="card">
+          <div class="card-icon">🌊</div>
+          <h3>海の光の理念</h3>
+          <p>深い藍色の海から差し込む光のように、人の人生に明かりを照らす製品を提供します。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">💡</div>
+          <h3>ソフトウェア開発</h3>
+          <p>Web・モバイルアプリの企画・設計・開発・運用を通じて、お客様のビジネスを輝かせます。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🚀</div>
+          <h3>イノベーション</h3>
+          <p>最新技術を活用し、従来の枠を超えた革新的なソリューションを創造します。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <h2>会社概要</h2>
+      <table class="table">
+        <tr><th>会社名</th><td>合同会社SAELI</td></tr>
+        <tr><th>所在地</th><td>東京都（詳細はお問い合わせ時に開示）</td></tr>
+        <tr><th>代表者</th><td>（詳細はお問い合わせ時に開示）</td></tr>
+        <tr><th>事業内容</th><td>ソフトウェアの企画・開発・運用およびこれに付随する事業</td></tr>
+        <tr><th>連絡先</th><td><a href="mailto:hello@saeli.org">hello@saeli.org</a></td></tr>
+        <tr><th>設立</th><td>2025年</td></tr>
+      </table>
+      <p class="small">※ 取引や法定表示のために必要な情報は、請求時・契約時に適切に開示します。</p>
+    </section>
+
+    <section id="contact" class="section">
+      <h2>お問い合わせ</h2>
+      <p class="small">製品について、お気軽にお問い合わせください。</p>
+      <form id="contactForm" onsubmit="return sendMailto(event)">
+        <div>
+          <label for="name">お名前</label>
+          <input id="name" name="name" required placeholder="山田 太郎">
+        </div>
+        <div>
+          <label for="email">メールアドレス</label>
+          <input id="email" name="email" type="email" required placeholder="you@example.com">
+        </div>
+        <div>
+          <label for="body">お問い合わせ内容</label>
+          <textarea id="body" name="body" rows="6" required placeholder="ご用件をお書きください"></textarea>
+        </div>
+        <button class="btn primary" type="submit">メールで送信</button>
+        <p class="notice">※ 直接メール：<a href="mailto:hello@saeli.org?subject=%E3%80%90%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%80%91%E5%90%88%E5%90%8C%E4%BC%9A%E7%A4%BESAELI">hello@saeli.org</a></p>
+      </form>
+      <script>
+        function sendMailto(e){
+          e.preventDefault();
+          const to = CONFIG.EMAIL;
+          const name = document.getElementById("name").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const body = document.getElementById("body").value.trim();
+          const subject = `【お問い合わせ】${CONFIG.COMPANY_NAME}`;
+          const content = `お名前: ${name}%0D%0Aメール: ${email}%0D%0A%0D%0A内容:%0D%0A${encodeURIComponent(body)}`;
+          window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${content}`;
+          return false;
+        }
+      </script>
+    </section>
+
+    <footer class="footer">
+      <div>© 2025 合同会社SAELI</div>
+      <div class="small">
+        <a href="./privacy.html">プライバシーポリシー</a> ・
+        <a href="#contact">お問い合わせ</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

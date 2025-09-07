@@ -1,0 +1,80 @@
+:root{
+  --bg:#0a0e1a; /* 深い藍色の背景 */
+  --fg:#e8f4fd; /* 光に近い白 */
+  --muted:#7dd3fc; /* 海の光の色 */
+  --accent:#0ea5e9; /* 海の青 */
+  --accent-light:#38bdf8; /* 差し込む光の色 */
+  --card:#0f172a; /* 深い藍色のカード */
+  --border:#1e3a8a; /* 海の境界線 */
+  --ocean-deep:#1e3a8a; /* 深海の色 */
+  --ocean-surface:#0ea5e9; /* 海面の色 */
+  --light-gold:#fbbf24; /* 光の金色 */
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Noto Sans JP','Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:linear-gradient(135deg, var(--bg) 0%, #1e3a8a 50%, var(--bg) 100%);color:var(--fg);min-height:100vh;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:1100px;margin:0 auto;padding:24px}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:20px}
+.brand-badge{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--ocean-deep),var(--accent-light));color:white;font-weight:800;box-shadow:0 0 20px rgba(56,189,248,0.3)}
+.nav a.btn{background:var(--accent);color:#001827;border-radius:10px;padding:10px 14px;font-weight:700}
+.hero{display:grid;grid-template-columns:1.1fr 0.9fr;gap:28px;align-items:center;padding:48px 0;position:relative;overflow:hidden}
+.hero-content{position:relative;z-index:2}
+.hero h1{font-size:42px;line-height:1.15;margin:0 0 16px 0;background:linear-gradient(135deg,var(--fg),var(--accent-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-description{color:var(--muted);margin:0 0 18px 0;font-size:18px;line-height:1.6}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-visual{position:relative;height:400px;overflow:hidden}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid var(--border);color:var(--fg);background:#0b1220}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-light));color:white;border-color:transparent;font-weight:800;box-shadow:0 4px 15px rgba(14,165,233,0.3);transition:all 0.3s ease}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(14,165,233,0.4)}
+.grid{display:grid;gap:18px}
+.features{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:12px}
+.card{background:linear-gradient(135deg,var(--card),rgba(30,58,138,0.1));border:1px solid var(--border);border-radius:16px;padding:24px;transition:all 0.3s ease;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent-light),var(--accent));opacity:0;transition:opacity 0.3s ease}
+.card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(14,165,233,0.2)}
+.card:hover::before{opacity:1}
+.card h3{margin:8px 0 10px 0;color:var(--accent-light)}
+.card-icon{font-size:32px;margin-bottom:12px;display:block}
+.section{padding:28px 0;border-top:1px solid var(--border)}
+.section h2{margin:0 0 10px 0}
+.kv{border-radius:16px;background:linear-gradient(145deg,rgba(56,189,248,.15),rgba(6,182,212,.08));padding:18px;border:1px dashed rgba(148,163,184,.3)}
+.table{width:100%;border-collapse:collapse;margin-top:8px}
+.table th,.table td{border:1px solid var(--border);padding:10px;text-align:left}
+.footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:26px 0;border-top:1px solid var(--border);color:var(--muted)}
+form{display:grid;gap:12px}
+input,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:#0b1220;color:var(--fg)}
+label{font-size:14px;color:var(--muted)}
+.small{font-size:12px;color:var(--muted)}
+.notice{font-size:13px;color:var(--muted);margin-top:-4px}
+.badge{font-size:12px;background:#0b1220;border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted)}
+.code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;background:#0b1220;border:1px solid var(--border);padding:4px 6px;border-radius:8px}
+hr{border:none;border-top:1px solid var(--border);margin:18px 0}
+/* 海の波のアニメーション */
+.ocean-waves{position:absolute;bottom:0;left:0;right:0;height:100px;overflow:hidden}
+.wave{position:absolute;bottom:0;left:0;width:200%;height:100px;background:linear-gradient(90deg,var(--ocean-surface),var(--accent-light),var(--ocean-surface));opacity:0.6;animation:wave 6s ease-in-out infinite}
+.wave-1{animation-delay:0s;opacity:0.3}
+.wave-2{animation-delay:2s;opacity:0.5;height:80px}
+.wave-3{animation-delay:4s;opacity:0.4;height:60px}
+@keyframes wave{0%,100%{transform:translateX(-50%) translateY(0px)}50%{transform:translateX(-50%) translateY(-10px)}}
+
+/* 太陽からの光の効果 */
+.light-rays{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden}
+.ray{position:absolute;width:100%;height:100%;background:radial-gradient(ellipse at 50% 20%,rgba(56,189,248,0.4) 0%,rgba(14,165,233,0.25) 20%,rgba(56,189,248,0.15) 40%,rgba(14,165,233,0.08) 60%,transparent 80%);opacity:0;animation:ray 10s ease-in-out infinite}
+.ray-1{animation-delay:0s;opacity:0.5}
+.ray-2{animation-delay:5s;opacity:0.3}
+.ray-3{animation-delay:10s;opacity:0.2}
+@keyframes ray{0%,100%{opacity:0;transform:scale(0.9)}50%{opacity:0.7;transform:scale(1.1)}}
+
+/* 海の光の背景効果 */
+.ocean-light{position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 20%,rgba(56,189,248,0.2) 0%,rgba(14,165,233,0.1) 30%,transparent 70%);animation:oceanGlow 12s ease-in-out infinite}
+@keyframes oceanGlow{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.7;transform:scale(1.05)}}
+
+/* 追加の光の効果 */
+.hero-visual::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,transparent 0%,rgba(56,189,248,0.1) 25%,transparent 50%,rgba(14,165,233,0.08) 75%,transparent 100%);animation:lightShift 12s ease-in-out infinite}
+@keyframes lightShift{0%,100%{opacity:0.3;transform:translateX(-10px)}50%{opacity:0.7;transform:translateX(10px)}}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero-visual{height:300px}
+}
