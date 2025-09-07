@@ -26,17 +26,28 @@ git commit -m "Initial commit"
 git push origin main
 ```
 
-### 2. 自動デプロイ設定
+### 2. Vercelでデプロイ（推奨）
 
-#### GitHub Pages（無料）
-1. リポジトリの Settings → Pages
-2. Source を "GitHub Actions" に設定
-3. 自動で `https://ichirofukuda.github.io/saeli-lp` にデプロイ
-
-#### Vercel（推奨）
+#### 基本デプロイ
 1. [Vercel](https://vercel.com) にログイン
 2. "Import Project" でGitHubリポジトリ `IchiroFukuda/saeli-lp` を選択
 3. 自動で `https://saeli-lp.vercel.app` にデプロイ
+
+#### カスタムドメイン設定
+1. Vercelダッシュボードでプロジェクトを選択
+2. **Settings** → **Domains**
+3. **Add Domain** で `saeli.org` を追加
+4. DNS設定で以下を追加：
+   ```
+   Type: CNAME
+   Name: www
+   Value: cname.vercel-dns.com
+   
+   Type: A
+   Name: @
+   Value: 76.76.19.61
+   ```
+5. SSL証明書が自動で適用される
 
 #### Netlify
 1. [Netlify](https://netlify.com) にログイン
