@@ -17,7 +17,7 @@ export default function BetaCTA() {
             {/* Googleフォーム埋め込み */}
             <div className="w-full">
               <iframe
-                src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true"
+                src="https://docs.google.com/forms/d/e/1FAIpQLSccsgNeN9BmU-2R2DaNn7xNi5YtjLGSSo-QoGujhNOjW7E5XA/viewform?embedded=true"
                 width="100%"
                 height="600"
                 frameBorder="0"
