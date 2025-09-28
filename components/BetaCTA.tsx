@@ -35,6 +35,16 @@ export default function BetaCTA() {
       return;
     }
 
+    // UTMパラメータを取得
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmData = {
+      utm_source: urlParams.get('utm_source') || 'direct',
+      utm_medium: urlParams.get('utm_medium') || 'organic',
+      utm_campaign: urlParams.get('utm_campaign') || 'pg_beta',
+      utm_term: urlParams.get('utm_term') || '',
+      utm_content: urlParams.get('utm_content') || ''
+    };
+
     try {
       const response = await fetch('/api/subscribe', {
         method: 'POST',
@@ -44,6 +54,7 @@ export default function BetaCTA() {
         body: JSON.stringify({
           email: formData.email,
           url: formData.url || undefined,
+          utm: utmData
         }),
       });
 

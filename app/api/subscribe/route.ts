@@ -20,7 +20,27 @@ export async function POST(request: NextRequest) {
     }
 
     // 現在はスタブ実装（後日DB接続予定）
-    console.log('New subscription:', { email, url, timestamp: new Date().toISOString() });
+    const subscriptionData = { 
+      email, 
+      url: url || '', 
+      timestamp: new Date().toISOString(),
+      utm_source: request.headers.get('referer') || 'direct',
+      user_agent: request.headers.get('user-agent') || ''
+    };
+    
+    console.log('New subscription:', subscriptionData);
+    
+    // CSVファイルに追記（本格運用前の簡易実装）
+    const fs = require('fs');
+    const path = require('path');
+    const csvPath = path.join(process.cwd(), 'subscriptions.csv');
+    const csvRow = `${subscriptionData.email},${subscriptionData.url},${subscriptionData.timestamp},${subscriptionData.utm_source}\n`;
+    
+    try {
+      fs.appendFileSync(csvPath, csvRow);
+    } catch (error) {
+      console.error('CSV write error:', error);
+    }
 
     return NextResponse.json(
       { 
