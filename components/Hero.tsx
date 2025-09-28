@@ -31,10 +31,11 @@ export default function Hero({ onScrollToBeta }: HeroProps) {
 
           {/* サブコピー */}
           <p className="text-lg sm:text-xl text-gray-300 mb-8 leading-relaxed max-w-3xl mx-auto">
-            ChatGPT・Claude・GeminiなどのLLMアプリに潜む
-            <span className="text-blue-400 font-semibold">「プロンプト注入」</span>や
-            <span className="text-blue-400 font-semibold">「情報漏洩」</span>リスクを、
-            URLを入力するだけで自動診断。5分であなたのアプリの「本当の安全性」がわかります。
+            <span className="text-2xl sm:text-3xl font-bold text-blue-400">5分で</span>
+            <span className="text-blue-400 font-semibold">「プロンプト注入・情報漏洩」</span>リスクを可視化。
+            <br />
+            ChatGPT・Claude・GeminiなどのLLMアプリに潜む危険を、URLを入力するだけで自動診断。
+            あなたのアプリの「本当の安全性」がわかります。
           </p>
 
           {/* URL入力フォーム */}
@@ -64,6 +65,9 @@ export default function Hero({ onScrollToBeta }: HeroProps) {
             onClick={onScrollToBeta}
             className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2"
             aria-label="β版登録フォームにスクロール"
+            data-utm-source="ads"
+            data-utm-medium="cpc"
+            data-utm-campaign="pg_beta"
           >
             <span>β版の早期アクセスを申し込む（無料）</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

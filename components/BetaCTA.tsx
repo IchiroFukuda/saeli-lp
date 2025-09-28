@@ -126,7 +126,7 @@ export default function BetaCTA() {
               </div>
 
               {/* ハニーポット */}
-              <div className="hidden">
+              <div className="sr-only">
                 <label htmlFor="company">会社名</label>
                 <input
                   id="company"
@@ -136,6 +136,7 @@ export default function BetaCTA() {
                   onChange={handleInputChange}
                   tabIndex={-1}
                   autoComplete="off"
+                  style={{ display: 'none' }}
                 />
               </div>
 
@@ -158,9 +159,17 @@ export default function BetaCTA() {
               </button>
             </form>
 
-            <p className="text-sm text-blue-200 mt-4">
-              ※ 登録いただいたメールアドレスは、β版のご案内以外には使用いたしません
-            </p>
+            <div className="text-sm text-blue-200 mt-4 space-y-2">
+              <p>※ 登録いただいたメールアドレスは、β版のご案内以外には使用いたしません</p>
+              <p className="text-xs text-blue-300">
+                > 「この診断は、あなたが所有または明示的許可を得たアプリに対してのみ実行してください。」
+              </p>
+              <p className="text-xs">
+                <a href="/privacy" className="underline hover:text-white transition-colors">
+                  プライバシーポリシー
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </section>

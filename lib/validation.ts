@@ -29,6 +29,13 @@ export function validateUrl(url: string): ValidationResult {
     return { isValid: true, errors: [] }; // URLは任意
   }
   
+  // URLの基本形式チェック
+  const urlPattern = /^https?:\/\/.+/;
+  if (!urlPattern.test(url)) {
+    errors.push('https:// または http:// で始まるURLを入力してください');
+    return { isValid: false, errors };
+  }
+  
   try {
     new URL(url);
   } catch {
