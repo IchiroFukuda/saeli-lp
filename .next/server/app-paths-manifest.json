@@ -1,3 +1,4 @@
 {
-  "/promptguard/page": "app/promptguard/page.js"
+  "/not-found": "app/not-found.js",
+  "/page": "app/page.js"
 }

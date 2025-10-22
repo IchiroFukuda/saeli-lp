@@ -1,3 +1,5 @@
+'use client';
+
 export default function BetaCTA() {
 
   return (
@@ -47,3 +49,4 @@ export default function BetaCTA() {
     </>
   );
 }
+
