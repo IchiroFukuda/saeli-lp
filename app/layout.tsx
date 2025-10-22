@@ -5,6 +5,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://saeli.org'),
   title: 'PromptGuard | LLMアプリ専用セキュリティ診断',
   description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
   keywords: ['PromptGuard', 'LLM', 'セキュリティ', 'プロンプト注入', '診断', 'AI'],
@@ -41,6 +42,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-
