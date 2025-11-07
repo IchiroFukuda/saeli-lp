@@ -49,6 +49,25 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* Event snippet for ページビュー conversion page */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              function gtag_report_conversion(url) {
+                var callback = function () {
+                  if (typeof(url) != 'undefined') {
+                    window.location = url;
+                  }
+                };
+                gtag('event', 'conversion', {
+                    'send_to': 'AW-17624092605/02E-CK-cxLkbEL2f6dNB',
+                    'event_callback': callback
+                });
+                return false;
+              }
+            `,
+          }}
+        />
       </head>
       <body className={`${inter.className} antialiased`}>
         {children}

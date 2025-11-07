@@ -4,6 +4,13 @@ import React from "react";
 import { Check, ArrowRight, Shield, Lock, Sparkles, FileText, Search, Clock, BarChart3, Users, CheckCircle2 } from "lucide-react";
 import Footer from "@/components/Footer";
 
+// Googleタグのコンバージョン測定関数の型定義
+declare global {
+  interface Window {
+    gtag_report_conversion?: (url?: string) => boolean;
+  }
+}
+
 const Container = ({ children }: { children: React.ReactNode }) => (
   <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">{children}</div>
 );
@@ -45,6 +52,12 @@ export default function HojokinLandingPage() {
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#cta"
+                onClick={(e) => {
+                  if (typeof window !== 'undefined' && window.gtag_report_conversion) {
+                    e.preventDefault();
+                    window.gtag_report_conversion('#cta');
+                  }
+                }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
                 無料で試す
@@ -218,6 +231,12 @@ export default function HojokinLandingPage() {
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#contact"
+                onClick={(e) => {
+                  if (typeof window !== 'undefined' && window.gtag_report_conversion) {
+                    e.preventDefault();
+                    window.gtag_report_conversion('#contact');
+                  }
+                }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
                 無料で試す
@@ -225,6 +244,12 @@ export default function HojokinLandingPage() {
               </a>
               <a
                 href="#contact"
+                onClick={(e) => {
+                  if (typeof window !== 'undefined' && window.gtag_report_conversion) {
+                    e.preventDefault();
+                    window.gtag_report_conversion('#contact');
+                  }
+                }}
                 className="rounded-xl border-2 border-white text-white px-8 py-4 text-base font-semibold hover:bg-white/10 backdrop-blur-sm inline-flex items-center justify-center gap-2 transition-all"
               >
                 導入のご相談はこちら
@@ -276,6 +301,11 @@ export default function HojokinLandingPage() {
                 <div className="md:col-span-2">
                   <button
                     type="submit"
+                    onClick={(e) => {
+                      if (typeof window !== 'undefined' && window.gtag_report_conversion) {
+                        window.gtag_report_conversion();
+                      }
+                    }}
                     className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 font-semibold hover:from-blue-700 hover:to-blue-600 shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center gap-2"
                   >
                     <CheckCircle2 className="h-5 w-5" /> 送信
