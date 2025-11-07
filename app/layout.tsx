@@ -6,21 +6,21 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://saeli.org'),
-  title: 'PromptGuard | LLMアプリ専用セキュリティ診断',
+  title: 'SAELI',
   description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
-  keywords: ['PromptGuard', 'LLM', 'セキュリティ', 'プロンプト注入', '診断', 'AI'],
+  keywords: ['SAELI', 'LLM', 'セキュリティ', 'プロンプト注入', '診断', 'AI'],
   authors: [{ name: 'SAELI' }],
   openGraph: {
-    title: 'PromptGuard | LLMアプリ専用セキュリティ診断',
+    title: 'SAELI',
     description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
     url: 'https://saeli.org',
-    siteName: 'PromptGuard',
+    siteName: 'SAELI',
     locale: 'ja_JP',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PromptGuard | LLMアプリ専用セキュリティ診断',
+    title: 'SAELI',
     description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
   },
   robots: {
