@@ -123,16 +123,17 @@ export default function HojokinLandingPage() {
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="#cta"
+                href="https://grantsaigent.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={(e) => {
                   if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-                    e.preventDefault();
-                    window.gtag_report_conversion('#cta');
+                    window.gtag_report_conversion('https://grantsaigent.com');
                   }
                 }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
-                無料で試す
+                MVPを試す
                 <ArrowRight className="h-5 w-5" />
               </a>
               <a
@@ -302,16 +303,17 @@ export default function HojokinLandingPage() {
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="#contact"
+                href="https://grantsaigent.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={(e) => {
                   if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-                    e.preventDefault();
-                    window.gtag_report_conversion('#contact');
+                    window.gtag_report_conversion('https://grantsaigent.com');
                   }
                 }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
-                無料で試す
+                MVPを試す
                 <ArrowRight className="h-5 w-5" />
               </a>
               <a

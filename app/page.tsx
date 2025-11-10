@@ -1,5 +1,6 @@
-import HojokinLandingPage from './hojokin/page';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return <HojokinLandingPage />;
+  // 既存のSAELIホームページにリダイレクト
+  redirect('/index.html');
 }
