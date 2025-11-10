@@ -5,23 +5,23 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://saeli.org'),
-  title: 'SAELI',
-  description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
-  keywords: ['SAELI', 'LLM', 'セキュリティ', 'プロンプト注入', '診断', 'AI'],
-  authors: [{ name: 'SAELI' }],
+  metadataBase: new URL('https://grantsaigent.com'),
+  title: 'GrantsAIgent - 補助金申請の手間を1/10に',
+  description: 'AIが補助金業務を最適化。制度調査・書類作成・提出管理を自動化し、中小企業・個人事業主の時間を事業の本質に取り戻します。',
+  keywords: ['GrantsAIgent', '補助金', '助成金', '申請', 'AI', '自動化', '中小企業'],
+  authors: [{ name: 'GrantsAIgent' }],
   openGraph: {
-    title: 'SAELI',
-    description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
-    url: 'https://saeli.org',
-    siteName: 'SAELI',
+    title: 'GrantsAIgent - 補助金申請の手間を1/10に',
+    description: 'AIが補助金業務を最適化。制度調査・書類作成・提出管理を自動化し、中小企業・個人事業主の時間を事業の本質に取り戻します。',
+    url: 'https://grantsaigent.com',
+    siteName: 'GrantsAIgent',
     locale: 'ja_JP',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SAELI',
-    description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
+    title: 'GrantsAIgent - 補助金申請の手間を1/10に',
+    description: 'AIが補助金業務を最適化。制度調査・書類作成・提出管理を自動化し、中小企業・個人事業主の時間を事業の本質に取り戻します。',
   },
   robots: {
     index: true,

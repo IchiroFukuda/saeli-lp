@@ -33,7 +33,23 @@ git push origin main
 2. "Import Project" でGitHubリポジトリ `IchiroFukuda/saeli-lp` を選択
 3. 自動で `https://saeli-lp.vercel.app` にデプロイ
 
-#### カスタムドメイン設定
+#### カスタムドメイン設定（GrantsAIgent用）
+1. Vercelダッシュボードでプロジェクトを選択
+2. **Settings** → **Domains**
+3. **Add Domain** で `grantsaigent.com` を追加
+4. DNS設定で以下を追加：
+   ```
+   Type: CNAME
+   Name: www
+   Value: cname.vercel-dns.com
+   
+   Type: A
+   Name: @
+   Value: 76.76.19.61
+   ```
+5. SSL証明書が自動で適用される
+
+#### カスタムドメイン設定（SAELI用）
 1. Vercelダッシュボードでプロジェクトを選択
 2. **Settings** → **Domains**
 3. **Add Domain** で `saeli.org` を追加
@@ -127,9 +143,42 @@ SENDGRID_FROM_EMAIL=noreply@saeli.org
 
 ### 5. 動作確認
 1. 開発サーバーを起動：`npm run dev`
-2. `http://localhost:3000/hojokin` にアクセス
+2. `http://localhost:3000` にアクセス（ルートパスでGrantsAIgentのLPが表示されます）
 3. 問い合わせフォームから送信
 4. 設定した `CONTACT_EMAIL` にメールが届くことを確認
+
+## GrantsAIgent MVP デプロイ手順
+
+### Vercelでデプロイして https://grantsaigent.com で公開
+
+1. **Vercelにプロジェクトをインポート**
+   - [Vercel](https://vercel.com) にログイン
+   - "Import Project" でGitHubリポジトリを選択
+   - Framework Preset: **Next.js** を選択
+   - Root Directory: `.` (デフォルト)
+   - Build Command: `npm run build` (自動検出)
+   - Output Directory: `.next` (自動検出)
+
+2. **環境変数の設定**
+   - **Settings** → **Environment Variables** に移動
+   - 以下の環境変数を追加：
+     - `SENDGRID_API_KEY`: SendGridのAPIキー
+     - `CONTACT_EMAIL`: 問い合わせを受け取るメールアドレス
+     - `SENDGRID_FROM_EMAIL`: 送信元メールアドレス（SendGridで認証済み）
+
+3. **カスタムドメインの設定**
+   - **Settings** → **Domains** に移動
+   - **Add Domain** で `grantsaigent.com` を追加
+   - Vercelが表示するDNS設定をドメインのDNS設定に追加：
+     - Type: `A` レコード（ルートドメイン用）
+     - Type: `CNAME` レコード（wwwサブドメイン用）
+   - DNS設定が反映されるまで数分〜数時間かかる場合があります
+   - SSL証明書は自動で適用されます
+
+4. **デプロイの確認**
+   - デプロイが完了したら `https://grantsaigent.com` にアクセス
+   - ルートパス（/）でGrantsAIgentのランディングページが表示されることを確認
+   - 問い合わせフォームが正常に動作することを確認
 
 ## ライセンス
 パブリックドメイン相当（CC0）。商用・改変・再配布ご自由にどうぞ。
