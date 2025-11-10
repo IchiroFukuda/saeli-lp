@@ -133,7 +133,7 @@ export default function HojokinLandingPage() {
                 }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
-                MVPを試す
+                β版を試す
                 <ArrowRight className="h-5 w-5" />
               </a>
               <a
@@ -313,7 +313,7 @@ export default function HojokinLandingPage() {
                 }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
-                MVPを試す
+                β版を試す
                 <ArrowRight className="h-5 w-5" />
               </a>
               <a
