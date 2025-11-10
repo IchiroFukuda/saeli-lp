@@ -296,7 +296,7 @@ export default function HojokinLandingPage() {
               申請業務を、自動化しませんか。
             </h2>
             <p className="mt-6 text-lg text-blue-50 leading-relaxed drop-shadow-md">
-              AI補助金アシスタントで、
+              GrantsAIgentで、
               <br className="hidden sm:block" />
               本業に集中できる時間を取り戻しましょう。
             </p>
