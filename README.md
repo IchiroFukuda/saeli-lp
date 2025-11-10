@@ -97,7 +97,7 @@ git push origin main
 
 ## 問い合わせフォーム（SendGrid）の設定
 
-`app/hojokin/page.tsx` の問い合わせフォームは、SendGridを使用してメール送信を行います。
+`app/grantsaigent/page.tsx` の問い合わせフォームは、SendGridを使用してメール送信を行います。
 
 ### 1. SendGridアカウントの作成
 1. [SendGrid](https://sendgrid.com) でアカウントを作成
@@ -143,7 +143,7 @@ SENDGRID_FROM_EMAIL=noreply@saeli.org
 
 ### 5. 動作確認
 1. 開発サーバーを起動：`npm run dev`
-2. `http://localhost:3000` にアクセス（ルートパスでGrantsAIgentのLPが表示されます）
+2. `http://localhost:3000/grantsaigent` にアクセス
 3. 問い合わせフォームから送信
 4. 設定した `CONTACT_EMAIL` にメールが届くことを確認
 
