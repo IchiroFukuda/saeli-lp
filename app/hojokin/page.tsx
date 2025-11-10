@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { Check, ArrowRight, Shield, Lock, Sparkles, FileText, Search, Clock, BarChart3, Users, CheckCircle2 } from "lucide-react";
+import React, { useState } from "react";
+import { Check, ArrowRight, Shield, Lock, Sparkles, FileText, Search, Clock, BarChart3, Users, CheckCircle2, Loader2 } from "lucide-react";
 import Footer from "@/components/Footer";
 
 // Googleタグのコンバージョン測定関数の型定義
@@ -36,6 +36,78 @@ const Feature = ({ icon: Icon, title, children }: { icon: any; title: string; ch
 );
 
 export default function HojokinLandingPage() {
+  const [formData, setFormData] = useState({
+    companyName: "",
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: "" });
+
+    // Googleタグのコンバージョン測定
+    if (typeof window !== 'undefined' && window.gtag_report_conversion) {
+      window.gtag_report_conversion();
+    }
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus({
+          type: "success",
+          message: data.message || "お問い合わせを受け付けました。ありがとうございます。",
+        });
+        // フォームをリセット
+        setFormData({
+          companyName: "",
+          name: "",
+          email: "",
+          message: "",
+        });
+      } else {
+        setSubmitStatus({
+          type: "error",
+          message: data.error || "送信に失敗しました。しばらくしてから再度お試しください。",
+        });
+      }
+    } catch (error) {
+      console.error('送信エラー:', error);
+      setSubmitStatus({
+        type: "error",
+        message: "ネットワークエラーが発生しました。接続を確認して再度お試しください。",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50/30 text-gray-900 selection:bg-blue-600 selection:text-white">
       {/* Hero Section */}
@@ -265,50 +337,85 @@ export default function HojokinLandingPage() {
           <div className="max-w-2xl mx-auto">
             <Card className="border-blue-200 shadow-lg">
               <h3 className="text-2xl font-bold text-center mb-6 text-gray-900">お問い合わせ</h3>
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <label className="block mb-1 text-gray-700 font-medium">会社名</label>
                   <input
                     type="text"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleChange}
                     className="w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="例）○○工業株式会社"
                   />
                 </div>
                 <div>
-                  <label className="block mb-1 text-gray-700 font-medium">お名前</label>
+                  <label className="block mb-1 text-gray-700 font-medium">お名前 <span className="text-red-500">*</span></label>
                   <input
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
                     className="w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="山田 太郎"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block mb-1 text-gray-700 font-medium">メールアドレス</label>
+                  <label className="block mb-1 text-gray-700 font-medium">メールアドレス <span className="text-red-500">*</span></label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                     className="w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="taro@example.co.jp"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block mb-1 text-gray-700 font-medium">ご相談内容</label>
+                  <label className="block mb-1 text-gray-700 font-medium">ご相談内容 <span className="text-red-500">*</span></label>
                   <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
                     rows={4}
                     className="w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="現状の課題や導入イメージなど"
                   />
                 </div>
+                {submitStatus.type && (
+                  <div className={`md:col-span-2 p-4 rounded-xl ${
+                    submitStatus.type === "success"
+                      ? "bg-green-50 border border-green-200 text-green-800"
+                      : "bg-red-50 border border-red-200 text-red-800"
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      {submitStatus.type === "success" ? (
+                        <CheckCircle2 className="h-5 w-5" />
+                      ) : (
+                        <span className="text-red-600">⚠</span>
+                      )}
+                      <span className="text-sm font-medium">{submitStatus.message}</span>
+                    </div>
+                  </div>
+                )}
                 <div className="md:col-span-2">
                   <button
                     type="submit"
-                    onClick={(e) => {
-                      if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-                        window.gtag_report_conversion();
-                      }
-                    }}
-                    className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 font-semibold hover:from-blue-700 hover:to-blue-600 shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center gap-2"
+                    disabled={isSubmitting}
+                    className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 font-semibold hover:from-blue-700 hover:to-blue-600 shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <CheckCircle2 className="h-5 w-5" /> 送信
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" /> 送信中...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="h-5 w-5" /> 送信
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

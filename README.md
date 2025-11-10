@@ -79,5 +79,57 @@ git push origin main
 - 現状は **メール起動型**（バックエンド不要）です。
 - SaaS を使うなら **Formspree / Formsubmit / Basin** などのエンドポイントを `index.html` に追加するだけで運用可能です。
 
+## 問い合わせフォーム（SendGrid）の設定
+
+`app/hojokin/page.tsx` の問い合わせフォームは、SendGridを使用してメール送信を行います。
+
+### 1. SendGridアカウントの作成
+1. [SendGrid](https://sendgrid.com) でアカウントを作成
+2. 無料プランでも月100通まで送信可能
+
+### 2. APIキーの取得
+1. SendGridダッシュボードにログイン
+2. **Settings** → **API Keys** に移動
+3. **Create API Key** をクリック
+4. 名前を入力（例：`SAELI Contact Form`）
+5. **Full Access** または **Restricted Access**（Mail Send権限のみ）を選択
+6. APIキーをコピー（表示されるのは一度だけなので注意）
+
+### 3. 送信元メールアドレスの認証
+1. SendGridダッシュボードで **Settings** → **Sender Authentication** に移動
+2. **Single Sender Verification** または **Domain Authentication** を設定
+   - **Single Sender Verification**: 簡単だが、1つのメールアドレスのみ
+   - **Domain Authentication**: ドメイン全体で送信可能（推奨）
+
+### 4. 環境変数の設定
+
+#### ローカル開発環境
+1. プロジェクトルートに `.env.local` ファイルを作成
+2. `.env.example` を参考に環境変数を設定：
+```bash
+SENDGRID_API_KEY=SG.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CONTACT_EMAIL=hello@saeli.org
+SENDGRID_FROM_EMAIL=noreply@saeli.org
+```
+
+#### Vercelでの設定
+1. Vercelダッシュボードでプロジェクトを選択
+2. **Settings** → **Environment Variables** に移動
+3. 以下の環境変数を追加：
+   - `SENDGRID_API_KEY`: SendGridのAPIキー
+   - `CONTACT_EMAIL`: 問い合わせを受け取るメールアドレス（デフォルト: `hello@saeli.org`）
+   - `SENDGRID_FROM_EMAIL`: 送信元メールアドレス（SendGridで認証済みのもの）
+
+#### Netlifyでの設定
+1. Netlifyダッシュボードでサイトを選択
+2. **Site settings** → **Environment variables** に移動
+3. 上記と同じ環境変数を追加
+
+### 5. 動作確認
+1. 開発サーバーを起動：`npm run dev`
+2. `http://localhost:3000/hojokin` にアクセス
+3. 問い合わせフォームから送信
+4. 設定した `CONTACT_EMAIL` にメールが届くことを確認
+
 ## ライセンス
 パブリックドメイン相当（CC0）。商用・改変・再配布ご自由にどうぞ。
