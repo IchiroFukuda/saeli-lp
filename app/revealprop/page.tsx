@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Check, ArrowRight, Shield, AlertTriangle, Filter, X, TrendingDown, Building2, Calculator, MapPin, Clock, BarChart3, Users, CheckCircle2, Loader2, Link as LinkIcon, Layers, Zap } from "lucide-react";
 import Footer from "@/components/Footer";
 import posthog from "posthog-js";
@@ -51,6 +51,15 @@ export default function RevealPropLandingPage() {
   }>({ type: null, message: "" });
   const [showPricing, setShowPricing] = useState(false);
 
+  // 初回ページ表示時にイベントを送信
+  useEffect(() => {
+    if (typeof window !== 'undefined' && posthog) {
+      posthog.capture('revealprop_page_view', {
+        page: 'revealprop_landing',
+      });
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -81,9 +90,9 @@ export default function RevealPropLandingPage() {
           window.gtag_report_conversion();
         }
 
-        // PostHogにイベントを送信
+        // PostHogにメール送信イベントを送信
         if (typeof window !== 'undefined' && posthog) {
-          posthog.capture('revealprop_beta_signup', {
+          posthog.capture('revealprop_email_submit', {
             property_count: formData.propertyCount,
             portal: formData.portal,
             purpose: formData.purpose || '未記入',
@@ -166,6 +175,13 @@ export default function RevealPropLandingPage() {
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#beta"
+                onClick={() => {
+                  if (typeof window !== 'undefined' && posthog) {
+                    posthog.capture('revealprop_hero_button_click', {
+                      button_text: '負動産スコアを試す（β版先行登録）',
+                    });
+                  }
+                }}
                 className="rounded-xl bg-white text-indigo-600 px-8 py-4 text-base font-semibold hover:bg-indigo-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
                 負動産スコアを試す（β版先行登録）
@@ -576,7 +592,14 @@ export default function RevealPropLandingPage() {
                     本提供時も、ご利用規模に応じたシンプルな月額制のみを予定しています。
                   </p>
                   <button
-                    onClick={() => setShowPricing(true)}
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && posthog) {
+                        posthog.capture('revealprop_pricing_button_click', {
+                          button_text: '料金プランを見る',
+                        });
+                      }
+                      setShowPricing(true);
+                    }}
                     className="rounded-xl bg-white text-indigo-600 px-8 py-4 text-base font-semibold hover:bg-indigo-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
                   >
                     料金プランを見る
