@@ -53,11 +53,6 @@ export default function HojokinLandingPage() {
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: "" });
 
-    // Googleタグのコンバージョン測定
-    if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-      window.gtag_report_conversion();
-    }
-
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -70,6 +65,11 @@ export default function HojokinLandingPage() {
       const data = await response.json();
 
       if (response.ok) {
+        // フォーム送信成功時のみコンバージョンを計測
+        if (typeof window !== 'undefined' && window.gtag_report_conversion) {
+          window.gtag_report_conversion();
+        }
+
         setSubmitStatus({
           type: "success",
           message: data.message || "お問い合わせを受け付けました。ありがとうございます。",
@@ -127,8 +127,9 @@ export default function HojokinLandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => {
+                  // コンバージョンを計測（外部リンクなので通常のリンク動作は続行）
                   if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-                    window.gtag_report_conversion('https://grantsaigent.com');
+                    window.gtag_report_conversion();
                   }
                 }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
@@ -307,8 +308,9 @@ export default function HojokinLandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => {
+                  // コンバージョンを計測（外部リンクなので通常のリンク動作は続行）
                   if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-                    window.gtag_report_conversion('https://grantsaigent.com');
+                    window.gtag_report_conversion();
                   }
                 }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
@@ -318,12 +320,6 @@ export default function HojokinLandingPage() {
               </a>
               <a
                 href="#contact"
-                onClick={(e) => {
-                  if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-                    e.preventDefault();
-                    window.gtag_report_conversion('#contact');
-                  }
-                }}
                 className="rounded-xl border-2 border-white text-white px-8 py-4 text-base font-semibold hover:bg-white/10 backdrop-blur-sm inline-flex items-center justify-center gap-2 transition-all"
               >
                 導入のご相談はこちら

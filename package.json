@@ -13,6 +13,7 @@
     "@sendgrid/mail": "^8.1.6",
     "lucide-react": "^0.544.0",
     "next": "14.0.4",
+    "posthog-js": "^1.291.0",
     "react": "^18",
     "react-dom": "^18"
   },
