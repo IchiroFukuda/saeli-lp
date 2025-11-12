@@ -1,6 +1,0 @@
-{
-  "/_not-found": "app/_not-found.js",
-  "/page": "app/page.js",
-  "/cad-search/page": "app/cad-search/page.js",
-  "/promptguard/page": "app/promptguard/page.js"
-}
