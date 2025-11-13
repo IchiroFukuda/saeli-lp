@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Check, ArrowRight, Shield, AlertTriangle, Filter, X, TrendingDown, Building2, Calculator, MapPin, Clock, BarChart3, Users, CheckCircle2, Loader2, Link as LinkIcon, Layers, Zap } from "lucide-react";
 import Footer from "@/components/Footer";
 import posthog from "posthog-js";
@@ -50,14 +50,99 @@ export default function RevealPropLandingPage() {
     message: string;
   }>({ type: null, message: "" });
   const [showPricing, setShowPricing] = useState(false);
+  const pageViewSentRef = useRef(false);
 
-  // 初回ページ表示時にイベントを送信
+  // PostHogが初期化されるまで待つヘルパー関数
+  const waitForPostHog = (callback: () => void, maxAttempts = 150) => {
+    if (typeof window === 'undefined') return;
+    
+    let attempts = 0;
+    const checkPostHog = () => {
+      attempts++;
+      // PostHogが初期化完了しているか確認
+      // __loadedフラグがtrueになるまで待つ必要がある
+      const isReady = posthog && 
+        typeof posthog.capture === 'function' &&
+        (posthog as any).__loaded === true;
+      
+      if (isReady) {
+        try {
+          callback();
+          
+          // 送信を強制
+          if (typeof (posthog as any).flush === 'function') {
+            (posthog as any).flush();
+          }
+          
+          // デバッグ用：送信状態を確認
+          if (process.env.NODE_ENV === "development") {
+            console.log("PostHog capture called (initialized)", {
+              has_capture: typeof posthog.capture === 'function',
+              loaded: (posthog as any).__loaded,
+              attempts
+            });
+          }
+        } catch (error) {
+          console.error('PostHog capture error:', error);
+        }
+      } else if (attempts < maxAttempts) {
+        // まだ初期化中なので待つ
+        setTimeout(checkPostHog, 100);
+      } else {
+        // タイムアウトした場合でも、captureメソッドが存在すれば送信を試みる
+        if (posthog && typeof posthog.capture === 'function') {
+          console.warn('PostHog __loaded flag is false, but attempting to send event anyway', {
+            attempts,
+            has_posthog: !!posthog,
+            has_capture: posthog && typeof posthog.capture === 'function',
+            loaded: posthog && (posthog as any).__loaded
+          });
+          try {
+            callback();
+            // 送信を強制
+            if (typeof (posthog as any).flush === 'function') {
+              (posthog as any).flush();
+            }
+          } catch (error) {
+            console.error('PostHog capture error (fallback):', error);
+          }
+        } else {
+          console.warn('PostHog initialization timeout - event not sent', {
+            attempts,
+            has_posthog: !!posthog,
+            has_capture: posthog && typeof posthog.capture === 'function',
+            loaded: posthog && (posthog as any).__loaded
+          });
+        }
+      }
+    };
+    checkPostHog();
+  };
+
+  // 初回ページ表示時にイベントを送信（1回のみ）
   useEffect(() => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('revealprop_page_view', {
+    // React Strict Modeでの重複実行を防ぐ
+    if (pageViewSentRef.current) return;
+    
+    waitForPostHog(() => {
+      if (pageViewSentRef.current) return; // 念のため再度チェック
+      
+      pageViewSentRef.current = true;
+      const eventProperties = {
         page: 'revealprop_landing',
-      });
-    }
+      };
+      
+      posthog.capture('revealprop_page_view', eventProperties);
+      
+      // 送信を強制
+      if (typeof (posthog as any).flush === 'function') {
+        (posthog as any).flush();
+      }
+      
+      if (process.env.NODE_ENV === "development") {
+        console.log("PostHog event sent: revealprop_page_view", eventProperties);
+      }
+    });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -91,14 +176,21 @@ export default function RevealPropLandingPage() {
         }
 
         // PostHogにメール送信イベントを送信
-        if (typeof window !== 'undefined' && posthog) {
+        waitForPostHog(() => {
           posthog.capture('revealprop_email_submit', {
             property_count: formData.propertyCount,
             portal: formData.portal,
             purpose: formData.purpose || '未記入',
             email: formData.email, // メールアドレスも送信（必要に応じて匿名化）
           });
-        }
+          // 送信を強制
+          if (typeof (posthog as any).flush === 'function') {
+            (posthog as any).flush();
+          }
+          if (process.env.NODE_ENV === "development") {
+            console.log("PostHog event sent: revealprop_email_submit");
+          }
+        });
 
         setSubmitStatus({
           type: "success",
@@ -114,11 +206,14 @@ export default function RevealPropLandingPage() {
         });
       } else {
         // PostHogにエラーイベントを送信
-        if (typeof window !== 'undefined' && posthog) {
+        waitForPostHog(() => {
           posthog.capture('revealprop_beta_signup_error', {
             error: data.error || '送信失敗',
           });
-        }
+          if (process.env.NODE_ENV === "development") {
+            console.log("PostHog event sent: revealprop_beta_signup_error", data.error);
+          }
+        });
 
         setSubmitStatus({
           type: "error",
@@ -129,12 +224,15 @@ export default function RevealPropLandingPage() {
       console.error('送信エラー:', error);
       
       // PostHogにエラーイベントを送信
-      if (typeof window !== 'undefined' && posthog) {
+      waitForPostHog(() => {
         posthog.capture('revealprop_beta_signup_error', {
           error: 'ネットワークエラー',
           error_message: error instanceof Error ? error.message : 'Unknown error',
         });
-      }
+        if (process.env.NODE_ENV === "development") {
+          console.log("PostHog event sent: revealprop_beta_signup_error (network)");
+        }
+      });
 
       setSubmitStatus({
         type: "error",
@@ -176,11 +274,14 @@ export default function RevealPropLandingPage() {
               <a
                 href="#beta"
                 onClick={() => {
-                  if (typeof window !== 'undefined' && posthog) {
+                  waitForPostHog(() => {
                     posthog.capture('revealprop_hero_button_click', {
                       button_text: '負動産スコアを試す（β版先行登録）',
                     });
-                  }
+                    if (process.env.NODE_ENV === "development") {
+                      console.log("PostHog event sent: revealprop_hero_button_click");
+                    }
+                  });
                 }}
                 className="rounded-xl bg-white text-indigo-600 px-8 py-4 text-base font-semibold hover:bg-indigo-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
@@ -593,11 +694,14 @@ export default function RevealPropLandingPage() {
                   </p>
                   <button
                     onClick={() => {
-                      if (typeof window !== 'undefined' && posthog) {
+                      waitForPostHog(() => {
                         posthog.capture('revealprop_pricing_button_click', {
                           button_text: '料金プランを見る',
                         });
-                      }
+                        if (process.env.NODE_ENV === "development") {
+                          console.log("PostHog event sent: revealprop_pricing_button_click");
+                        }
+                      });
                       setShowPricing(true);
                     }}
                     className="rounded-xl bg-white text-indigo-600 px-8 py-4 text-base font-semibold hover:bg-indigo-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
