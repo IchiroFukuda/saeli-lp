@@ -68,19 +68,8 @@ export default function RevealPropLandingPage() {
       if (isReady) {
         try {
           callback();
-          
-          // 送信を強制
           if (typeof (posthog as any).flush === 'function') {
             (posthog as any).flush();
-          }
-          
-          // デバッグ用：送信状態を確認
-          if (process.env.NODE_ENV === "development") {
-            console.log("PostHog capture called (initialized)", {
-              has_capture: typeof posthog.capture === 'function',
-              loaded: (posthog as any).__loaded,
-              attempts
-            });
           }
         } catch (error) {
           console.error('PostHog capture error:', error);
@@ -91,28 +80,14 @@ export default function RevealPropLandingPage() {
       } else {
         // タイムアウトした場合でも、captureメソッドが存在すれば送信を試みる
         if (posthog && typeof posthog.capture === 'function') {
-          console.warn('PostHog __loaded flag is false, but attempting to send event anyway', {
-            attempts,
-            has_posthog: !!posthog,
-            has_capture: posthog && typeof posthog.capture === 'function',
-            loaded: posthog && (posthog as any).__loaded
-          });
           try {
             callback();
-            // 送信を強制
             if (typeof (posthog as any).flush === 'function') {
               (posthog as any).flush();
             }
           } catch (error) {
             console.error('PostHog capture error (fallback):', error);
           }
-        } else {
-          console.warn('PostHog initialization timeout - event not sent', {
-            attempts,
-            has_posthog: !!posthog,
-            has_capture: posthog && typeof posthog.capture === 'function',
-            loaded: posthog && (posthog as any).__loaded
-          });
         }
       }
     };
@@ -128,19 +103,12 @@ export default function RevealPropLandingPage() {
       if (pageViewSentRef.current) return; // 念のため再度チェック
       
       pageViewSentRef.current = true;
-      const eventProperties = {
+      posthog.capture('revealprop_page_view', {
         page: 'revealprop_landing',
-      };
+      });
       
-      posthog.capture('revealprop_page_view', eventProperties);
-      
-      // 送信を強制
       if (typeof (posthog as any).flush === 'function') {
         (posthog as any).flush();
-      }
-      
-      if (process.env.NODE_ENV === "development") {
-        console.log("PostHog event sent: revealprop_page_view", eventProperties);
       }
     });
   }, []);
@@ -183,12 +151,8 @@ export default function RevealPropLandingPage() {
             purpose: formData.purpose || '未記入',
             email: formData.email, // メールアドレスも送信（必要に応じて匿名化）
           });
-          // 送信を強制
           if (typeof (posthog as any).flush === 'function') {
             (posthog as any).flush();
-          }
-          if (process.env.NODE_ENV === "development") {
-            console.log("PostHog event sent: revealprop_email_submit");
           }
         });
 
@@ -210,8 +174,8 @@ export default function RevealPropLandingPage() {
           posthog.capture('revealprop_beta_signup_error', {
             error: data.error || '送信失敗',
           });
-          if (process.env.NODE_ENV === "development") {
-            console.log("PostHog event sent: revealprop_beta_signup_error", data.error);
+          if (typeof (posthog as any).flush === 'function') {
+            (posthog as any).flush();
           }
         });
 
@@ -229,8 +193,8 @@ export default function RevealPropLandingPage() {
           error: 'ネットワークエラー',
           error_message: error instanceof Error ? error.message : 'Unknown error',
         });
-        if (process.env.NODE_ENV === "development") {
-          console.log("PostHog event sent: revealprop_beta_signup_error (network)");
+        if (typeof (posthog as any).flush === 'function') {
+          (posthog as any).flush();
         }
       });
 
@@ -278,8 +242,8 @@ export default function RevealPropLandingPage() {
                     posthog.capture('revealprop_hero_button_click', {
                       button_text: '負動産スコアを試す（β版先行登録）',
                     });
-                    if (process.env.NODE_ENV === "development") {
-                      console.log("PostHog event sent: revealprop_hero_button_click");
+                    if (typeof (posthog as any).flush === 'function') {
+                      (posthog as any).flush();
                     }
                   });
                 }}
@@ -698,8 +662,8 @@ export default function RevealPropLandingPage() {
                         posthog.capture('revealprop_pricing_button_click', {
                           button_text: '料金プランを見る',
                         });
-                        if (process.env.NODE_ENV === "development") {
-                          console.log("PostHog event sent: revealprop_pricing_button_click");
+                        if (typeof (posthog as any).flush === 'function') {
+                          (posthog as any).flush();
                         }
                       });
                       setShowPricing(true);
