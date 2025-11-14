@@ -3,12 +3,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Check, ArrowRight, Shield, AlertTriangle, Filter, X, TrendingDown, Building2, Calculator, MapPin, Clock, BarChart3, Users, CheckCircle2, Loader2, Link as LinkIcon, Layers, Zap } from "lucide-react";
 import Footer from "@/components/Footer";
-import posthog from "posthog-js";
 
 // Googleタグのコンバージョン測定関数の型定義
 declare global {
   interface Window {
     gtag_report_conversion?: (url?: string) => boolean;
+    posthog?: {
+      capture: (event: string, properties?: Record<string, any>) => void;
+      flush?: () => void;
+      __loaded?: boolean;
+    };
   }
 }
 
@@ -59,17 +63,18 @@ export default function RevealPropLandingPage() {
     let attempts = 0;
     const checkPostHog = () => {
       attempts++;
+      const posthog = window.posthog;
       // PostHogが初期化完了しているか確認
       // __loadedフラグがtrueになるまで待つ必要がある
       const isReady = posthog && 
         typeof posthog.capture === 'function' &&
-        (posthog as any).__loaded === true;
+        posthog.__loaded === true;
       
       if (isReady) {
         try {
           callback();
-          if (typeof (posthog as any).flush === 'function') {
-            (posthog as any).flush();
+          if (typeof posthog.flush === 'function') {
+            posthog.flush();
           }
         } catch (error) {
           console.error('PostHog capture error:', error);
@@ -82,8 +87,8 @@ export default function RevealPropLandingPage() {
         if (posthog && typeof posthog.capture === 'function') {
           try {
             callback();
-            if (typeof (posthog as any).flush === 'function') {
-              (posthog as any).flush();
+            if (typeof posthog.flush === 'function') {
+              posthog.flush();
             }
           } catch (error) {
             console.error('PostHog capture error (fallback):', error);
@@ -103,12 +108,14 @@ export default function RevealPropLandingPage() {
       if (pageViewSentRef.current) return; // 念のため再度チェック
       
       pageViewSentRef.current = true;
-      posthog.capture('revealprop_page_view', {
-        page: 'revealprop_landing',
-      });
-      
-      if (typeof (posthog as any).flush === 'function') {
-        (posthog as any).flush();
+      if (window.posthog) {
+        window.posthog.capture('revealprop_page_view', {
+          page: 'revealprop_landing',
+        });
+        
+        if (typeof window.posthog.flush === 'function') {
+          window.posthog.flush();
+        }
       }
     });
   }, []);
@@ -145,14 +152,16 @@ export default function RevealPropLandingPage() {
 
         // PostHogにメール送信イベントを送信
         waitForPostHog(() => {
-          posthog.capture('revealprop_email_submit', {
-            property_count: formData.propertyCount,
-            portal: formData.portal,
-            purpose: formData.purpose || '未記入',
-            email: formData.email, // メールアドレスも送信（必要に応じて匿名化）
-          });
-          if (typeof (posthog as any).flush === 'function') {
-            (posthog as any).flush();
+          if (window.posthog) {
+            window.posthog.capture('revealprop_email_submit', {
+              property_count: formData.propertyCount,
+              portal: formData.portal,
+              purpose: formData.purpose || '未記入',
+              email: formData.email, // メールアドレスも送信（必要に応じて匿名化）
+            });
+            if (typeof window.posthog.flush === 'function') {
+              window.posthog.flush();
+            }
           }
         });
 
@@ -171,11 +180,13 @@ export default function RevealPropLandingPage() {
       } else {
         // PostHogにエラーイベントを送信
         waitForPostHog(() => {
-          posthog.capture('revealprop_beta_signup_error', {
-            error: data.error || '送信失敗',
-          });
-          if (typeof (posthog as any).flush === 'function') {
-            (posthog as any).flush();
+          if (window.posthog) {
+            window.posthog.capture('revealprop_beta_signup_error', {
+              error: data.error || '送信失敗',
+            });
+            if (typeof window.posthog.flush === 'function') {
+              window.posthog.flush();
+            }
           }
         });
 
@@ -189,12 +200,14 @@ export default function RevealPropLandingPage() {
       
       // PostHogにエラーイベントを送信
       waitForPostHog(() => {
-        posthog.capture('revealprop_beta_signup_error', {
-          error: 'ネットワークエラー',
-          error_message: error instanceof Error ? error.message : 'Unknown error',
-        });
-        if (typeof (posthog as any).flush === 'function') {
-          (posthog as any).flush();
+        if (window.posthog) {
+          window.posthog.capture('revealprop_beta_signup_error', {
+            error: 'ネットワークエラー',
+            error_message: error instanceof Error ? error.message : 'Unknown error',
+          });
+          if (typeof window.posthog.flush === 'function') {
+            window.posthog.flush();
+          }
         }
       });
 
@@ -239,11 +252,13 @@ export default function RevealPropLandingPage() {
                 href="#beta"
                 onClick={() => {
                   waitForPostHog(() => {
-                    posthog.capture('revealprop_hero_button_click', {
-                      button_text: '負動産スコアを試す（β版先行登録）',
-                    });
-                    if (typeof (posthog as any).flush === 'function') {
-                      (posthog as any).flush();
+                    if (window.posthog) {
+                      window.posthog.capture('revealprop_hero_button_click', {
+                        button_text: '負動産スコアを試す（β版先行登録）',
+                      });
+                      if (typeof window.posthog.flush === 'function') {
+                        window.posthog.flush();
+                      }
                     }
                   });
                 }}
@@ -659,11 +674,13 @@ export default function RevealPropLandingPage() {
                   <button
                     onClick={() => {
                       waitForPostHog(() => {
-                        posthog.capture('revealprop_pricing_button_click', {
-                          button_text: '料金プランを見る',
-                        });
-                        if (typeof (posthog as any).flush === 'function') {
-                          (posthog as any).flush();
+                        if (window.posthog) {
+                          window.posthog.capture('revealprop_pricing_button_click', {
+                            button_text: '料金プランを見る',
+                          });
+                          if (typeof window.posthog.flush === 'function') {
+                            window.posthog.flush();
+                          }
                         }
                       });
                       setShowPricing(true);
