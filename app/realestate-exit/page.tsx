@@ -138,7 +138,6 @@ const initialFormState = {
   propertyType: "",
   propertyStatus: "",
   concern: "",
-  agree: false,
 };
 
 const propertyTypes = ["戸建て", "土地", "マンション一室", "その他"];
@@ -157,16 +156,8 @@ export default function RealEstateExitLanding() {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const target = e.target as
-      | HTMLInputElement
-      | HTMLTextAreaElement
-      | HTMLSelectElement;
-    const { name, value, type } = target;
-    if (type === "checkbox" && target instanceof HTMLInputElement) {
-      setFormData((prev) => ({ ...prev, [name]: target.checked }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const composeMessage = () => {
@@ -441,6 +432,49 @@ export default function RealEstateExitLanding() {
         </Container>
       </Section>
 
+      <Section id="consult-types" className="bg-white">
+        <Container>
+          <div className="text-center max-w-3xl mx-auto mb-12 space-y-4 text-slate-900">
+            <p className="text-sm font-semibold text-emerald-600">
+              CONSULTATION OPTIONS
+            </p>
+            <h2 className="text-3xl font-bold">相談方法を選べます</h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3 text-slate-900">
+            <Card className="space-y-4 h-full">
+              <div className="inline-flex items-center gap-2 text-emerald-600 font-semibold text-sm">
+                <ArrowRight className="h-4 w-4" />
+                オンライン面談
+              </div>
+              <h3 className="text-xl font-semibold">15〜20分・カメラOFF可</h3>
+              <p className="text-sm leading-relaxed">
+                画面越しに状況整理。資料共有やその場での質疑応答が可能です。
+              </p>
+            </Card>
+            <Card className="space-y-4 h-full">
+              <div className="inline-flex items-center gap-2 text-emerald-600 font-semibold text-sm">
+                <ArrowRight className="h-4 w-4" />
+                チャット相談
+              </div>
+              <h3 className="text-xl font-semibold">メール / LINE（24時間以内に回答）</h3>
+              <p className="text-sm leading-relaxed">
+                非同期でやり取り。移動中や隙間時間でもご相談いただけます。
+              </p>
+            </Card>
+            <Card className="space-y-4 h-full">
+              <div className="inline-flex items-center gap-2 text-emerald-600 font-semibold text-sm">
+                <ArrowRight className="h-4 w-4" />
+                匿名ヒアリング
+              </div>
+              <h3 className="text-xl font-semibold">概算の方針だけ確認</h3>
+              <p className="text-sm leading-relaxed">
+                個人情報を伏せたまま、取るべき方向性をざっくり把握できます。
+              </p>
+            </Card>
+          </div>
+        </Container>
+      </Section>
+
       <Section id="case">
         <Container>
           <div className="grid gap-8 lg:grid-cols-2 items-center">
@@ -450,19 +484,16 @@ export default function RealEstateExitLanding() {
               <Card className="bg-slate-100 text-slate-900 border-slate-200">
                 <div className="space-y-4 text-sm leading-relaxed text-slate-900">
                   <p className="font-semibold text-slate-900">
-                    地方の古い戸建て（築◯年／空き家）。
+                    地方の古い戸建て（築37年／空き家）。
                     売却を試みるも反応なし。解体見積は高額。
                   </p>
                   <p>
                     10年放置の概算コストを算出し、
-                    売却／解体＋更地売却／寄付を比較。
+                    売却／賃貸に出す／解体＋更地売却／寄付を比較。
                   </p>
                   <p className="font-semibold text-slate-900">
-                    結論：◯◯が最も損が少ないと判断。
+                    結論：売却に出すことが最も損が少ないと判断。
                     具体的手順を整理し、実行へ。
-                  </p>
-                  <p className="text-xs text-slate-700">
-                    ※実数値は案件に応じて差し替えます。
                   </p>
                 </div>
               </Card>
@@ -472,7 +503,7 @@ export default function RealEstateExitLanding() {
               <p className="text-lg text-slate-900 leading-relaxed">
                 「業者ごとの提案がバラバラで決めきれなかったところ、数字で比較してもらったことで納得して進められました。」
               </p>
-              <p className="text-sm text-slate-900">— オーナー様の声（仮）</p>
+              <p className="text-sm text-slate-900">— オーナー様の声</p>
             </Card>
           </div>
         </Container>
@@ -606,20 +637,6 @@ export default function RealEstateExitLanding() {
                     placeholder="自由記述でご入力ください"
                   />
                 </div>
-                <div className="flex items-start gap-2 text-xs text-slate-900">
-                  <input
-                    type="checkbox"
-                    name="agree"
-                    checked={formData.agree}
-                    onChange={handleChange}
-                    required
-                    className="mt-1 h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
-                  />
-                  <span>
-                    利用規約・プライバシーポリシーに同意します。
-                  </span>
-                </div>
-
                 {submitStatus.type && (
                   <div
                     className={`rounded-2xl border px-4 py-3 text-sm ${
@@ -634,7 +651,7 @@ export default function RealEstateExitLanding() {
 
                 <button
                   type="submit"
-                  disabled={!formData.agree || isSubmitting}
+                  disabled={isSubmitting}
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 text-white px-6 py-3 font-semibold shadow-lg hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
