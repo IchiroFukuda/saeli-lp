@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   ShieldCheck,
@@ -14,6 +14,17 @@ import {
   Quote,
 } from "lucide-react";
 import Footer from "@/components/Footer";
+
+declare global {
+  interface Window {
+    gtag_report_conversion?: (url?: string) => boolean;
+    posthog?: {
+      capture: (event: string, properties?: Record<string, any>) => void;
+      flush?: () => void;
+      __loaded?: boolean;
+    };
+  }
+}
 
 declare global {
   interface Window {
@@ -150,6 +161,69 @@ export default function RealEstateExitLanding() {
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
+  const pageViewSentRef = useRef(false);
+
+  const waitForPostHog = (callback: () => void, maxAttempts = 150) => {
+    if (typeof window === "undefined") return;
+
+    let attempts = 0;
+    const check = () => {
+      attempts += 1;
+      const posthog = window.posthog;
+      const isReady =
+        posthog &&
+        typeof posthog.capture === "function" &&
+        posthog.__loaded === true;
+
+      if (isReady) {
+        try {
+          callback();
+          if (typeof posthog.flush === "function") {
+            posthog.flush();
+          }
+        } catch (error) {
+          console.error("PostHog capture error:", error);
+        }
+      } else if (attempts < maxAttempts) {
+        setTimeout(check, 100);
+      } else if (posthog && typeof posthog.capture === "function") {
+        try {
+          callback();
+          if (typeof posthog.flush === "function") {
+            posthog.flush();
+          }
+        } catch (error) {
+          console.error("PostHog capture error (fallback):", error);
+        }
+      }
+    };
+    check();
+  };
+
+  const trackEvent = (
+    eventName: string,
+    properties?: Record<string, any>
+  ) => {
+    waitForPostHog(() => {
+      if (window.posthog) {
+        window.posthog.capture(eventName, properties);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (pageViewSentRef.current) return;
+
+    trackEvent("propexit_page_view", { page: "realestate_exit_landing" });
+    pageViewSentRef.current = true;
+  }, []);
+
+  const buildFormEventPayload = () => ({
+    property_type: formData.propertyType || "未選択",
+    property_status: formData.propertyStatus || "未選択",
+    has_city: Boolean(formData.city),
+    has_concern: Boolean(formData.concern),
+  });
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -175,6 +249,8 @@ export default function RealEstateExitLanding() {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: "" });
+    const eventPayload = buildFormEventPayload();
+    trackEvent("propexit_form_submit_attempt", eventPayload);
 
     try {
       const payload = {
@@ -199,6 +275,7 @@ export default function RealEstateExitLanding() {
         ) {
           window.gtag_report_conversion();
         }
+        trackEvent("propexit_form_submit_success", eventPayload);
         setSubmitStatus({
           type: "success",
           message:
@@ -207,6 +284,13 @@ export default function RealEstateExitLanding() {
         });
         setFormData(initialFormState);
       } else {
+        trackEvent("propexit_form_submit_error", {
+          ...eventPayload,
+          status: response.status,
+          error_message:
+            data.error || "送信に失敗しました。しばらくしてから再度お試しください。",
+          phase: "response_error",
+        });
         setSubmitStatus({
           type: "error",
           message:
@@ -216,6 +300,12 @@ export default function RealEstateExitLanding() {
       }
     } catch (error) {
       console.error("送信エラー:", error);
+      trackEvent("propexit_form_submit_error", {
+        ...eventPayload,
+        error_message:
+          error instanceof Error ? error.message : "unknown_error",
+        phase: "network_error",
+      });
       setSubmitStatus({
         type: "error",
         message: "ネットワークエラーが発生しました。接続を確認してください。",
@@ -251,6 +341,11 @@ export default function RealEstateExitLanding() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#consult-form"
+                onClick={() =>
+                  trackEvent("propexit_hero_primary_click", {
+                    destination: "consult_form",
+                  })
+                }
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white text-slate-900 font-semibold px-8 py-4 shadow-2xl hover:scale-[1.02] hover:bg-emerald-50 transition-transform"
               >
                 無料で状況を相談する
@@ -258,6 +353,11 @@ export default function RealEstateExitLanding() {
               </a>
               <a
                 href="#services"
+                onClick={() =>
+                  trackEvent("propexit_hero_secondary_click", {
+                    destination: "services",
+                  })
+                }
                 className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/30 text-white px-8 py-4 font-semibold hover:bg-white/10 transition-colors"
               >
                 サービス内容を見る
@@ -423,6 +523,11 @@ export default function RealEstateExitLanding() {
             </p>
             <a
               href="#consult-form"
+              onClick={() =>
+                trackEvent("propexit_midpage_cta_click", {
+                  section: "cta_banner",
+                })
+              }
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 text-white px-10 py-4 font-semibold shadow-lg hover:bg-emerald-700 transition-all"
             >
               無料で状況を相談する
