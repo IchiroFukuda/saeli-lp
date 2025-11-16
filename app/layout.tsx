@@ -49,7 +49,7 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* Event snippet for ページビュー conversion page */}
+        {/* Event snippet for exitリードフォームの送信 conversion page */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -60,7 +60,9 @@ export default function RootLayout({
                   }
                 };
                 gtag('event', 'conversion', {
-                    'send_to': 'AW-17624092605/02E-CK-cxLkbEL2f6dNB',
+                    'send_to': 'AW-17624092605/NdmlCKyi-MAbEL2f6dNB',
+                    'value': 1.0,
+                    'currency': 'JPY',
                     'event_callback': callback
                 });
                 return false;
