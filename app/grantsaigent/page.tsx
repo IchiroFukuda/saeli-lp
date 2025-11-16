@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { Check, ArrowRight, Shield, Lock, Sparkles, FileText, Search, Clock, BarChart3, Users, CheckCircle2, Loader2 } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -9,6 +9,11 @@ import Footer from "@/components/Footer";
 declare global {
   interface Window {
     gtag_report_conversion?: (url?: string) => boolean;
+    posthog?: {
+      capture: (event: string, properties?: Record<string, any>) => void;
+      flush?: () => void;
+      __loaded?: boolean;
+    };
   }
 }
 
@@ -37,6 +42,36 @@ const Feature = ({ icon: Icon, title, children }: { icon: any; title: string; ch
 );
 
 export default function HojokinLandingPage() {
+  // PostHog 初期化待ちヘルパー
+  const waitForPostHog = (callback: () => void, maxAttempts = 150) => {
+    if (typeof window === 'undefined') return;
+    let attempts = 0;
+    const check = () => {
+      attempts += 1;
+      const ph = window.posthog;
+      const isReady = ph && typeof ph.capture === 'function' && ph.__loaded === true;
+      if (isReady) {
+        try {
+          callback();
+          if (typeof ph.flush === 'function') ph.flush();
+        } catch (error) {
+          console.error('PostHog capture error:', error);
+        }
+      } else if (attempts < maxAttempts) {
+        setTimeout(check, 100);
+      } else if (ph && typeof ph.capture === 'function') {
+        try {
+          callback();
+          if (typeof ph.flush === 'function') ph.flush();
+        } catch (error) {
+          console.error('PostHog capture error (fallback):', error);
+        }
+      }
+    };
+    check();
+  };
+  const pageViewSentRef = useRef(false);
+
   const [formData, setFormData] = useState({
     companyName: "",
     name: "",
@@ -48,6 +83,18 @@ export default function HojokinLandingPage() {
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
+
+  // 初回ページ表示時のイベント送信
+  useEffect(() => {
+    if (pageViewSentRef.current) return;
+    waitForPostHog(() => {
+      if (pageViewSentRef.current) return;
+      pageViewSentRef.current = true;
+      if (window.posthog) {
+        window.posthog.capture("grantsaigent_page_view", { page: "grantsaigent_landing" });
+      }
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,6 +117,14 @@ export default function HojokinLandingPage() {
         if (typeof window !== 'undefined' && window.gtag_report_conversion) {
           window.gtag_report_conversion();
         }
+        // PostHogにも送信
+        waitForPostHog(() => {
+          if (window.posthog) {
+            window.posthog.capture('grantsaigent_contact_submit', {
+              page: 'grantsaigent_landing',
+            });
+          }
+        });
 
         setSubmitStatus({
           type: "success",
@@ -149,6 +204,15 @@ export default function HojokinLandingPage() {
                   if (typeof window !== 'undefined' && window.gtag_report_conversion) {
                     window.gtag_report_conversion();
                   }
+                  // PostHog: β版クリック（ヒーロー）
+                  if (typeof window !== 'undefined') {
+                    waitForPostHog(() => {
+                      window.posthog?.capture('grantsaigent_beta_click', {
+                        location: 'hero',
+                        target: '#contact',
+                      });
+                    });
+                  }
                 }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
@@ -157,6 +221,17 @@ export default function HojokinLandingPage() {
               </a>
               <a
                 href="#testimonials"
+                onClick={(e) => {
+                  // PostHog: 導入事例クリック
+                  if (typeof window !== 'undefined') {
+                    waitForPostHog(() => {
+                      window.posthog?.capture('grantsaigent_testimonials_click', {
+                        location: 'hero',
+                        target: '#testimonials',
+                      });
+                    });
+                  }
+                }}
                 className="rounded-xl border-2 border-white text-white px-8 py-4 text-base font-semibold hover:bg-white/10 backdrop-blur-sm inline-flex items-center justify-center gap-2 transition-all"
               >
                 導入事例を見る
@@ -331,6 +406,15 @@ export default function HojokinLandingPage() {
                   if (typeof window !== 'undefined' && window.gtag_report_conversion) {
                     window.gtag_report_conversion();
                   }
+                  // PostHog: β版クリック（CTA）
+                  if (typeof window !== 'undefined') {
+                    waitForPostHog(() => {
+                      window.posthog?.capture('grantsaigent_beta_click', {
+                        location: 'cta',
+                        target: '#contact',
+                      });
+                    });
+                  }
                 }}
                 className="rounded-xl bg-white text-blue-600 px-8 py-4 text-base font-semibold hover:bg-blue-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
               >
@@ -339,6 +423,21 @@ export default function HojokinLandingPage() {
               </a>
               <a
                 href="#contact"
+                onClick={(e) => {
+                  // フォームエリアへスムーズスクロール
+                  e.preventDefault();
+                  const el = document.getElementById('contact');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  // PostHog: 導入のご相談クリック（CTA）
+                  if (typeof window !== 'undefined') {
+                    waitForPostHog(() => {
+                      window.posthog?.capture('grantsaigent_contact_cta_click', {
+                        location: 'cta',
+                        target: '#contact',
+                      });
+                    });
+                  }
+                }}
                 className="rounded-xl border-2 border-white text-white px-8 py-4 text-base font-semibold hover:bg-white/10 backdrop-blur-sm inline-flex items-center justify-center gap-2 transition-all"
               >
                 導入のご相談はこちら
