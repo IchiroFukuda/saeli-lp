@@ -214,7 +214,7 @@ export default function RealEstateExitLanding() {
   useEffect(() => {
     if (pageViewSentRef.current) return;
 
-    trackEvent("propexit_page_view", { page: "realestate_exit_landing" });
+    trackEvent("pageview", { page: "realestate_exit" });
     pageViewSentRef.current = true;
   }, []);
 
@@ -275,7 +275,7 @@ export default function RealEstateExitLanding() {
         ) {
           window.gtag_report_conversion();
         }
-        trackEvent("propexit_form_submit_success", eventPayload);
+        trackEvent("contact_submit", { page: "realestate_exit", ...eventPayload });
         setSubmitStatus({
           type: "success",
           message:
@@ -342,9 +342,7 @@ export default function RealEstateExitLanding() {
               <a
                 href="#consult-form"
                 onClick={() =>
-                  trackEvent("propexit_hero_primary_click", {
-                    destination: "consult_form",
-                  })
+                  trackEvent("heroclick", { page: "realestate_exit", target: "#consult-form", button: "primary" })
                 }
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white text-slate-900 font-semibold px-8 py-4 shadow-2xl hover:scale-[1.02] hover:bg-emerald-50 transition-transform"
               >
@@ -354,9 +352,7 @@ export default function RealEstateExitLanding() {
               <a
                 href="#services"
                 onClick={() =>
-                  trackEvent("propexit_hero_secondary_click", {
-                    destination: "services",
-                  })
+                  trackEvent("heroclick", { page: "realestate_exit", target: "#services", button: "secondary" })
                 }
                 className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/30 text-white px-8 py-4 font-semibold hover:bg-white/10 transition-colors"
               >
@@ -524,9 +520,7 @@ export default function RealEstateExitLanding() {
             <a
               href="#consult-form"
               onClick={() =>
-                trackEvent("propexit_midpage_cta_click", {
-                  section: "cta_banner",
-                })
+                trackEvent("ctaclick", { page: "realestate_exit", target: "#consult-form", button: "consult" })
               }
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 text-white px-10 py-4 font-semibold shadow-lg hover:bg-emerald-700 transition-all"
             >

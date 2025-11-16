@@ -109,9 +109,7 @@ export default function RevealPropLandingPage() {
       
       pageViewSentRef.current = true;
       if (window.posthog) {
-        window.posthog.capture('revealprop_page_view', {
-          page: 'revealprop_landing',
-        });
+        window.posthog.capture('pageview', { page: 'revealprop' });
         
         if (typeof window.posthog.flush === 'function') {
           window.posthog.flush();
@@ -153,7 +151,8 @@ export default function RevealPropLandingPage() {
         // PostHogにメール送信イベントを送信
         waitForPostHog(() => {
           if (window.posthog) {
-            window.posthog.capture('revealprop_email_submit', {
+            window.posthog.capture('contact_submit', {
+              page: 'revealprop',
               property_count: formData.propertyCount,
               portal: formData.portal,
               purpose: formData.purpose || '未記入',
@@ -253,9 +252,7 @@ export default function RevealPropLandingPage() {
                 onClick={() => {
                   waitForPostHog(() => {
                     if (window.posthog) {
-                      window.posthog.capture('revealprop_hero_button_click', {
-                        button_text: '負動産スコアを試す（β版先行登録）',
-                      });
+                      window.posthog.capture('heroclick', { page: 'revealprop', target: '#beta', button: 'beta' });
                       if (typeof window.posthog.flush === 'function') {
                         window.posthog.flush();
                       }
@@ -675,9 +672,7 @@ export default function RevealPropLandingPage() {
                     onClick={() => {
                       waitForPostHog(() => {
                         if (window.posthog) {
-                          window.posthog.capture('revealprop_pricing_button_click', {
-                            button_text: '料金プランを見る',
-                          });
+                          window.posthog.capture('ctaclick', { page: 'revealprop', target: 'pricing', button: 'show_pricing' });
                           if (typeof window.posthog.flush === 'function') {
                             window.posthog.flush();
                           }

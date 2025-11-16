@@ -91,7 +91,7 @@ export default function HojokinLandingPage() {
       if (pageViewSentRef.current) return;
       pageViewSentRef.current = true;
       if (window.posthog) {
-        window.posthog.capture("grantsaigent_page_view", { page: "grantsaigent_landing" });
+        window.posthog.capture("pageview", { page: "grantsaigent" });
       }
     });
   }, []);
@@ -120,9 +120,7 @@ export default function HojokinLandingPage() {
         // PostHogにも送信
         waitForPostHog(() => {
           if (window.posthog) {
-            window.posthog.capture('grantsaigent_contact_submit', {
-              page: 'grantsaigent_landing',
-            });
+            window.posthog.capture('contact_submit', { page: 'grantsaigent' });
           }
         });
 
@@ -207,10 +205,7 @@ export default function HojokinLandingPage() {
                   // PostHog: β版クリック（ヒーロー）
                   if (typeof window !== 'undefined') {
                     waitForPostHog(() => {
-                      window.posthog?.capture('grantsaigent_beta_click', {
-                        location: 'hero',
-                        target: '#contact',
-                      });
+                      window.posthog?.capture('heroclick', { page: 'grantsaigent', target: '#contact', button: 'beta' });
                     });
                   }
                 }}
@@ -225,10 +220,7 @@ export default function HojokinLandingPage() {
                   // PostHog: 導入事例クリック
                   if (typeof window !== 'undefined') {
                     waitForPostHog(() => {
-                      window.posthog?.capture('grantsaigent_testimonials_click', {
-                        location: 'hero',
-                        target: '#testimonials',
-                      });
+                      window.posthog?.capture('heroclick', { page: 'grantsaigent', target: '#testimonials', button: 'testimonials' });
                     });
                   }
                 }}
@@ -409,10 +401,7 @@ export default function HojokinLandingPage() {
                   // PostHog: β版クリック（CTA）
                   if (typeof window !== 'undefined') {
                     waitForPostHog(() => {
-                      window.posthog?.capture('grantsaigent_beta_click', {
-                        location: 'cta',
-                        target: '#contact',
-                      });
+                      window.posthog?.capture('ctaclick', { page: 'grantsaigent', target: '#contact', button: 'beta' });
                     });
                   }
                 }}
@@ -431,10 +420,7 @@ export default function HojokinLandingPage() {
                   // PostHog: 導入のご相談クリック（CTA）
                   if (typeof window !== 'undefined') {
                     waitForPostHog(() => {
-                      window.posthog?.capture('grantsaigent_contact_cta_click', {
-                        location: 'cta',
-                        target: '#contact',
-                      });
+                      window.posthog?.capture('ctaclick', { page: 'grantsaigent', target: '#contact', button: 'contact' });
                     });
                   }
                 }}

@@ -167,7 +167,7 @@ export default function ExitScoreLanding() {
   useEffect(() => {
     if (pageViewSentRef.current) return;
 
-    trackEvent("exit_score_page_view", { page: "exit_score_landing" });
+    trackEvent("pageview", { page: "exit_score" });
     pageViewSentRef.current = true;
   }, []);
 
@@ -216,7 +216,7 @@ export default function ExitScoreLanding() {
 
       if (response.ok) {
         reportGAdsConversion();
-        trackEvent("exit_score_form_submit_success");
+        trackEvent("contact_submit", { page: "exit_score" });
         setSubmitStatus({
           type: "success",
           message:
@@ -268,7 +268,7 @@ export default function ExitScoreLanding() {
               <a
                 href="#beta"
                 onClick={() =>
-                  trackEvent("exit_score_hero_primary_click", { destination: "beta" })
+                  trackEvent("heroclick", { page: "exit_score", target: "#beta", button: "primary" })
                 }
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white text-slate-900 font-semibold px-8 py-4 shadow-2xl hover:scale-[1.02] hover:bg-emerald-50 transition-transform"
               >
@@ -278,7 +278,7 @@ export default function ExitScoreLanding() {
               <a
                 href="#apply"
                 onClick={() =>
-                  trackEvent("exit_score_hero_secondary_click", { destination: "apply" })
+                  trackEvent("heroclick", { page: "exit_score", target: "#apply", button: "secondary" })
                 }
                 className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/30 text-white px-8 py-4 font-semibold hover:bg-white/10 transition-colors"
               >
@@ -453,7 +453,7 @@ export default function ExitScoreLanding() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#apply"
-                onClick={() => trackEvent("exit_score_mid_cta_click", { type: "beta" })}
+                onClick={() => trackEvent("ctaclick", { page: "exit_score", target: "#apply", button: "beta" })}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 text-white px-10 py-4 font-semibold shadow-lg hover:bg-emerald-700 transition-all"
               >
                 β版テスター登録
@@ -461,7 +461,7 @@ export default function ExitScoreLanding() {
               </a>
               <a
                 href="#apply"
-                onClick={() => trackEvent("exit_score_mid_cta_click", { type: "apply" })}
+                onClick={() => trackEvent("ctaclick", { page: "exit_score", target: "#apply", button: "apply" })}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-200 text-emerald-700 px-10 py-4 font-semibold hover:bg-white transition-all"
               >
                 テスター応募フォーム
@@ -607,7 +607,7 @@ export default function ExitScoreLanding() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#beta"
-                onClick={() => trackEvent("exit_score_last_cta_click", { type: "beta" })}
+                onClick={() => trackEvent("ctaclick", { page: "exit_score", target: "#beta", button: "beta" })}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 text-white px-8 py-4 font-semibold shadow-lg hover:bg-emerald-700 transition-all"
               >
                 β版テスター登録
