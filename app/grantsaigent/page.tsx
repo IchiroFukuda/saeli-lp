@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Script from "next/script";
 import { Check, ArrowRight, Shield, Lock, Sparkles, FileText, Search, Clock, BarChart3, Users, CheckCircle2, Loader2 } from "lucide-react";
 import Footer from "@/components/Footer";
 
@@ -110,6 +111,22 @@ export default function HojokinLandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50/30 text-gray-900 selection:bg-blue-600 selection:text-white">
+      <Script id="grantsaigent-conversion" strategy="afterInteractive">{`
+        function gtag_report_conversion(url) {
+          var callback = function () {
+            if (typeof(url) != 'undefined') {
+              window.location = url;
+            }
+          };
+          gtag('event', 'conversion', {
+              'send_to': 'AW-17624092605/24lcCNfJg8EbEL2f6dNB',
+              'value': 1.0,
+              'currency': 'JPY',
+              'event_callback': callback
+          });
+          return false;
+        }
+      `}</Script>
       {/* Hero Section */}
       <Section id="hero" className="pt-24 sm:pt-32 bg-gradient-to-b from-blue-600 via-blue-500 to-white">
         <Container>
@@ -123,11 +140,12 @@ export default function HojokinLandingPage() {
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="https://grantsaigent.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#contact"
                 onClick={(e) => {
-                  // コンバージョンを計測（外部リンクなので通常のリンク動作は続行）
+                  // フォームエリアへスムーズスクロール + コンバージョン計測
+                  e.preventDefault();
+                  const el = document.getElementById('contact');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   if (typeof window !== 'undefined' && window.gtag_report_conversion) {
                     window.gtag_report_conversion();
                   }
@@ -304,11 +322,12 @@ export default function HojokinLandingPage() {
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="https://grantsaigent.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#contact"
                 onClick={(e) => {
-                  // コンバージョンを計測（外部リンクなので通常のリンク動作は続行）
+                  // フォームエリアへスムーズスクロール + コンバージョン計測
+                  e.preventDefault();
+                  const el = document.getElementById('contact');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   if (typeof window !== 'undefined' && window.gtag_report_conversion) {
                     window.gtag_report_conversion();
                   }
