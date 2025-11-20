@@ -266,7 +266,7 @@ export default function RevealPropLandingPage() {
               私たちは、その中から<strong className="text-white">「将来あなたのキャッシュフローを壊す物件」</strong>だけをあぶり出す。
               <br className="hidden sm:block" />
               <br className="hidden sm:block" />
-              <strong className="text-white">複数の物件URLを一括で貼るだけで</strong>、負動産リスクを数値化し、即「外すべき候補」を判断できます。
+              <strong className="text-white">物件URLを貼るだけで</strong>、負動産リスクを数値化し、即「外すべき候補」を判断できます。
             </p>
             <div className="mt-10 max-w-2xl mx-auto">
               <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/20">
@@ -274,7 +274,7 @@ export default function RevealPropLandingPage() {
                   物件URLを貼り付けてください
                 </label>
                 <p className="text-sm text-gray-600 mb-3">
-                  複数の物件URLを改行区切りで入力できます（1行に1つずつ）
+                  物件のURLを入力してください
                 </p>
                 <textarea
                   value={urlInput}
@@ -711,8 +711,8 @@ export default function RevealPropLandingPage() {
                 <div className="rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-md">
                   <Layers className="h-8 w-8 text-white" />
                 </div>
-                <h4 className="font-semibold mb-2 text-gray-900">一括スクリーニング</h4>
-                <p className="text-sm text-gray-600">複数物件URLを一度に貼って、まとめて判定</p>
+                <h4 className="font-semibold mb-2 text-gray-900">URL判定</h4>
+                <p className="text-sm text-gray-600">物件URLを貼って、即座に判定</p>
               </Card>
               <Card className="text-center border-indigo-200">
                 <div className="rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-md">
@@ -762,9 +762,9 @@ export default function RevealPropLandingPage() {
                   <div className="rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 w-14 h-14 mx-auto mb-4 flex items-center justify-center shadow-md">
                     <Layers className="h-7 w-7 text-white" />
                   </div>
-                  <h4 className="font-semibold mb-2 text-gray-900">複数の物件URLを一括で貼る</h4>
+                  <h4 className="font-semibold mb-2 text-gray-900">物件URLを貼る</h4>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    ポータルや販売資料から気になっている物件のURLを、<strong className="font-semibold text-gray-900">複数まとめて一度に入力</strong>。10件でも50件でも、一括でスクリーニングできます。
+                    ポータルや販売資料から気になっている物件のURLを、<strong className="font-semibold text-gray-900">入力</strong>するだけで、即座に判定できます。
                   </p>
                 </div>
               </Card>
@@ -773,9 +773,9 @@ export default function RevealPropLandingPage() {
                   <div className="rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 w-14 h-14 mx-auto mb-4 flex items-center justify-center shadow-md">
                     <Zap className="h-7 w-7 text-white" />
                   </div>
-                  <h4 className="font-semibold mb-2 text-gray-900">数秒で全物件の負動産スコアと危険フラグを返す</h4>
+                  <h4 className="font-semibold mb-2 text-gray-900">数秒で負動産スコアと危険フラグを返す</h4>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    公開情報と一般的な修繕・運営データをもとに、<strong className="font-semibold text-gray-900">全物件を同時に分析</strong>。個別に判定する必要はありません。
+                    公開情報と一般的な修繕・運営データをもとに、<strong className="font-semibold text-gray-900">即座に分析</strong>。判定結果をすぐに確認できます。
                   </p>
                 </div>
               </Card>
@@ -784,9 +784,9 @@ export default function RevealPropLandingPage() {
                   <div className="rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 w-14 h-14 mx-auto mb-4 flex items-center justify-center shadow-md">
                     <Filter className="h-7 w-7 text-white" />
                   </div>
-                  <h4 className="font-semibold mb-2 text-gray-900">一括結果から低スコア物件を即除外</h4>
+                  <h4 className="font-semibold mb-2 text-gray-900">判定結果から検討継続を判断</h4>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    全物件のスコアを<strong className="font-semibold text-gray-900">一覧で比較</strong>。一定以下の物件は即リストから除外し、残った少数の検討に移れます。
+                    負動産スコアを<strong className="font-semibold text-gray-900">確認</strong>。一定以下の物件は検討から除外し、高スコアの物件のみ詳細確認に進みます。
                   </p>
                 </div>
               </Card>
@@ -833,8 +833,8 @@ export default function RevealPropLandingPage() {
                   </h4>
                   <div className="space-y-4">
                     <div>
-                      <p className="text-sm font-medium text-gray-700 mb-1">一括スクリーニング</p>
-                      <p className="text-sm text-gray-600">複数物件を一度に判定。個別入力の手間が不要</p>
+                      <p className="text-sm font-medium text-gray-700 mb-1">簡易判定</p>
+                      <p className="text-sm text-gray-600">URLを貼るだけで即座に判定。手間が不要</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-700 mb-1">買い手専用判定</p>
@@ -973,7 +973,7 @@ export default function RevealPropLandingPage() {
                     onChange={handleChange}
                     rows={4}
                     className="w-full rounded-xl border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                    placeholder="例）現在検討中の物件URLを判定したい、複数物件の比較をしたい など"
+                    placeholder="例）現在検討中の物件URLを判定したい、判定結果を参考にしたい など"
                   />
                 </div>
                 {submitStatus.type && (
