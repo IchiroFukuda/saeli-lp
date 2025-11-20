@@ -16,6 +16,25 @@ declare global {
   }
 }
 
+// APIレスポンスの型定義
+interface ScoreResult {
+  property_id: number;
+  risk_score: number;
+  p50_cost: number;
+  p90_cost: number;
+  factors: {
+    age_score?: { value: number; note: string };
+    structure_score?: { value: number; note: string };
+    reform_adjustment?: { value: number; note: string };
+    equipment_adjustment?: { value: number; note: string };
+    region_score?: { value: number; note: string };
+    keyword_score?: { value: number; hits?: number; keywords?: string[] };
+    area_adjustment?: { value: number; note: string };
+    final_risk_score: number;
+  };
+  version: string;
+}
+
 const Container = ({ children }: { children: React.ReactNode }) => (
   <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">{children}</div>
 );
@@ -48,11 +67,14 @@ export default function RevealPropLandingPage() {
     portal: "",
     purpose: "",
   });
+  const [urlInput, setUrlInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
+  const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
+  const [processedUrl, setProcessedUrl] = useState<string>("");
   const [showPricing, setShowPricing] = useState(false);
   const pageViewSentRef = useRef(false);
 
@@ -133,7 +155,7 @@ export default function RevealPropLandingPage() {
           companyName: "",
           name: formData.name,
           email: formData.email,
-          message: `【RevealProp β版申込】
+          message: `【RevealProp 先行登録】
 所有物件数/検討件数: ${formData.propertyCount}
 利用ポータル: ${formData.portal}
 試したいこと: ${formData.purpose || "未記入"}`,
@@ -166,7 +188,7 @@ export default function RevealPropLandingPage() {
 
         setSubmitStatus({
           type: "success",
-          message: data.message || "β版へのお申し込みを受け付けました。ありがとうございます。",
+          message: data.message || "お申し込みを受け付けました。ありがとうございます。",
         });
         // フォームをリセット
         setFormData({
@@ -246,28 +268,368 @@ export default function RevealPropLandingPage() {
               <br className="hidden sm:block" />
               <strong className="text-white">複数の物件URLを一括で貼るだけで</strong>、負動産リスクを数値化し、即「外すべき候補」を判断できます。
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="#beta"
-                onClick={() => {
-                  waitForPostHog(() => {
-                    if (window.posthog) {
-                      window.posthog.capture('heroclick', { page: 'revealprop', target: '#beta', button: 'beta' });
-                      if (typeof window.posthog.flush === 'function') {
-                        window.posthog.flush();
+            <div className="mt-10 max-w-2xl mx-auto">
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/20">
+                <label className="block mb-2 text-gray-900 font-semibold text-lg">
+                  物件URLを貼り付けてください
+                </label>
+                <p className="text-sm text-gray-600 mb-3">
+                  複数の物件URLを改行区切りで入力できます（1行に1つずつ）
+                </p>
+                <textarea
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  placeholder="https://suumo.jp/chintai/jnc_00012345678/&#10;https://athome.jp/chintai/234-567890/"
+                  rows={4}
+                  className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none font-mono text-sm"
+                />
+                <div className="mt-4 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!urlInput.trim()) {
+                        // URLが入力されていない場合は登録ページに遷移
+                        waitForPostHog(() => {
+                          if (window.posthog) {
+                            window.posthog.capture('heroclick', { page: 'revealprop', target: '#beta', button: 'beta', has_url: false });
+                            if (typeof window.posthog.flush === 'function') {
+                              window.posthog.flush();
+                            }
+                          }
+                        });
+                        window.location.href = '#beta';
+                        return;
                       }
-                    }
-                  });
-                }}
-                className="rounded-xl bg-white text-indigo-600 px-8 py-4 text-base font-semibold hover:bg-indigo-50 inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:shadow-2xl hover:scale-105"
-              >
-                負動産スコアを試す（β版先行登録）
-                <ArrowRight className="h-5 w-5" />
-              </a>
+
+                      const urls = urlInput.trim().split('\n').filter(url => url.trim());
+                      
+                      if (urls.length === 0) {
+                        setSubmitStatus({
+                          type: "error",
+                          message: "URLを入力してください。",
+                        });
+                        return;
+                      }
+
+                      setIsSubmitting(true);
+                      setSubmitStatus({ type: null, message: "" });
+
+                      try {
+                        waitForPostHog(() => {
+                          if (window.posthog) {
+                            window.posthog.capture('url_submit', { 
+                              page: 'revealprop', 
+                              url_count: urls.length,
+                              has_url: true
+                            });
+                            if (typeof window.posthog.flush === 'function') {
+                              window.posthog.flush();
+                            }
+                          }
+                        });
+
+                        // 複数のURLがある場合は、最初の1つのみを処理する
+                        // TODO: 将来的に複数URLの一括処理に対応する場合は実装を変更
+                        const targetUrl = urls[0];
+
+                        const response = await fetch('http://localhost:8000/v1/url-score', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify({
+                            url: targetUrl,
+                          }),
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                          // 成功時の処理
+                          waitForPostHog(() => {
+                            if (window.posthog) {
+                              window.posthog.capture('url_score_success', {
+                                page: 'revealprop',
+                                url_count: urls.length,
+                                processed_count: 1,
+                              });
+                              if (typeof window.posthog.flush === 'function') {
+                                window.posthog.flush();
+                              }
+                            }
+                          });
+
+                          // 結果を保存
+                          setScoreResult(data as ScoreResult);
+                          setProcessedUrl(targetUrl);
+                          
+                          if (urls.length > 1) {
+                            setSubmitStatus({
+                              type: "success",
+                              message: `${urls.length}件のURLを入力されましたが、現在は1件ずつの判定のみ対応しています。最初のURLの判定が完了しました。`,
+                            });
+                          } else {
+                            setSubmitStatus({
+                              type: "success",
+                              message: "物件の判定が完了しました。",
+                            });
+                          }
+                          
+                          // 結果表示セクションにスクロール
+                          setTimeout(() => {
+                            const resultSection = document.getElementById('score-result');
+                            if (resultSection) {
+                              resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                          }, 100);
+                          
+                        } else {
+                          // エラー時の処理
+                          waitForPostHog(() => {
+                            if (window.posthog) {
+                              window.posthog.capture('url_score_error', {
+                                page: 'revealprop',
+                                error: data.error || 'APIエラー',
+                                url_count: urls.length,
+                              });
+                              if (typeof window.posthog.flush === 'function') {
+                                window.posthog.flush();
+                              }
+                            }
+                          });
+
+                          setSubmitStatus({
+                            type: "error",
+                            message: data.error || "判定に失敗しました。しばらくしてから再度お試しください。",
+                          });
+                        }
+                      } catch (error) {
+                        console.error('API呼び出しエラー:', error);
+                        
+                        waitForPostHog(() => {
+                          if (window.posthog) {
+                            window.posthog.capture('url_score_error', {
+                              page: 'revealprop',
+                              error: 'ネットワークエラー',
+                              error_message: error instanceof Error ? error.message : 'Unknown error',
+                            });
+                            if (typeof window.posthog.flush === 'function') {
+                              window.posthog.flush();
+                            }
+                          }
+                        });
+
+                        setSubmitStatus({
+                          type: "error",
+                          message: "ネットワークエラーが発生しました。接続を確認して再度お試しください。",
+                        });
+                      } finally {
+                        setIsSubmitting(false);
+                      }
+                    }}
+                    disabled={isSubmitting}
+                    className="flex-1 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-6 py-3 text-base font-semibold hover:from-indigo-700 hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" /> 判定中...
+                      </>
+                    ) : (
+                      <>
+                        負動産スコアを判定
+                        <ArrowRight className="h-5 w-5" />
+                      </>
+                    )}
+                  </button>
+                  <a
+                    href="#beta"
+                    onClick={() => {
+                      waitForPostHog(() => {
+                        if (window.posthog) {
+                          window.posthog.capture('heroclick', { page: 'revealprop', target: '#beta', button: 'beta', has_url: false });
+                          if (typeof window.posthog.flush === 'function') {
+                            window.posthog.flush();
+                          }
+                        }
+                      });
+                    }}
+                    className="rounded-xl bg-white text-indigo-600 px-6 py-3 text-base font-semibold hover:bg-indigo-50 inline-flex items-center justify-center gap-2 shadow-lg border-2 border-indigo-200 transition-all hover:shadow-xl"
+                  >
+                    登録する
+                  </a>
+                </div>
+                {submitStatus.type && (
+                  <div className={`mt-4 p-4 rounded-xl ${
+                    submitStatus.type === "success"
+                      ? "bg-green-50 border border-green-200 text-green-800"
+                      : "bg-red-50 border border-red-200 text-red-800"
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      {submitStatus.type === "success" ? (
+                        <CheckCircle2 className="h-5 w-5" />
+                      ) : (
+                        <AlertTriangle className="h-5 w-5" />
+                      )}
+                      <span className="text-sm font-medium">{submitStatus.message}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </Container>
       </Section>
+
+      {/* 結果表示セクション */}
+      {scoreResult && (
+        <Section id="score-result" className="bg-white py-16">
+          <Container>
+            <div className="max-w-4xl mx-auto">
+              <div className="mb-8">
+                <h2 className="text-3xl sm:text-4xl font-bold leading-tight text-gray-900 text-center mb-4">
+                  判定結果
+                </h2>
+                {processedUrl && (
+                  <p className="text-sm text-gray-600 text-center break-all">
+                    <LinkIcon className="h-4 w-4 inline mr-1" />
+                    {processedUrl}
+                  </p>
+                )}
+              </div>
+              
+              <Card className="mb-6 border-2 border-indigo-300">
+                <div className="text-center mb-6">
+                  <div className="text-5xl font-extrabold mb-2" style={{
+                    color: scoreResult.risk_score >= 80 ? '#16a34a' : 
+                           scoreResult.risk_score >= 60 ? '#ea580c' : 
+                           '#dc2626'
+                  }}>
+                    {scoreResult.risk_score}
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900 mb-2">負動産スコア</div>
+                  <div className={`inline-block px-4 py-2 rounded-full text-sm font-semibold ${
+                    scoreResult.risk_score >= 80 ? 'bg-green-100 text-green-800' : 
+                    scoreResult.risk_score >= 60 ? 'bg-orange-100 text-orange-800' : 
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {scoreResult.risk_score >= 80 ? '構造的な大きな地雷要素は少ない（要詳細確認）' : 
+                     scoreResult.risk_score >= 60 ? '注意。特定のリスク要因あり（条件次第ではアウト）' : 
+                     '負動産候補（原則として検討から外すことを推奨）'}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6 pt-6 border-t border-gray-200">
+                  <div className="text-center">
+                    <div className="text-sm text-gray-600 mb-1">想定修繕費（中央値）</div>
+                    <div className="text-xl font-bold text-gray-900">
+                      ¥{scoreResult.p50_cost.toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm text-gray-600 mb-1">想定修繕費（90%tile）</div>
+                    <div className="text-xl font-bold text-gray-900">
+                      ¥{scoreResult.p90_cost.toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="border-indigo-200">
+                <h3 className="text-xl font-bold mb-4 text-gray-900">スコア詳細</h3>
+                <div className="space-y-4">
+                  {scoreResult.factors.age_score && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-gray-900">築年数スコア</span>
+                        <span className="text-lg font-bold text-indigo-600">{scoreResult.factors.age_score.value}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{scoreResult.factors.age_score.note}</p>
+                    </div>
+                  )}
+                  
+                  {scoreResult.factors.structure_score && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-gray-900">構造スコア</span>
+                        <span className="text-lg font-bold text-indigo-600">{scoreResult.factors.structure_score.value}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{scoreResult.factors.structure_score.note}</p>
+                    </div>
+                  )}
+                  
+                  {scoreResult.factors.reform_adjustment && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-gray-900">リフォーム調整</span>
+                        <span className="text-lg font-bold text-indigo-600">{scoreResult.factors.reform_adjustment.value}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{scoreResult.factors.reform_adjustment.note}</p>
+                    </div>
+                  )}
+                  
+                  {scoreResult.factors.equipment_adjustment && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-gray-900">設備調整</span>
+                        <span className="text-lg font-bold text-indigo-600">{scoreResult.factors.equipment_adjustment.value}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{scoreResult.factors.equipment_adjustment.note}</p>
+                    </div>
+                  )}
+                  
+                  {scoreResult.factors.region_score && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-gray-900">地域スコア</span>
+                        <span className="text-lg font-bold text-indigo-600">{scoreResult.factors.region_score.value}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{scoreResult.factors.region_score.note}</p>
+                    </div>
+                  )}
+                  
+                  {scoreResult.factors.keyword_score && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-gray-900">キーワードスコア</span>
+                        <span className="text-lg font-bold text-indigo-600">{scoreResult.factors.keyword_score.value}</span>
+                      </div>
+                      {scoreResult.factors.keyword_score.hits !== undefined && (
+                        <p className="text-sm text-gray-600">
+                          ヒット数: {scoreResult.factors.keyword_score.hits}
+                          {scoreResult.factors.keyword_score.keywords && scoreResult.factors.keyword_score.keywords.length > 0 && (
+                            <span className="ml-2">（{scoreResult.factors.keyword_score.keywords.join(', ')}）</span>
+                          )}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  
+                  {scoreResult.factors.area_adjustment && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-gray-900">面積調整</span>
+                        <span className="text-lg font-bold text-indigo-600">{scoreResult.factors.area_adjustment.value}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{scoreResult.factors.area_adjustment.note}</p>
+                    </div>
+                  )}
+                  
+                  <div className="p-4 bg-indigo-50 rounded-lg border-2 border-indigo-200">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-semibold text-gray-900">最終リスクスコア</span>
+                      <span className="text-2xl font-bold text-indigo-600">{scoreResult.factors.final_risk_score}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-6 pt-4 border-t border-gray-200 text-sm text-gray-500 text-center">
+                  バージョン: {scoreResult.version} | 物件ID: {scoreResult.property_id}
+                </div>
+              </Card>
+            </div>
+          </Container>
+        </Section>
+      )}
 
       {/* Section 1: 対象ユーザー（絞り込み） */}
       <Section id="target" className="bg-indigo-50/50">
@@ -560,24 +922,24 @@ export default function RevealPropLandingPage() {
         </Container>
       </Section>
 
-      {/* Section 6: β版募集セクション */}
+      {/* Section 6: 先行登録セクション */}
       <Section id="beta" className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-indigo-800 text-white relative overflow-hidden">
         <Container>
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-bold leading-tight drop-shadow-lg">
-                β版を試す
+                今すぐ試す
               </h2>
               <p className="mt-6 text-lg text-indigo-50 leading-relaxed drop-shadow-md">
                 個人投資家・不動産買取事業者・不動産コンサル様向けに、
                 <br className="hidden sm:block" />
-                負動産スコアのβ版を無料で提供します。
+                負動産スコアを無料で提供します。
                 <br className="hidden sm:block" />
                 実際に試してみたい方はこちらからご登録ください。
               </p>
             </div>
             <Card className="border-indigo-300 bg-white text-gray-900 shadow-lg">
-              <h3 className="text-2xl font-bold text-center mb-6 text-gray-900">β版に参加する</h3>
+              <h3 className="text-2xl font-bold text-center mb-6 text-gray-900">参加する</h3>
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <label className="block mb-1 text-gray-700 font-medium">お名前 <span className="text-red-500">*</span></label>
@@ -604,7 +966,7 @@ export default function RevealPropLandingPage() {
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block mb-1 text-gray-700 font-medium">β版で試したいこと（任意）</label>
+                  <label className="block mb-1 text-gray-700 font-medium">試したいこと（任意）</label>
                   <textarea
                     name="purpose"
                     value={formData.purpose}
@@ -642,7 +1004,7 @@ export default function RevealPropLandingPage() {
                       </>
                     ) : (
                       <>
-                        <CheckCircle2 className="h-5 w-5" /> β版に参加する
+                        <CheckCircle2 className="h-5 w-5" /> 参加する
                       </>
                     )}
                   </button>
@@ -664,7 +1026,7 @@ export default function RevealPropLandingPage() {
               <>
                 <Card className="border-indigo-200 shadow-lg mb-6">
                   <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                    β版期間中は<strong className="text-indigo-600">無料でご利用いただけます</strong>（件数制限あり）。
+                    期間中は<strong className="text-indigo-600">無料でご利用いただけます</strong>（件数制限あり）。
                     <br className="hidden sm:block" />
                     本提供時も、ご利用規模に応じたシンプルな月額制のみを予定しています。
                   </p>
