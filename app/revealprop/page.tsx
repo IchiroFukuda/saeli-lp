@@ -325,7 +325,15 @@ export default function RevealPropLandingPage() {
 
                       const targetUrl = urls[0];
 
-                      const response = await fetch('http://localhost:8000/v1/url-score', {
+                      // 環境変数が設定されていない場合は相対パス（本番環境用）
+                      // ローカル開発時は環境変数 NEXT_PUBLIC_API_URL を設定するか、
+                      // この部分を localhost:8000 に変更してください
+                      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+                      const apiUrl = apiBaseUrl 
+                        ? `${apiBaseUrl}/v1/url-score` 
+                        : '/v1/url-score';
+
+                      const response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: {
                           'Content-Type': 'application/json',
