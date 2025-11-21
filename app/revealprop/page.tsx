@@ -325,10 +325,8 @@ export default function RevealPropLandingPage() {
 
                       const targetUrl = urls[0];
 
-                      // Cloud RunのAPI URLを使用（環境変数で上書き可能）
-                      // ローカル開発時は .env.local に NEXT_PUBLIC_API_URL=http://localhost:8000 を設定
-                      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://revealprop-api-kupzzphjna-an.a.run.app';
-                      const apiUrl = `${apiBaseUrl}/v1/url-score`;
+                      // Next.jsのAPIルート経由でCloud RunのAPIにアクセス（CORS回避）
+                      const apiUrl = '/api/url-score';
 
                       const response = await fetch(apiUrl, {
                         method: 'POST',
