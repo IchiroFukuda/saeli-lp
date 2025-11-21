@@ -428,7 +428,7 @@ export default function RevealPropLandingPage() {
                     </>
                   ) : (
                     <>
-                      この物件の「値引き材料」を抽出する
+                      この物件の「リスク要因」を抽出する
                       <ArrowRight className="h-5 w-5" />
                     </>
                   )}
@@ -462,7 +462,7 @@ export default function RevealPropLandingPage() {
             <div className="max-w-4xl mx-auto">
               <div className="mb-8 text-center">
                 <h2 className="text-3xl sm:text-4xl font-black leading-tight text-gray-900 mb-4">
-                  値引き材料抽出結果
+                  リスク要因抽出結果
                 </h2>
                 {processedUrl && (
                   <p className="text-sm text-gray-600 break-all">
@@ -476,21 +476,21 @@ export default function RevealPropLandingPage() {
               <Card className="mb-6 border-2 border-red-600 bg-white">
                 <div className="text-center mb-6">
                   <div className="text-6xl font-black mb-4" style={{
-                    color: scoreResult.risk_score >= 80 ? '#059669' : 
+                    color: scoreResult.risk_score >= 80 ? '#dc2626' : 
                            scoreResult.risk_score >= 60 ? '#ea580c' : 
-                           '#dc2626'
+                           '#059669'
                   }}>
                     {scoreResult.risk_score}
                   </div>
-                  <div className="text-2xl font-black text-gray-900 mb-4">値引き材料スコア</div>
+                  <div className="text-2xl font-black text-gray-900 mb-4">リスクスコア</div>
                   <div className={`inline-block px-6 py-3 rounded-lg text-base font-bold border-2 ${
-                    scoreResult.risk_score >= 80 ? 'bg-green-50 border-green-600 text-green-900' : 
+                    scoreResult.risk_score >= 80 ? 'bg-red-50 border-red-600 text-red-900' : 
                     scoreResult.risk_score >= 60 ? 'bg-orange-50 border-orange-600 text-orange-900' : 
-                    'bg-red-50 border-red-600 text-red-900'
+                    'bg-green-50 border-green-600 text-green-900'
                   }`}>
-                    {scoreResult.risk_score >= 80 ? '値引き材料少' : 
-                     scoreResult.risk_score >= 60 ? '値引き材料中' : 
-                     '値引き材料多'}
+                    {scoreResult.risk_score >= 80 ? 'リスクスコア高' : 
+                     scoreResult.risk_score >= 60 ? 'リスクスコア中' : 
+                     'リスクスコア低'}
                   </div>
                 </div>
                 
