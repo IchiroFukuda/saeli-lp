@@ -491,96 +491,27 @@ export default function RevealPropLandingPage() {
       {/* レポートプレビューセクション */}
       <Section id="report-preview" className="bg-gray-100 py-16 border-t-4 border-red-600">
         <Container>
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <div className="mb-8 text-center">
               <h2 className="text-3xl sm:text-4xl font-black leading-tight text-gray-900 mb-4">
-                レポートプレビュー
+                レポート例
               </h2>
               <p className="text-sm text-gray-600">
                 完全版レポートは数時間〜24時間以内にメールでお送りします
               </p>
             </div>
-              
-              {/* レポートプレビューカード */}
-              <div className="max-w-md mx-auto bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-2xl">
-                
-                {/* ヘッダー：結論は見せる */}
-                <div className="p-6 border-b border-gray-800 bg-gradient-to-r from-gray-900 to-gray-800">
-                  <h3 className="text-gray-400 text-xs uppercase tracking-wider font-bold mb-1">
-                    RISK ANALYSIS REPORT
-                  </h3>
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <h2 className="text-white text-xl font-bold">
-                        {processedUrl ? '物件情報' : '三浦市三崎町 戸建'}
-                      </h2>
-                      {processedUrl ? (
-                        <p className="text-gray-500 text-sm mt-1 break-all">
-                          {processedUrl.length > 40 ? processedUrl.substring(0, 40) + '...' : processedUrl}
-                        </p>
-                      ) : (
-                        <p className="text-gray-500 text-sm mt-1">サンプルレポート</p>
-                      )}
-                      <p className="text-gray-500 text-sm mt-1">解析完了: {new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="block text-xs text-red-400 font-bold mb-1">総合判定</span>
-                      <span className="text-4xl font-black text-red-500 tracking-tighter">
-                        C<span className="text-lg">-</span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ボディ：途中から隠す */}
-                <div className="relative p-6 space-y-6">
-                  
-                  {/* 項目A：最初のリスク（見える） */}
-                  <div>
-                    <div className="flex items-center mb-2">
-                      <span className="w-2 h-2 rounded-full bg-red-500 mr-2 animate-pulse"></span>
-                      <h4 className="text-gray-200 font-bold">法的リスク：致命的</h4>
-                    </div>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      当該物件は前面道路の種別が不明確であり、建築基準法上の道路要件を満たしていない可能性が極めて高いです。これにより再建築不可のリスクがあり、将来的に建替えができない可能性があります。
-                    </p>
-                  </div>
-
-                  {/* 項目B：ここからボカす */}
-                  <div className="relative">
-                    <div className="flex items-center mb-2">
-                      <span className="w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
-                      <h4 className="text-gray-200 font-bold">流動性リスク：警告</h4>
-                    </div>
-                    {/* ぼかされたテキスト */}
-                    <p className="text-gray-500 text-sm leading-relaxed blur-[2px] select-none">
-                      周辺の成約事例と比較しても、この価格帯での売却期間は平均して3年以上かかっており、出口戦略としては非常に...
-                      <br />
-                      また、近隣に嫌悪施設が存在する可能性があり、実地調査による確認が...
-                    </p>
-                    
-                    {/* ロック解除のオーバーレイ */}
-                    <div className="absolute inset-0 -top-4 -bottom-4 -left-4 -right-4 bg-gradient-to-b from-transparent via-gray-900/80 to-gray-900 flex flex-col items-center justify-end pb-4">
-                      <p className="text-gray-300 text-sm mb-3 font-bold text-center">
-                        この先には「3つの致命的リスク」が<br/>隠されています
-                      </p>
-                      <button 
-                        onClick={() => {
-                          window.location.href = '#beta';
-                        }}
-                        className="bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 px-8 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 flex items-center gap-2"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        完全版レポートを見る（無料）
-                      </button>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
+            
+            {/* レポート例画像 */}
+            <div className="rounded-lg overflow-hidden shadow-2xl border-4 border-gray-800">
+              <img 
+                src="/images/revealprop/report25112401.png" 
+                alt="リスク判定レポートの実例" 
+                className="w-full h-auto"
+              />
             </div>
-          </Container>
-        </Section>
+          </div>
+        </Container>
+      </Section>
 
       {/* 問題提起（The Problem） */}
       <Section id="problem" className="bg-gray-50 py-16 sm:py-24">
