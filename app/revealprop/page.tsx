@@ -68,6 +68,7 @@ export default function RevealPropLandingPage() {
     purpose: "",
   });
   const [urlInput, setUrlInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: "success" | "error" | null;
@@ -75,6 +76,7 @@ export default function RevealPropLandingPage() {
   }>({ type: null, message: "" });
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
   const [processedUrl, setProcessedUrl] = useState<string>("");
+  const [requestSubmitted, setRequestSubmitted] = useState(false);
   const pageViewSentRef = useRef(false);
 
   // PostHogが初期化されるまで待つヘルパー関数
@@ -253,17 +255,34 @@ export default function RevealPropLandingPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* Hero Section - FV */}
-      <Section id="hero" className="pt-16 sm:pt-24 bg-white">
+      <Section id="hero" className="pt-16 sm:pt-24 bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 text-white">
         <Container>
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight text-gray-900">
-              不動産業者の「大丈夫」を信じるな。<br />物件URLを貼るだけで、隠れたリスクを「値切り材料」に変える。
+          <div className="text-center max-w-5xl mx-auto">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.1] tracking-wide text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_8px_rgba(0,0,0,0.9)]">
+              不動産屋の<span className="text-lime-400 drop-shadow-[0_0_20px_rgba(132,204,22,0.8)] [text-shadow:_0_0_30px_rgba(132,204,22,0.9)]">「大丈夫」</span>を信じるな。<br className="sm:hidden" /><br className="hidden sm:block" />URLを貼るだけで、隠れたリスクを<span className="text-lime-400 drop-shadow-[0_0_20px_rgba(132,204,22,0.8)]">暴き出す</span>。
             </h1>
-            <p className="mt-6 text-base sm:text-lg text-gray-700 leading-relaxed">
+            <p className="mt-8 text-lg sm:text-xl lg:text-2xl text-emerald-50/90 leading-relaxed font-medium">
               表面利回りに騙されない。法的瑕疵・災害リスク・再建築不可をAIが瞬時にスコアリング。<br className="hidden sm:block" />
               あなたの投資を「ギャンブル」から「確実な仕入れ」へ。
             </p>
             
+            {/* αテスト期間中の案内 */}
+            <div className="mt-10 max-w-2xl mx-auto mb-6">
+              <div className="bg-red-50 border-2 border-red-600 rounded-lg p-4 text-center">
+                <p className="text-base font-bold text-red-900 mb-2">
+                  現在、AI自動判定エンジンの「精度検証（αテスト）」期間中です<br />
+                  <span className="text-xl font-black text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.8)]">一日3名まで</span>
+                </p>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  通常はAIが瞬時に判定しますが、現在はデータの精度を100%にするため、<strong>開発者（元オーナー）がAIの判定結果を目視でダブルチェックし、補正した「完全版レポート」</strong>をお届けしています。
+                </p>
+                <p className="text-xs text-gray-600 mt-3">
+                  ※そのため、結果が出るまで数時間〜24時間いただきます。<br />
+                  ※その代わり、AIでは見抜けない「違和感」まで指摘します。
+                </p>
+              </div>
+            </div>
+
             {/* 体験デモフォーム */}
             <div className="mt-10 max-w-2xl mx-auto">
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-lg">
@@ -278,7 +297,17 @@ export default function RevealPropLandingPage() {
                   value={urlInput}
                   onChange={(e) => setUrlInput(e.target.value)}
                   placeholder="https://www.kenbiya.com/pp2/k/shiga/maibara-shi/re_41560789kq/"
-                  className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all font-mono text-sm"
+                  className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all font-mono text-sm mb-4"
+                />
+                <label className="block mb-2 text-gray-900 font-bold text-base text-left">
+                  レポート送信先メールアドレス <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="example@email.com"
+                  className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
                 />
                 <button
                   type="button"
@@ -293,6 +322,14 @@ export default function RevealPropLandingPage() {
                         }
                       });
                       window.location.href = '#beta';
+                      return;
+                    }
+
+                    if (!emailInput.trim()) {
+                      setSubmitStatus({
+                        type: "error",
+                        message: "メールアドレスを入力してください。",
+                      });
                       return;
                     }
 
@@ -312,10 +349,10 @@ export default function RevealPropLandingPage() {
                     try {
                       waitForPostHog(() => {
                         if (window.posthog) {
-                          window.posthog.capture('url_submit', { 
+                          window.posthog.capture('revealprop_request', { 
                             page: 'revealprop', 
                             url_count: urls.length,
-                            has_url: true
+                            email: emailInput,
                           });
                           if (typeof window.posthog.flush === 'function') {
                             window.posthog.flush();
@@ -325,16 +362,15 @@ export default function RevealPropLandingPage() {
 
                       const targetUrl = urls[0];
 
-                      // Next.jsのAPIルート経由でCloud RunのAPIにアクセス（CORS回避）
-                      const apiUrl = '/api/url-score';
-
-                      const response = await fetch(apiUrl, {
+                      // メール送信APIを呼び出し
+                      const response = await fetch('/api/revealprop-request', {
                         method: 'POST',
                         headers: {
                           'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
                           url: targetUrl,
+                          email: emailInput,
                         }),
                       });
 
@@ -343,10 +379,10 @@ export default function RevealPropLandingPage() {
                       if (response.ok) {
                         waitForPostHog(() => {
                           if (window.posthog) {
-                            window.posthog.capture('url_score_success', {
+                            window.posthog.capture('revealprop_request_success', {
                               page: 'revealprop',
-                              url_count: urls.length,
-                              processed_count: 1,
+                              url: targetUrl,
+                              email: emailInput,
                             });
                             if (typeof window.posthog.flush === 'function') {
                               window.posthog.flush();
@@ -354,35 +390,32 @@ export default function RevealPropLandingPage() {
                           }
                         });
 
-                        setScoreResult(data as ScoreResult);
+                        setSubmitStatus({
+                          type: "success",
+                          message: data.message || "リスク判定依頼を受け付けました。数時間〜24時間以内に完全版レポートをお送りします。",
+                        });
+                        
+                        // プレビュー表示用にURLを保存
                         setProcessedUrl(targetUrl);
+                        setRequestSubmitted(true);
                         
-                        if (urls.length > 1) {
-                          setSubmitStatus({
-                            type: "success",
-                            message: `${urls.length}件のURLを入力されましたが、現在は1件ずつの判定のみ対応しています。最初のURLの判定が完了しました。`,
-                          });
-                        } else {
-                          setSubmitStatus({
-                            type: "success",
-                            message: "物件の判定が完了しました。",
-                          });
-                        }
+                        // フォームをリセット
+                        setUrlInput("");
+                        setEmailInput("");
                         
+                        // プレビューセクションにスクロール
                         setTimeout(() => {
-                          const resultSection = document.getElementById('score-result');
-                          if (resultSection) {
-                            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          const previewSection = document.getElementById('report-preview');
+                          if (previewSection) {
+                            previewSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                           }
                         }, 100);
-                        
                       } else {
                         waitForPostHog(() => {
                           if (window.posthog) {
-                            window.posthog.capture('url_score_error', {
+                            window.posthog.capture('revealprop_request_error', {
                               page: 'revealprop',
                               error: data.error || 'APIエラー',
-                              url_count: urls.length,
                             });
                             if (typeof window.posthog.flush === 'function') {
                               window.posthog.flush();
@@ -392,7 +425,7 @@ export default function RevealPropLandingPage() {
 
                         setSubmitStatus({
                           type: "error",
-                          message: data.error || "判定に失敗しました。しばらくしてから再度お試しください。",
+                          message: data.error || "送信に失敗しました。しばらくしてから再度お試しください。",
                         });
                       }
                     } catch (error) {
@@ -400,7 +433,7 @@ export default function RevealPropLandingPage() {
                       
                       waitForPostHog(() => {
                         if (window.posthog) {
-                          window.posthog.capture('url_score_error', {
+                          window.posthog.capture('revealprop_request_error', {
                             page: 'revealprop',
                             error: 'ネットワークエラー',
                             error_message: error instanceof Error ? error.message : 'Unknown error',
@@ -424,11 +457,11 @@ export default function RevealPropLandingPage() {
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="h-5 w-5 animate-spin" /> 解析中...
+                      <Loader2 className="h-5 w-5 animate-spin" /> 送信中...
                     </>
                   ) : (
                     <>
-                      この物件の「リスク要因」を抽出する
+                      無料でリスク判定を依頼する
                       <ArrowRight className="h-5 w-5" />
                     </>
                   )}
@@ -455,169 +488,99 @@ export default function RevealPropLandingPage() {
         </Container>
       </Section>
 
-      {/* 結果表示セクション */}
-      {scoreResult && (
-        <Section id="score-result" className="bg-white py-16 border-t-4 border-red-600">
-          <Container>
-            <div className="max-w-4xl mx-auto">
-              <div className="mb-8 text-center">
-                <h2 className="text-3xl sm:text-4xl font-black leading-tight text-gray-900 mb-4">
-                  リスク要因抽出結果
-                </h2>
-                {processedUrl && (
-                  <p className="text-sm text-gray-600 break-all">
-                    <LinkIcon className="h-4 w-4 inline mr-1" />
-                    {processedUrl}
-                  </p>
-                )}
-              </div>
+      {/* レポートプレビューセクション */}
+      <Section id="report-preview" className="bg-gray-100 py-16 border-t-4 border-red-600">
+        <Container>
+          <div className="max-w-2xl mx-auto">
+            <div className="mb-8 text-center">
+              <h2 className="text-3xl sm:text-4xl font-black leading-tight text-gray-900 mb-4">
+                レポートプレビュー
+              </h2>
+              <p className="text-sm text-gray-600">
+                完全版レポートは数時間〜24時間以内にメールでお送りします
+              </p>
+            </div>
               
-              {/* リスクスコア表示 */}
-              <Card className="mb-6 border-2 border-red-600 bg-white">
-                <div className="text-center mb-6">
-                  <div className="text-6xl font-black mb-4" style={{
-                    color: scoreResult.risk_score >= 80 ? '#dc2626' : 
-                           scoreResult.risk_score >= 60 ? '#ea580c' : 
-                           '#059669'
-                  }}>
-                    {scoreResult.risk_score}
-                  </div>
-                  <div className="text-2xl font-black text-gray-900 mb-4">リスクスコア</div>
-                  <div className={`inline-block px-6 py-3 rounded-lg text-base font-bold border-2 ${
-                    scoreResult.risk_score >= 80 ? 'bg-red-50 border-red-600 text-red-900' : 
-                    scoreResult.risk_score >= 60 ? 'bg-orange-50 border-orange-600 text-orange-900' : 
-                    'bg-green-50 border-green-600 text-green-900'
-                  }`}>
-                    {scoreResult.risk_score >= 80 ? 'リスクスコア高' : 
-                     scoreResult.risk_score >= 60 ? 'リスクスコア中' : 
-                     'リスクスコア低'}
-                  </div>
-                </div>
+              {/* レポートプレビューカード */}
+              <div className="max-w-md mx-auto bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-2xl">
                 
-                <div className="grid grid-cols-2 gap-6 pt-6 border-t-2 border-gray-300">
-                  <div className="text-center">
-                    <div className="text-xs text-gray-600 mb-2 font-medium">想定修繕費（中央値）</div>
-                    <div className="text-2xl font-black text-gray-900">
-                      ¥{scoreResult.p50_cost.toLocaleString()}
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xs text-gray-600 mb-2 font-medium">想定修繕費（90%tile）</div>
-                    <div className="text-2xl font-black text-gray-900">
-                      ¥{scoreResult.p90_cost.toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              {/* 値引き材料（リスク項目） */}
-              <Card className="border-2 border-gray-300 bg-white">
-                <h3 className="text-2xl font-black mb-6 text-gray-900 border-b-4 border-red-600 pb-3">
-                  値引き材料（発見されたリスク）
-                </h3>
-                <p className="text-sm text-gray-700 mb-4 font-medium">
-                  これらのリスクを指摘することで、値引き交渉が可能になります。リスクスコアが高いほど、より強く値引きを主張できます。
-                </p>
-                <div className="space-y-4">
-                  {scoreResult.factors.age_score && (
-                    <div className="p-5 bg-gray-50 rounded-lg border-l-4 border-red-600">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-bold text-gray-900 text-lg">築年数リスク</span>
-                        <span className="text-xl font-black text-red-600">{scoreResult.factors.age_score.value}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 leading-relaxed">{scoreResult.factors.age_score.note}</p>
-                    </div>
-                  )}
-                  
-                  {scoreResult.factors.structure_score && (
-                    <div className="p-5 bg-gray-50 rounded-lg border-l-4 border-red-600">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-bold text-gray-900 text-lg">構造リスク</span>
-                        <span className="text-xl font-black text-red-600">{scoreResult.factors.structure_score.value}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 leading-relaxed">{scoreResult.factors.structure_score.note}</p>
-                    </div>
-                  )}
-                  
-                  {scoreResult.factors.reform_adjustment && (
-                    <div className="p-5 bg-gray-50 rounded-lg border-l-4 border-red-600">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-bold text-gray-900 text-lg">リフォーム状況</span>
-                        <span className="text-xl font-black text-red-600">{scoreResult.factors.reform_adjustment.value}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 leading-relaxed">{scoreResult.factors.reform_adjustment.note}</p>
-                    </div>
-                  )}
-                  
-                  {scoreResult.factors.equipment_adjustment && (
-                    <div className="p-5 bg-gray-50 rounded-lg border-l-4 border-red-600">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-bold text-gray-900 text-lg">設備リスク</span>
-                        <span className="text-xl font-black text-red-600">{scoreResult.factors.equipment_adjustment.value}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 leading-relaxed">{scoreResult.factors.equipment_adjustment.note}</p>
-                    </div>
-                  )}
-                  
-                  {scoreResult.factors.region_score && (
-                    <div className="p-5 bg-gray-50 rounded-lg border-l-4 border-red-600">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-bold text-gray-900 text-lg">地域リスク</span>
-                        <span className="text-xl font-black text-red-600">{scoreResult.factors.region_score.value}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 leading-relaxed">{scoreResult.factors.region_score.note}</p>
-                    </div>
-                  )}
-                  
-                  {scoreResult.factors.keyword_score && (
-                    <div className="p-5 bg-gray-50 rounded-lg border-l-4 border-red-600">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-bold text-gray-900 text-lg">危険キーワード検出</span>
-                        <span className="text-xl font-black text-red-600">{scoreResult.factors.keyword_score.value}</span>
-                      </div>
-                      {scoreResult.factors.keyword_score.hits !== undefined && (
-                        <p className="text-sm text-gray-700 leading-relaxed">
-                          検出数: {scoreResult.factors.keyword_score.hits}件
-                          {scoreResult.factors.keyword_score.keywords && scoreResult.factors.keyword_score.keywords.length > 0 && (
-                            <span className="ml-2 font-bold">（{scoreResult.factors.keyword_score.keywords.join('、')}）</span>
-                          )}
+                {/* ヘッダー：結論は見せる */}
+                <div className="p-6 border-b border-gray-800 bg-gradient-to-r from-gray-900 to-gray-800">
+                  <h3 className="text-gray-400 text-xs uppercase tracking-wider font-bold mb-1">
+                    RISK ANALYSIS REPORT
+                  </h3>
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <h2 className="text-white text-xl font-bold">
+                        {processedUrl ? '物件情報' : '三浦市三崎町 戸建'}
+                      </h2>
+                      {processedUrl ? (
+                        <p className="text-gray-500 text-sm mt-1 break-all">
+                          {processedUrl.length > 40 ? processedUrl.substring(0, 40) + '...' : processedUrl}
                         </p>
+                      ) : (
+                        <p className="text-gray-500 text-sm mt-1">サンプルレポート</p>
                       )}
+                      <p className="text-gray-500 text-sm mt-1">解析完了: {new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })}</p>
                     </div>
-                  )}
-                  
-                  {scoreResult.factors.area_adjustment && (
-                    <div className="p-5 bg-gray-50 rounded-lg border-l-4 border-red-600">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-bold text-gray-900 text-lg">面積リスク</span>
-                        <span className="text-xl font-black text-red-600">{scoreResult.factors.area_adjustment.value}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 leading-relaxed">{scoreResult.factors.area_adjustment.note}</p>
+                    <div className="text-right">
+                      <span className="block text-xs text-red-400 font-bold mb-1">総合判定</span>
+                      <span className="text-4xl font-black text-red-500 tracking-tighter">
+                        C<span className="text-lg">-</span>
+                      </span>
                     </div>
-                  )}
-                  
-                  <div className="p-6 bg-red-50 rounded-lg border-4 border-red-600 mt-6">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-black text-gray-900 text-xl">総合リスクスコア</span>
-                      <span className="text-4xl font-black text-red-600">{scoreResult.factors.final_risk_score}</span>
-                    </div>
-                    <p className="text-sm text-gray-700 mt-3 font-bold">
-                      上記のリスクを指摘することで、「このリスクがあるから、値引きしてください」と交渉できます。
-                    </p>
-                    <p className="text-xs text-gray-600 mt-2">
-                      リスクスコアが高いほど、値引き交渉の材料として強く主張できます。
-                    </p>
                   </div>
                 </div>
-                
-                <div className="mt-6 pt-4 border-t border-gray-300 text-xs text-gray-500 text-center">
-                  バージョン: {scoreResult.version} | 物件ID: {scoreResult.property_id}
+
+                {/* ボディ：途中から隠す */}
+                <div className="relative p-6 space-y-6">
+                  
+                  {/* 項目A：最初のリスク（見える） */}
+                  <div>
+                    <div className="flex items-center mb-2">
+                      <span className="w-2 h-2 rounded-full bg-red-500 mr-2 animate-pulse"></span>
+                      <h4 className="text-gray-200 font-bold">法的リスク：致命的</h4>
+                    </div>
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      当該物件は前面道路の種別が不明確であり、建築基準法上の道路要件を満たしていない可能性が極めて高いです。これにより再建築不可のリスクがあり、将来的に建替えができない可能性があります。
+                    </p>
+                  </div>
+
+                  {/* 項目B：ここからボカす */}
+                  <div className="relative">
+                    <div className="flex items-center mb-2">
+                      <span className="w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
+                      <h4 className="text-gray-200 font-bold">流動性リスク：警告</h4>
+                    </div>
+                    {/* ぼかされたテキスト */}
+                    <p className="text-gray-500 text-sm leading-relaxed blur-[2px] select-none">
+                      周辺の成約事例と比較しても、この価格帯での売却期間は平均して3年以上かかっており、出口戦略としては非常に...
+                      <br />
+                      また、近隣に嫌悪施設が存在する可能性があり、実地調査による確認が...
+                    </p>
+                    
+                    {/* ロック解除のオーバーレイ */}
+                    <div className="absolute inset-0 -top-4 -bottom-4 -left-4 -right-4 bg-gradient-to-b from-transparent via-gray-900/80 to-gray-900 flex flex-col items-center justify-end pb-4">
+                      <p className="text-gray-300 text-sm mb-3 font-bold text-center">
+                        この先には「3つの致命的リスク」が<br/>隠されています
+                      </p>
+                      <button 
+                        onClick={() => {
+                          window.location.href = '#beta';
+                        }}
+                        className="bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 px-8 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        完全版レポートを見る（無料）
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
-              </Card>
+              </div>
             </div>
           </Container>
         </Section>
-      )}
 
       {/* 問題提起（The Problem） */}
       <Section id="problem" className="bg-gray-50 py-16 sm:py-24">
@@ -679,9 +642,9 @@ export default function RevealPropLandingPage() {
               </div>
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6 text-center">
                 <div className="text-4xl font-black text-red-600 mb-4">3</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">指値の根拠提示</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">リスクの詳細分析</h3>
                 <p className="text-sm text-gray-600">
-                  「このリスクがあるから、あと200万下げられる」という交渉カードを提供。
+                  災害、法令、市場価値など、人間が見落とすリスクを数値化して可視化。
                 </p>
               </div>
             </div>
@@ -704,9 +667,12 @@ export default function RevealPropLandingPage() {
                 </p>
               </div>
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
-                <h3 className="text-lg font-bold text-red-600 mb-3">【攻撃】</h3>
+                <h3 className="text-lg font-bold text-red-600 mb-3">【情報】</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  リスクを指摘し、強気な指値（値引き）を通す。
+                  リスク要因を数値化し、購入判断の根拠にする。
+                </p>
+                <p className="text-xs text-gray-500 mt-2">
+                  （値引き交渉の材料としても活用可能）
                 </p>
               </div>
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
