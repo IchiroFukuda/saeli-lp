@@ -289,9 +289,9 @@ export default function RevealPropLandingPage() {
                 <label className="block mb-3 text-gray-900 font-bold text-lg text-left">
                   物件情報のURLをここにペースト
                 </label>
-                <p className="text-xs text-gray-600 mb-4 text-left">
+                {/* <p className="text-xs text-gray-600 mb-4 text-left">
                   ※健美家（kenbiya.com）の物件URLに対応
-                </p>
+                </p> */}
                 <input
                   type="text"
                   value={urlInput}
