@@ -504,7 +504,7 @@ export default function RevealPropLandingPage() {
             {/* レポート例画像 */}
             <div className="rounded-lg overflow-hidden shadow-2xl border-4 border-gray-800">
               <img 
-                src="/images/revealprop/report25112401.png" 
+                src="/images/revealprop/report25112402.png" 
                 alt="リスク判定レポートの実例" 
                 className="w-full h-auto"
               />
