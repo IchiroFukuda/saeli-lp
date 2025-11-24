@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">
-          RevealProp αテスト リスク判定依頼
+          RevealProp αテスト 値切りレポート作成依頼
         </h2>
         <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin-top: 20px;">
           <p style="margin: 10px 0;"><strong>物件URL:</strong></p>
@@ -56,14 +56,14 @@ export async function POST(request: NextRequest) {
           <p style="margin: 10px 0;">${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}</p>
         </div>
         <p style="margin-top: 20px; color: #666; font-size: 14px;">
-          このメールは、RevealPropのαテスト期間中のリスク判定依頼フォームから送信されました。<br>
-          開発者がAIの判定結果を目視でダブルチェックし、補正した完全版レポートを${email}に送信してください。
+          このメールは、RevealPropのαテスト期間中の値切りレポート作成依頼フォームから送信されました。<br>
+          開発者がAIの判定結果を目視でダブルチェックし、補正した完全版値切りレポートを${email}に送信してください。
         </p>
       </div>
     `;
 
     const textContent = `
-RevealProp αテスト リスク判定依頼
+RevealProp αテスト 値切りレポート作成依頼
 
 物件URL:
 ${url}
@@ -75,8 +75,8 @@ ${email}
 ${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}
 
 ---
-このメールは、RevealPropのαテスト期間中のリスク判定依頼フォームから送信されました。
-開発者がAIの判定結果を目視でダブルチェックし、補正した完全版レポートを${email}に送信してください。
+このメールは、RevealPropのαテスト期間中の値切りレポート作成依頼フォームから送信されました。
+開発者がAIの判定結果を目視でダブルチェックし、補正した完全版値切りレポートを${email}に送信してください。
     `.trim();
 
     // SendGridでメール送信
@@ -84,10 +84,10 @@ ${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}
       to: recipientEmail,
       from: {
         email: fromEmail,
-        name: 'RevealProp リスク判定依頼',
+        name: 'RevealProp 値切りレポート作成依頼',
       },
       replyTo: email,
-      subject: `【RevealProp αテスト】リスク判定依頼: ${url.substring(0, 50)}...`,
+      subject: `【RevealProp αテスト】値切りレポート作成依頼: ${url.substring(0, 50)}...`,
       text: textContent,
       html: htmlContent,
     };
@@ -102,10 +102,10 @@ ${new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}
     });
 
     return NextResponse.json(
-      { 
-        success: true,
-        message: 'リスク判定依頼を受け付けました。数時間〜24時間以内に完全版レポートをお送りします。' 
-      },
+        { 
+          success: true,
+          message: '値切りレポート作成依頼を受け付けました。数時間〜24時間以内に完全版レポートをお送りします。' 
+        },
       { status: 200 }
     );
   } catch (error: any) {

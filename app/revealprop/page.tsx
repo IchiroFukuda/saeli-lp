@@ -259,11 +259,11 @@ export default function RevealPropLandingPage() {
         <Container>
           <div className="text-center max-w-5xl mx-auto">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.1] tracking-wide text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_8px_rgba(0,0,0,0.9)]">
-              不動産屋の<span className="text-lime-400 drop-shadow-[0_0_20px_rgba(132,204,22,0.8)] [text-shadow:_0_0_30px_rgba(132,204,22,0.9)]">「大丈夫」</span>を信じるな。<br className="sm:hidden" /><br className="hidden sm:block" />URLを貼るだけで、隠れたリスクを<span className="text-lime-400 drop-shadow-[0_0_20px_rgba(132,204,22,0.8)]">暴き出す</span>。
+              不動産投資で<span className="text-lime-400 drop-shadow-[0_0_20px_rgba(132,204,22,0.8)] [text-shadow:_0_0_30px_rgba(132,204,22,0.9)]">値引き交渉</span>ができない？<br className="sm:hidden" /><br className="hidden sm:block" />URLを貼るだけで、<span className="text-lime-400 drop-shadow-[0_0_20px_rgba(132,204,22,0.8)]">値切りレポート</span>が完成。
             </h1>
             <p className="mt-8 text-lg sm:text-xl lg:text-2xl text-emerald-50/90 leading-relaxed font-medium">
-              表面利回りに騙されない。法的瑕疵・災害リスク・再建築不可をAIが瞬時にスコアリング。<br className="hidden sm:block" />
-              あなたの投資を「ギャンブル」から「確実な仕入れ」へ。
+              法的瑕疵・災害リスク・再建築不可の可能性をAIが瞬時に分析。<br className="hidden sm:block" />
+              不動産屋に「ここ、リスクあるんでしょ？」と言える根拠を、あなたに。
             </p>
             
             {/* αテスト期間中の案内 */}
@@ -274,11 +274,11 @@ export default function RevealPropLandingPage() {
                   <span className="text-xl font-black text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.8)]">一日3名まで</span>
                 </p>
                 <p className="text-sm text-gray-700 leading-relaxed">
-                  通常はAIが瞬時に判定しますが、現在はデータの精度を100%にするため、<strong>開発者（元オーナー）がAIの判定結果を目視でダブルチェックし、補正した「完全版レポート」</strong>をお届けしています。
+                  通常はAIが瞬時に判定しますが、現在はデータの精度を100%にするため、<strong>開発者（元オーナー）がAIの判定結果を目視でダブルチェックし、補正した「完全版値切りレポート」</strong>をお届けしています。
                 </p>
                 <p className="text-xs text-gray-600 mt-3">
                   ※そのため、結果が出るまで数時間〜24時間いただきます。<br />
-                  ※その代わり、AIでは見抜けない「違和感」まで指摘します。
+                  ※その代わり、AIでは見抜けない「違和感」まで指摘し、値引き交渉で使える具体的な根拠を提供します。
                 </p>
               </div>
             </div>
@@ -287,7 +287,7 @@ export default function RevealPropLandingPage() {
             <div className="mt-10 max-w-2xl mx-auto">
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-lg">
                 <label className="block mb-3 text-gray-900 font-bold text-lg text-left">
-                  物件情報のURLをここにペースト
+                  値切りレポートが欲しい物件のURLをここにペースト
                 </label>
                 {/* <p className="text-xs text-gray-600 mb-4 text-left">
                   ※健美家（kenbiya.com）の物件URLに対応
@@ -300,7 +300,7 @@ export default function RevealPropLandingPage() {
                   className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all font-mono text-sm mb-4"
                 />
                 <label className="block mb-2 text-gray-900 font-bold text-base text-left">
-                  レポート送信先メールアドレス <span className="text-red-600">*</span>
+                  値切りレポート送信先メールアドレス <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="email"
@@ -392,7 +392,7 @@ export default function RevealPropLandingPage() {
 
                         setSubmitStatus({
                           type: "success",
-                          message: data.message || "リスク判定依頼を受け付けました。数時間〜24時間以内に完全版レポートをお送りします。",
+                          message: data.message || "値切りレポート作成依頼を受け付けました。数時間〜24時間以内に完全版レポートをお送りします。",
                         });
                         
                         // プレビュー表示用にURLを保存
@@ -461,7 +461,7 @@ export default function RevealPropLandingPage() {
                     </>
                   ) : (
                     <>
-                      無料でリスク判定を依頼する
+                      無料で値切りレポートを作成する
                       <ArrowRight className="h-5 w-5" />
                     </>
                   )}
@@ -505,7 +505,7 @@ export default function RevealPropLandingPage() {
             <div className="rounded-lg overflow-hidden shadow-2xl border-4 border-gray-800">
               <img 
                 src="/images/revealprop/report25112402.png" 
-                alt="リスク判定レポートの実例" 
+                alt="値切りレポートの実例" 
                 className="w-full h-auto"
               />
             </div>
@@ -518,31 +518,31 @@ export default function RevealPropLandingPage() {
         <Container>
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 text-center mb-8">
-              なぜ、安くて利回りの良い物件ほど、購入後に「地獄」を見るのか？
+              値引き交渉で「根拠」がなくて、言い負かされていませんか？
             </h2>
             <div className="space-y-6 mt-10">
               <div className="bg-white border-l-4 border-red-600 p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">業者はリスクを隠す</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">「ここ、安くできませんか？」と言っても...</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  「DIYでなんとかなりますよ」という言葉の裏には、構造的な欠陥が隠れている。
+                  「この価格で十分お得ですよ」「他でも同じ価格です」と返されるだけで、具体的な根拠を持てない。
                 </p>
               </div>
               <div className="bg-white border-l-4 border-red-600 p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">見えない法的制限</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">リスクを知りたいけど、調べ方がわからない</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  接道義務、セットバック、用途地域... 素人が気づかない「再建築不可」の罠。
+                  再建築不可の可能性、災害リスク、法的瑕疵... 専門家に頼むには時間とお金がかかりすぎる。
                 </p>
               </div>
               <div className="bg-white border-l-4 border-red-600 p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">出口のない恐怖</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">値引きできずに、定価で買うしかない</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  買ったはいいが、売ることも貸すこともできない「負動産」化するリスク。
+                  交渉の材料がないから、結局提示価格のまま購入。後で「もっと安くできたかも...」と後悔する。
                 </p>
               </div>
             </div>
             <div className="mt-10 text-center">
               <p className="text-lg font-bold text-gray-900">
-                目利きの甘い投資家が、業者の在庫処分に使われています。
+                値引き交渉で勝つには、「具体的な根拠」が必要です。
               </p>
             </div>
           </div>
@@ -554,28 +554,28 @@ export default function RevealPropLandingPage() {
         <Container>
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 text-center mb-8">
-              AIが、その物件を「丸裸」にします。
+              AIが、値引き交渉の「武器」をあなたに提供します。
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6 text-center">
                 <div className="text-4xl font-black text-red-600 mb-4">1</div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">URLを貼るだけ</h3>
                 <p className="text-sm text-gray-600">
-                  面倒な住所入力や謄本確認は不要。3秒で解析。
+                  面倒な住所入力や謄本確認は不要。3秒で解析開始。
                 </p>
               </div>
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6 text-center">
                 <div className="text-4xl font-black text-red-600 mb-4">2</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">リスクの可視化</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">リスクを分析</h3>
                 <p className="text-sm text-gray-600">
-                  災害、法令、市場価値など、人間が見落とすリスクを数値化。
+                  法的瑕疵・災害リスク・再建築不可の可能性を数値化。
                 </p>
               </div>
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6 text-center">
                 <div className="text-4xl font-black text-red-600 mb-4">3</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">リスクの詳細分析</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">値切りレポート完成</h3>
                 <p className="text-sm text-gray-600">
-                  災害、法令、市場価値など、人間が見落とすリスクを数値化して可視化。
+                  不動産屋に提示できる、具体的な根拠が揃ったレポートをメールでお届け。
                 </p>
               </div>
             </div>
@@ -588,28 +588,25 @@ export default function RevealPropLandingPage() {
         <Container>
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 text-center mb-8">
-              もう、ババを引く恐怖におびえる必要はありません。
+              値引き交渉で、「ここ、リスクあるんでしょ？」と言える根拠を。
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
-                <h3 className="text-lg font-bold text-red-600 mb-3">【防御】</h3>
+                <h3 className="text-lg font-bold text-red-600 mb-3">【値引き交渉】</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  買ってはいけない「即死物件」を回避する。
+                  不動産屋に提示できる、具体的なリスク要因をレポート化。値引きの根拠として使える。
                 </p>
               </div>
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
-                <h3 className="text-lg font-bold text-red-600 mb-3">【情報】</h3>
+                <h3 className="text-lg font-bold text-red-600 mb-3">【購入判断】</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  リスク要因を数値化し、購入判断の根拠にする。
-                </p>
-                <p className="text-xs text-gray-500 mt-2">
-                  （値引き交渉の材料としても活用可能）
+                  リスクを数値化して、本当にその価格で買うべきか判断できる。
                 </p>
               </div>
               <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
-                <h3 className="text-lg font-bold text-red-600 mb-3">【効率】</h3>
+                <h3 className="text-lg font-bold text-red-600 mb-3">【時間短縮】</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  1件1時間の調査時間を、3秒に短縮。
+                  専門家に依頼する時間もお金も不要。3秒で値切りレポートが完成。
                 </p>
               </div>
             </div>
@@ -622,18 +619,18 @@ export default function RevealPropLandingPage() {
         <Container>
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 text-center mb-8">
-              私自身が、無知ゆえに「負動産」を買わされた被害者です。
+              私自身が、値引き交渉で負けて定価で買わされた経験があります。
             </h2>
             <div className="bg-gray-50 border-2 border-gray-300 rounded-lg p-8 mt-10">
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
-                  <strong className="text-gray-900">秋田の戸建てを売却しようとして絶望しました。</strong>再建築不可、修繕地獄、需要ゼロ。知識さえあれば、手を出さなかったのに...。
+                  <strong className="text-gray-900">「もっと安くできませんか？」と聞いただけでは、何も変わりませんでした。</strong>根拠がないと、不動産屋に言い負かされるだけ。結局、提示価格のまま購入した経験があります。
                 </p>
                 <p>
-                  同じ悲劇を繰り返さないために、そして「負動産」を市場から浄化するために、私はエンジニアとしてこのツールを開発しました。
+                  同じ失敗を繰り返さないために、そして値引き交渉で勝つための「武器」を作りたいと思い、私はエンジニアとしてこのツールを開発しました。
                 </p>
                 <p className="font-bold text-gray-900">
-                  これは単なるツールではありません。不動産業界の情報の非対称性に立ち向かうための武器です。
+                  これは単なるツールではありません。値引き交渉で具体的な根拠を持てるようにするための武器です。
                 </p>
               </div>
               <div className="mt-8 pt-6 border-t border-gray-300">
@@ -650,7 +647,7 @@ export default function RevealPropLandingPage() {
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-black leading-tight text-gray-900 mb-6">
-                まずは無料で、気になっている物件を「透視」してください。
+                まずは無料で、値切りレポートを作成してください。
               </h2>
               <div className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 mb-8 text-left">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">オファー内容</h3>
@@ -666,8 +663,8 @@ export default function RevealPropLandingPage() {
                 </ul>
               </div>
               <p className="text-lg text-gray-700 leading-relaxed mb-8 font-medium">
-                良い物件は一瞬で消えます。しかし、悪い物件をつかめば一生の後悔です。<br className="hidden sm:block" />
-                契約書に判子を押す前に、必ず一度チェックしてください。
+                値引き交渉で勝つには、具体的な根拠が必要です。<br className="hidden sm:block" />
+                契約書に判子を押す前に、値切りレポートで交渉の材料を手に入れてください。
               </p>
             </div>
             <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-lg">
@@ -736,7 +733,7 @@ export default function RevealPropLandingPage() {
                       </>
                     ) : (
                       <>
-                        無料で今すぐリスク診断を始める
+                        無料で今すぐ値切りレポートを作成する
                         <ArrowRight className="h-5 w-5" />
                       </>
                     )}
