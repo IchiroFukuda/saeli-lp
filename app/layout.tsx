@@ -7,12 +7,12 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   metadataBase: new URL('https://saeli.org'),
   title: 'SAELI',
-  description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
-  keywords: ['SAELI', 'LLM', 'セキュリティ', 'プロンプト注入', '診断', 'AI'],
+  description: '合同会社Saeli - 業務効率化ツールの開発・提供',
+  keywords: ['SAELI', '業務効率化', 'システム開発', 'ツール開発'],
   authors: [{ name: 'SAELI' }],
   openGraph: {
     title: 'SAELI',
-    description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
+    description: '合同会社Saeli - 業務効率化ツールの開発・提供',
     url: 'https://saeli.org',
     siteName: 'SAELI',
     locale: 'ja_JP',
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'SAELI',
-    description: 'プロンプト注入・情報漏洩を自動診断。5分で安全性を可視化。β登録で無料体験。',
+    description: '合同会社Saeli - 業務効率化ツールの開発・提供',
   },
   robots: {
     index: true,
