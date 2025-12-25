@@ -515,7 +515,7 @@ export default function RevealPropProLandingPage() {
         <Container>
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 text-center mb-8">
-              その中古物件、本当は「売れていた」のではありませんか？
+              そのボロ物件、本当は「売れていた」のではありませんか？
             </h2>
             <p className="text-lg text-gray-700 leading-relaxed text-center mb-10">
               内見までは行くのに、なぜか決まらない。その最大の原因は「顧客の不安」です。
