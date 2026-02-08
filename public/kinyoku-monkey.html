@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>禁欲モンキー - オス度を上げる禁欲カウンター</title>
+    <meta name="description" content="禁欲モンキーは、あなたのストリークを記録し、オス度を上げるための究極の禁欲カウンターアプリです。">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-black: #000000;
+            --bg-dark: #0a0a0a;
+            --text-white: #ffffff;
+            --text-gray: #a0a0a0;
+            --accent-red: #e63946;
+            --accent-red-dark: #c1121f;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-black);
+            color: var(--text-white);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(230, 57, 70, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-white);
+        }
+
+        .cta-button {
+            padding: 12px 30px;
+            background: var(--accent-red);
+            border: none;
+            border-radius: 30px;
+            color: var(--text-white);
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4);
+            background: var(--accent-red-dark);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 5% 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(230, 57, 70, 0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 8vw, 90px);
+            font-weight: 900;
+            margin-bottom: 30px;
+            line-height: 1.1;
+            color: var(--text-white);
+            animation: slideUp 1s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 3vw, 28px);
+            color: var(--text-gray);
+            margin-bottom: 50px;
+            animation: slideUp 1s ease-out 0.2s backwards;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideUp 1s ease-out 0.4s backwards;
+        }
+
+        .app-badge {
+            height: 60px;
+            transition: transform 0.3s ease;
+        }
+
+        .app-badge:hover {
+            transform: scale(1.05);
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 100px 5%;
+            background: linear-gradient(180deg, var(--bg-black) 0%, var(--bg-dark) 50%, var(--bg-black) 100%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px;
+            border: 1px solid rgba(230, 57, 70, 0.2);
+            border-radius: 20px;
+            background: rgba(10, 10, 10, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            border-color: var(--accent-red);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(230, 57, 70, 0.3);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--accent-red);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            color: var(--text-gray);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(36px, 6vw, 60px);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 80px;
+            color: var(--text-white);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            padding: 50px 40px;
+            background: rgba(230, 57, 70, 0.05);
+            border: 1px solid rgba(230, 57, 70, 0.2);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-red);
+            box-shadow: 0 20px 40px rgba(230, 57, 70, 0.3);
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--accent-red);
+        }
+
+        .feature-description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-gray);
+        }
+
+        /* Motivation Section */
+        .motivation {
+            padding: 150px 5%;
+            background: rgba(230, 57, 70, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .motivation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(230, 57, 70, 0.15), transparent);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .motivation-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .motivation h2 {
+            font-size: clamp(36px, 6vw, 60px);
+            font-weight: 900;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .motivation p {
+            font-size: clamp(18px, 3vw, 24px);
+            line-height: 1.8;
+            color: var(--text-gray);
+            margin-bottom: 50px;
+        }
+
+        /* CTA Section */
+        .final-cta {
+            padding: 150px 5%;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: clamp(36px, 6vw, 60px);
+            font-weight: 900;
+            margin-bottom: 30px;
+            color: var(--text-white);
+        }
+
+        .final-cta p {
+            font-size: clamp(18px, 3vw, 24px);
+            color: var(--text-gray);
+            margin-bottom: 50px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 50px 5%;
+            border-top: 1px solid rgba(230, 57, 70, 0.1);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-red);
+        }
+
+        .copyright {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 2.0s ease, transform 2.0s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Monkey Background Image */
+        .monkey-background {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            max-width: 1200px;
+            height: auto;
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .monkey-background {
+                width: 100vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Monkey Background -->
+    <img src="/images/monkey.png" alt="" class="monkey-background" id="monkeyBg">
+    <!-- Header -->
+    <header>
+        <div class="logo">禁欲モンキー</div>
+        <a href="https://apps.apple.com/us/app/%E7%A6%81%E6%AC%B2%E3%83%A2%E3%83%B3%E3%82%AD%E3%83%BC/id1450627777" target="_blank" class="cta-button">ダウンロード</a>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>オス度を上げろ。</h1>
+            <p class="hero-subtitle">
+                究極の禁欲カウンターアプリ。<br>
+                禁欲日数を記録し、本来の自分を取り戻す。
+            </p>
+            <div class="hero-cta" id="download">
+                <a href="https://apps.apple.com/us/app/%E7%A6%81%E6%AC%B2%E3%83%A2%E3%83%B3%E3%82%AD%E3%83%BC/id1450627777" target="_blank">
+                    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="App Storeからダウンロード" class="app-badge">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats fade-in">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">22K+</div>
+                <div class="stat-label">ダウンロード数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4.6★</div>
+                <div class="stat-label">App Store評価</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">目標達成率</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2 class="section-title fade-in">機能</h2>
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <h3 class="feature-title">リアルタイムカウント</h3>
+                <p class="feature-description">
+                    禁欲開始からの日数、時間、分、秒をリアルタイムで表示。あなたの進化を可視化します。
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <h3 class="feature-title">目標設定</h3>
+                <p class="feature-description">
+                    7日、30日、90日など、自分に合った目標を設定。達成するたびにオス度がレベルアップ。
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <h3 class="feature-title">オス度メーター</h3>
+                <p class="feature-description">
+                    禁欲日数に応じて上昇するオス度メーター。オナ猿からボス猿へ、進化を実感できます。
+                </p>
+            </div>
+            <div class="feature-card fade-in">
+                <h3 class="feature-title">日記機能</h3>
+                <p class="feature-description">
+                    毎日の気づきや変化を記録。身体的・精神的な変化を振り返ることができます。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Motivation Section -->
+    <section class="motivation">
+        <div class="motivation-content fade-in">
+            <h2>自分を超えろ。<br>本来の力を取り戻せ。</h2>
+            <p>
+                禁欲は単なる我慢ではない。<br>
+                集中力、自信、エネルギー。<br>
+                すべてが研ぎ澄まされていく。<br><br>
+                禁欲モンキーは、あなたの進化をサポートします。
+            </p>
+            <a href="https://apps.apple.com/us/app/%E7%A6%81%E6%AC%B2%E3%83%A2%E3%83%B3%E3%82%AD%E3%83%BC/id1450627777" target="_blank" class="cta-button">今すぐ始める</a>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta fade-in">
+        <h2>無料でダウンロード</h2>
+        <p>今日から、新しい自分へ。</p>
+        <a href="https://apps.apple.com/jp/app/your-app-id" target="_blank">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="App Storeからダウンロード" class="app-badge">
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="privacy-kinyoku.html">プライバシーポリシー</a>
+            <a href="tokusho-kinyoku.html">特定商取引法に基づく表記</a>
+            <a href="terms.html">利用規約</a>
+        </div>
+        <p class="copyright">© 2026 禁欲モンキー. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Monkey background - 最初から表示
+        const monkeyBg = document.getElementById('monkeyBg');
+        
+        // デバッグ: 画像の読み込み状態を確認
+        monkeyBg.addEventListener('load', () => {
+            console.log('猿の画像が正常に読み込まれました');
+        });
+        
+        monkeyBg.addEventListener('error', () => {
+            console.error('猿の画像の読み込みに失敗しました:', monkeyBg.src);
+        });
+    </script>
+</body>
+</html>
