@@ -15,6 +15,10 @@
     {
       "source": "/terms",
       "destination": "/terms.html"
+    },
+    {
+      "source": "/privacy-approach",
+      "destination": "/privacy-approach.html"
     }
   ]
 }
