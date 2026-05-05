@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight, Heart, Mail, RotateCcw } from "lucide-react";
 import Footer from "@/components/Footer";
+import PetLossArticle, { PetLossStructuredData } from "./PetLossArticle";
 
 declare global {
   interface Window {
@@ -350,6 +351,34 @@ export default function PetLossDiagnosis() {
         </div>
       </section>
 
+      {/* 長文コンテンツ（SEO） */}
+      <PetLossArticle />
+
+      {/* 最終CTA */}
+      <section className="bg-gradient-to-br from-orange-400 to-orange-500 py-16 sm:py-20 text-white">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 text-center">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 leading-relaxed">
+            あの子との会話を、もう一度。
+          </h2>
+          <p className="text-sm sm:text-base opacity-90 mb-8 leading-relaxed">
+            天国のあの子から、毎日お手紙とイラストが届くアプリ「毎日あの子」。
+            <br />
+            あなたが返事を書くと、会話がずっと続いていきます。
+          </p>
+          <a
+            href={APP_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={handleAppClick}
+            className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform"
+          >
+            アプリをダウンロード
+            <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+      </section>
+
+      <PetLossStructuredData />
       <Footer />
     </div>
   );
