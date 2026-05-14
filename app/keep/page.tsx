@@ -47,13 +47,14 @@ export default function KeepLP() {
 
       {/* CTA */}
       <section className="px-6 pb-32 text-center">
-        <p className="text-gray-500 text-sm mb-6">近日公開予定</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="#"
+            href="https://apps.apple.com/us/app/keep-%E7%94%B7%E3%81%AEaga%E6%B2%BB%E7%99%82%E8%96%AC%E3%83%AA%E3%83%9E%E3%82%A4%E3%83%B3%E3%83%80%E3%83%BC/id6761522793"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block bg-white text-black font-semibold px-8 py-4 rounded-xl text-sm hover:bg-gray-200 transition-colors"
           >
-            App Store（準備中）
+            App Storeでダウンロード
           </a>
           <a
             href="#"
