@@ -97,6 +97,9 @@ const stageResults: Record<Stage, { title: string; description: string; cta: str
 const APP_STORE_URL =
   "https://apps.apple.com/jp/app/%E6%AF%8E%E6%97%A5%E3%81%82%E3%81%AE%E5%AD%90-%E3%83%9A%E3%83%83%E3%83%88%E3%83%AD%E3%82%B9%E3%81%AB%E5%AF%84%E3%82%8A%E6%B7%BB%E3%81%86%E6%89%8B%E7%B4%99%E3%82%A2%E3%83%97%E3%83%AA/id6760970361";
 
+const GOOGLE_PLAY_URL =
+  "https://play.google.com/store/apps/details?id=com.petletter.app&pcampaignid=web_share";
+
 export default function PetLossDiagnosis() {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResult, setShowResult] = useState(false);
@@ -171,8 +174,8 @@ export default function PetLossDiagnosis() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleAppClick = () => {
-    trackEvent("pet_loss_app_click", { stage: resultStage });
+  const handleAppClick = (platform: "ios" | "android") => {
+    trackEvent("pet_loss_app_click", { stage: resultStage, platform });
   };
 
   return (
@@ -316,16 +319,28 @@ export default function PetLossDiagnosis() {
                     <br />
                     あなたが返事を書くと、会話が続いていきます。
                   </p>
-                  <a
-                    href={APP_STORE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={handleAppClick}
-                    className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform"
-                  >
-                    アプリをダウンロード
-                    <ArrowRight className="w-4 h-4" />
-                  </a>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <a
+                      href={APP_STORE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleAppClick("ios")}
+                      className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform"
+                    >
+                      App Storeで開く
+                      <ArrowRight className="w-4 h-4" />
+                    </a>
+                    <a
+                      href={GOOGLE_PLAY_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleAppClick("android")}
+                      className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform"
+                    >
+                      Google Playで開く
+                      <ArrowRight className="w-4 h-4" />
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -365,16 +380,28 @@ export default function PetLossDiagnosis() {
             <br />
             あなたが返事を書くと、会話がずっと続いていきます。
           </p>
-          <a
-            href={APP_STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleAppClick}
-            className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform"
-          >
-            アプリをダウンロード
-            <ArrowRight className="w-4 h-4" />
-          </a>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href={APP_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleAppClick("ios")}
+              className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform"
+            >
+              App Storeで開く
+              <ArrowRight className="w-4 h-4" />
+            </a>
+            <a
+              href={GOOGLE_PLAY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleAppClick("android")}
+              className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform"
+            >
+              Google Playで開く
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
         </div>
       </section>
 
