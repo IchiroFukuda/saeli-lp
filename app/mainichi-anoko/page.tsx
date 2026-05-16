@@ -28,7 +28,7 @@ export default function MainichiAnokoPage() {
       {/* Hero */}
       <section className="relative pt-20 pb-20 sm:pt-28 sm:pb-32 overflow-hidden">
         <Image
-          src="/images/mainichi-anoko/hero-sky.png"
+          src="/images/mainichi-anoko/hero-sky.jpg"
           alt=""
           fill
           priority
@@ -119,7 +119,7 @@ export default function MainichiAnokoPage() {
       <section className="pb-4">
         <div className="mx-auto max-w-4xl">
           <Image
-            src="/images/mainichi-anoko/screenshots.png"
+            src="/images/mainichi-anoko/screenshots.jpg"
             alt="毎日あの子のアプリ画面"
             width={1600}
             height={1100}
