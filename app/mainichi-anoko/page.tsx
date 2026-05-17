@@ -191,6 +191,9 @@ export default function MainichiAnokoPage() {
             <p className="text-xs text-stone-500 mt-6">
               ダウンロード無料 / 最初の1通は無料で受け取れます / いつでも解約可能
             </p>
+            <p className="text-xs text-stone-400 mt-2">
+              ※永久プラン（¥39,800・買い切り）もご用意しています。アプリ内よりお選びいただけます。
+            </p>
           </div>
         </div>
       </section>
