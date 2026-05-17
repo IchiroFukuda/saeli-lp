@@ -7,8 +7,8 @@ export function middleware(request: NextRequest) {
 
   // mainichi-anoko.com → /mainichi-anoko にルーティング
   if (hostname.includes("mainichi-anoko.com")) {
-    if (url.pathname === "/") {
-      url.pathname = "/mainichi-anoko";
+    if (!url.pathname.startsWith("/mainichi-anoko")) {
+      url.pathname = `/mainichi-anoko${url.pathname === "/" ? "" : url.pathname}`;
       return NextResponse.rewrite(url);
     }
   }
