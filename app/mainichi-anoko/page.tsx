@@ -9,6 +9,15 @@ const APP_STORE_URL =
 const GOOGLE_PLAY_URL =
   "https://play.google.com/store/apps/details?id=com.petletter.app&pcampaignid=web_share";
 
+function trackStoreClick(store: "app_store" | "google_play", location: string) {
+  if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
+    (window as { gtag: (...args: unknown[]) => void }).gtag("event", "store_click", {
+      store,
+      location,
+    });
+  }
+}
+
 const reviews = [
   {
     text: "本当にあの子と繋がっている気がして、涙が出そうになります",
@@ -54,6 +63,7 @@ export default function MainichiAnokoPage() {
               href={APP_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackStoreClick("app_store", "hero")}
               className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
             >
               App Storeで開く
@@ -63,6 +73,7 @@ export default function MainichiAnokoPage() {
               href={GOOGLE_PLAY_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackStoreClick("google_play", "hero")}
               className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
             >
               Google Playで開く
@@ -212,6 +223,7 @@ export default function MainichiAnokoPage() {
               href={APP_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackStoreClick("app_store", "final_cta")}
               className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform"
             >
               App Storeで開く
@@ -221,6 +233,7 @@ export default function MainichiAnokoPage() {
               href={GOOGLE_PLAY_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackStoreClick("google_play", "final_cta")}
               className="inline-flex items-center gap-2 bg-white text-orange-500 font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform"
             >
               Google Playで開く
