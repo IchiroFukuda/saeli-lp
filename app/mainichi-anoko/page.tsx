@@ -184,12 +184,7 @@ export default function MainichiAnokoPage() {
                 <span className="font-bold">¥1,480 / 月</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="flex items-center gap-2">
-                  年額プラン
-                  <span className="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-medium">
-                    最もおトク
-                  </span>
-                </span>
+                <span>年額プラン</span>
                 <span className="font-bold">¥9,800 / 年</span>
               </div>
             </div>
