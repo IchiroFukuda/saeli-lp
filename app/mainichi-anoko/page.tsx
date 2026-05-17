@@ -187,10 +187,6 @@ export default function MainichiAnokoPage() {
           <div className="bg-white rounded-3xl shadow-sm p-8 sm:p-10">
             <div className="space-y-4 text-left text-stone-700">
               <div className="flex justify-between items-center pb-4 border-b border-stone-100">
-                <span>週額プラン</span>
-                <span className="font-bold">¥500 / 週</span>
-              </div>
-              <div className="flex justify-between items-center pb-4 border-b border-stone-100">
                 <span>月額プラン</span>
                 <span className="font-bold">¥1,480 / 月</span>
               </div>

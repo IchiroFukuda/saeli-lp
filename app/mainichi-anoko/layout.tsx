@@ -54,12 +54,6 @@ const jsonLd = {
   offers: [
     {
       "@type": "Offer",
-      name: "週額プラン",
-      price: "500",
-      priceCurrency: "JPY",
-    },
-    {
-      "@type": "Offer",
       name: "月額プラン",
       price: "1480",
       priceCurrency: "JPY",
