@@ -6,19 +6,23 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/index.html"
+      "destination": "/index.html",
+      "has": [{ "type": "host", "value": "saeli.org" }]
     },
     {
       "source": "/privacy",
-      "destination": "/privacy.html"
+      "destination": "/privacy.html",
+      "has": [{ "type": "host", "value": "saeli.org" }]
     },
     {
       "source": "/terms",
-      "destination": "/terms.html"
+      "destination": "/terms.html",
+      "has": [{ "type": "host", "value": "saeli.org" }]
     },
     {
       "source": "/privacy-approach",
-      "destination": "/privacy-approach.html"
+      "destination": "/privacy-approach.html",
+      "has": [{ "type": "host", "value": "saeli.org" }]
     }
   ]
 }

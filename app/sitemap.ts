@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const base = "https://mainichi-anoko.com";
     return [
       { url: `${base}/`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
-      { url: `${base}/pet-loss`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+      { url: `${base}/blog/atooi`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     ];
   }
 
