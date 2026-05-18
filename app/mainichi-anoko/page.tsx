@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Heart, Mail, Star } from "lucide-react";
+import { ArrowRight, BookOpen, Heart, Mail, Star } from "lucide-react";
+
+const NOTE_ARTICLE_URL =
+  "https://note.com/charo_i/n/n32314699356b?sub_rt=share_pw";
 
 const APP_STORE_URL =
   "https://apps.apple.com/jp/app/%E6%AF%8E%E6%97%A5%E3%81%82%E3%81%AE%E5%AD%90-%E3%83%9A%E3%83%83%E3%83%88%E3%83%AD%E3%82%B9%E3%81%AB%E5%AF%84%E3%82%8A%E6%B7%BB%E3%81%86%E6%89%8B%E7%B4%99%E3%82%A2%E3%83%97%E3%83%AA/id6760970361";
@@ -13,6 +16,14 @@ function trackStoreClick(store: "app_store" | "google_play", location: string) {
   if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
     (window as { gtag: (...args: unknown[]) => void }).gtag("event", "store_click", {
       store,
+      location,
+    });
+  }
+}
+
+function trackNoteClick(location: string) {
+  if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
+    (window as { gtag: (...args: unknown[]) => void }).gtag("event", "note_click", {
       location,
     });
   }
@@ -99,6 +110,35 @@ export default function MainichiAnokoPage() {
               <br />
               そんな思いをこめて作りました。
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Origin Story (note) */}
+      <section className="py-16">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6">
+          <div className="bg-white rounded-3xl shadow-sm p-8 sm:p-10">
+            <div className="flex items-center gap-3 text-stone-700 mb-6">
+              <BookOpen className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" />
+              <h2 className="text-xl sm:text-2xl font-bold">開発の経緯</h2>
+            </div>
+            <p className="text-stone-700 leading-relaxed text-sm sm:text-base mb-6">
+              二年前に15年飼っていた犬を亡くした母は、行き場を失った気持ちのまま、あみぐるみを編み、ペットロボットを買った。それでも母の問いかけに、答えられるものはなかった——。
+              <br />
+              <br />
+              「毎日あの子」がどうして生まれたのか。開発者がnoteに綴った全文を、よろしければご覧ください。
+            </p>
+            <div
+              onClick={() => trackNoteClick("story_section")}
+              className="w-full"
+            >
+              <iframe
+                src="https://note.com/embed/notes/n32314699356b"
+                className="w-full border-0 block rounded-xl overflow-hidden"
+                style={{ height: 260 }}
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
       </section>
