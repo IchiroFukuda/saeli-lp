@@ -1,11 +1,11 @@
-// Supabase Edge Function: リアクション通知メール送信
+// Supabase Edge Function: リアクション通知メール送信（Resend HTTP API）
 // letter_reactions テーブルへのINSERT Webhookで起動される想定。
 //
 // デプロイ:
 //   supabase functions deploy send-reaction-notification --project-ref arneigfpwleljkwadupj
 //
 // シークレット設定（一度だけ）:
-//   supabase secrets set SENDGRID_API_KEY=xxx SENDGRID_FROM_EMAIL=noreply@saeli.org --project-ref arneigfpwleljkwadupj
+//   supabase secrets set RESEND_API_KEY=re_xxx RESEND_FROM_EMAIL=noreply@saeli.org --project-ref arneigfpwleljkwadupj
 //
 // Database Webhook 設定（Supabase Dashboard > Database > Webhooks）:
 //   - name: notify-reaction
@@ -27,8 +27,8 @@ const REACTION_LABEL: Record<string, string> = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY")!;
-const FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL") || "noreply@saeli.org";
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
+const FROM_EMAIL = Deno.env.get("RESEND_FROM_EMAIL") || "noreply@saeli.org";
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
@@ -86,26 +86,26 @@ Deno.serve(async (req) => {
       "通知が不要な場合は hello@saeli.org までご連絡ください。",
     ].join("\n");
 
-    // SendGrid API
-    const sgRes = await fetch("https://api.sendgrid.com/v3/mail/send", {
+    // Resend HTTP API
+    const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${SENDGRID_API_KEY}`,
+        Authorization: `Bearer ${RESEND_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        personalizations: [{ to: [{ email: letter.email_lower }] }],
-        from: { email: FROM_EMAIL, name: "あの子への手紙" },
+        from: `あの子への手紙 <${FROM_EMAIL}>`,
+        to: [letter.email_lower],
         subject,
-        content: [{ type: "text/plain", value: text }],
+        text,
       }),
     });
 
-    if (!sgRes.ok) {
-      const errText = await sgRes.text();
-      console.error("sendgrid failed", sgRes.status, errText);
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error("resend failed", res.status, errText);
       // メール失敗は致命ではないので200を返してwebhook再送を防ぐ
-      return new Response(`sendgrid ${sgRes.status}`, { status: 200 });
+      return new Response(`resend ${res.status}`, { status: 200 });
     }
 
     return new Response("sent", { status: 200 });
