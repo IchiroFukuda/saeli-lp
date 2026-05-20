@@ -27,21 +27,40 @@ export default async function LettersFeedPage() {
   return (
     <div className="space-y-6">
       <FeedViewTracker count={list.length} />
+      <Hero />
       {list.length === 0 ? (
         <EmptyState />
       ) : (
-        <>
-          <p className="text-xs text-stone-500 text-center">
-            天国のあの子へ宛てた手紙が、ここに届きます。
-          </p>
-          <div className="space-y-6">
-            {list.map((letter) => (
-              <LetterCard key={letter.id} letter={letter} />
-            ))}
-          </div>
-        </>
+        <div className="space-y-6">
+          {list.map((letter) => (
+            <LetterCard key={letter.id} letter={letter} />
+          ))}
+        </div>
       )}
     </div>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="text-center py-6 sm:py-8">
+      <h1 className="text-lg sm:text-xl font-bold text-stone-700 mb-3 leading-relaxed">
+        天国のあの子へ、
+        <br className="sm:hidden" />
+        手紙を書ける場所
+      </h1>
+      <p className="text-sm text-stone-600 leading-relaxed mb-5 px-2">
+        どんな言葉でも、あの子に届きます。
+        <br />
+        誰でも自由に、無料で書けます。
+      </p>
+      <Link
+        href="/letters/new"
+        className="inline-block bg-orange-500 text-white text-sm font-bold px-6 py-3 rounded-full hover:bg-orange-600 transition"
+      >
+        手紙を書く
+      </Link>
+    </section>
   );
 }
 

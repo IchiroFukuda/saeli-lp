@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabase";
 import { trackLetters } from "@/lib/analytics";
+import { detectNG } from "@/lib/letters/ng-words";
 
 export default function NewLetterPage() {
   const router = useRouter();
@@ -22,6 +24,13 @@ export default function NewLetterPage() {
   useEffect(() => {
     trackLetters("letter_new_view", { verified });
   }, [verified]);
+
+  const ngDetected = useMemo(() => detectNG(body), [body]);
+
+  // NG検出時に1度だけ計測
+  useEffect(() => {
+    if (ngDetected) trackLetters("letter_ng_detected");
+  }, [ngDetected]);
 
   // magic linkを踏んで戻ってきた場合：localStorageの下書きを復元（投稿は明示的に押させる）
   useEffect(() => {
@@ -186,6 +195,23 @@ export default function NewLetterPage() {
           <p className="text-xs text-stone-500 text-right mt-1">
             {body.length} / 2000
           </p>
+          {ngDetected && (
+            <div className="mt-3 text-sm bg-stone-50 border border-stone-300 rounded-md p-4 leading-relaxed">
+              <p className="mb-2">お辛い気持ちが伝わってきました。</p>
+              <p className="mb-3 text-stone-600">
+                ひとりで抱え込まず、よかったら相談窓口もご覧ください。
+              </p>
+              <Link
+                href="/mainichi-anoko/blog/atooi"
+                target="_blank"
+                rel="noopener"
+                onClick={() => trackLetters("atooi_link_click", { from: "letter_form_ng" })}
+                className="inline-block text-stone-700 underline hover:text-stone-900"
+              >
+                相談窓口を見る →
+              </Link>
+            </div>
+          )}
         </Field>
 
         <Field label="写真（任意）">

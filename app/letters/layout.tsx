@@ -49,6 +49,16 @@ export default function LettersLayout({
             自分の手紙を管理する
           </Link>
         </p>
+        <p className="mt-4 text-stone-400">
+          お辛い時は{" "}
+          <Link
+            href="/mainichi-anoko/blog/atooi"
+            className="underline hover:text-stone-600"
+          >
+            相談窓口
+          </Link>
+          {" "}もご覧ください
+        </p>
         <p className="mt-3">運営：合同会社SAELI</p>
       </footer>
     </div>
