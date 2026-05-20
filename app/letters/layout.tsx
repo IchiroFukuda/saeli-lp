@@ -44,6 +44,11 @@ export default function LettersLayout({
           毎日あの子からのお手紙が届くアプリも提供しています →{" "}
           <AppPromoLink />
         </p>
+        <p className="mt-4">
+          <Link href="/letters/mine" className="underline hover:text-stone-700">
+            自分の手紙を管理する
+          </Link>
+        </p>
         <p className="mt-3">運営：合同会社SAELI</p>
       </footer>
     </div>

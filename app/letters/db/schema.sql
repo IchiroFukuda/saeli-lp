@@ -67,9 +67,29 @@ create policy "authenticated users can react"
     and lower(auth.email()) = email_lower
   );
 
--- Storage: letter-photos バケット（手動でSupabase Dashboardで作成すること）
--- bucket name: letter-photos
--- public access: true (read)
--- policies:
---   insert: authenticated only, path must start with email
---   delete: only own (path matches email)
+-- Storage: letter-photos バケット
+-- 事前にDashboardで letter-photos バケットを作成（Public）してから以下を実行する。
+-- パス構造： {email_lower}/{uuid}.{ext}
+
+-- 全員が読める（バケットがPublicなのでこれは保険）
+create policy "letter photos are readable by anyone"
+  on storage.objects for select
+  using (bucket_id = 'letter-photos');
+
+-- 認証ユーザーは自分のフォルダ（emailと一致）にのみアップロードできる
+create policy "users can upload to own folder"
+  on storage.objects for insert
+  to authenticated
+  with check (
+    bucket_id = 'letter-photos'
+    and (storage.foldername(name))[1] = lower(auth.email())
+  );
+
+-- 自分のフォルダのファイルだけ削除可能
+create policy "users can delete own photos"
+  on storage.objects for delete
+  to authenticated
+  using (
+    bucket_id = 'letter-photos'
+    and (storage.foldername(name))[1] = lower(auth.email())
+  );

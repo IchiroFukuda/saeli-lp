@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { supabaseBrowser } from "@/lib/supabase";
 import { trackLetters } from "@/lib/analytics";
@@ -79,9 +80,13 @@ export function LetterCard({ letter }: { letter: Letter }) {
 
   return (
     <article ref={cardRef} className="relative bg-[#FDFBF5] border border-stone-200 rounded-xl p-5 sm:p-7 shadow-sm">
-      <div className="absolute top-3 right-4 text-xs text-stone-400 font-serif">
+      <Link
+        href={`/letters/${letter.id}`}
+        onClick={() => trackLetters("letter_detail_link_click", { letter_id: letter.id, from: "feed_date" })}
+        className="absolute top-3 right-4 text-xs text-stone-400 hover:text-stone-600 font-serif"
+      >
         {dateText}
-      </div>
+      </Link>
 
       <div className="text-sm text-stone-500 font-serif mb-3">
         {letter.pet_name}へ
