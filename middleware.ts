@@ -6,8 +6,12 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
 
   // mainichi-anoko.com → /mainichi-anoko にルーティング
+  // ただし /letters/ 配下（手紙広場）は共通機能なのでrewrite対象外
   if (hostname.includes("mainichi-anoko.com")) {
-    if (!url.pathname.startsWith("/mainichi-anoko")) {
+    if (
+      !url.pathname.startsWith("/mainichi-anoko") &&
+      !url.pathname.startsWith("/letters")
+    ) {
       url.pathname = `/mainichi-anoko${url.pathname === "/" ? "" : url.pathname}`;
       return NextResponse.rewrite(url);
     }
