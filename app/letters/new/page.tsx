@@ -159,7 +159,7 @@ export default function NewLetterPage() {
             onChange={(e) => setPetName(e.target.value)}
             maxLength={30}
             className="w-full px-3 py-2 border border-stone-300 rounded-md bg-white"
-            placeholder="例：メリ"
+            placeholder="例：もも"
           />
         </Field>
 
