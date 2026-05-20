@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase-server";
 import { LetterCard } from "../components/LetterCard";
 import { LetterActions } from "../components/LetterActions";
 import { LetterDetailTracker } from "./LetterDetailTracker";
+import { BackLink } from "./BackLink";
 
 export const revalidate = 30;
 
@@ -68,11 +68,7 @@ export default async function LetterDetailPage({
     <div className="space-y-6">
       <LetterDetailTracker letterId={letter.id} />
 
-      <div className="text-sm">
-        <Link href="/letters" className="text-stone-500 hover:text-stone-700">
-          ← みんなの手紙へ
-        </Link>
-      </div>
+      <BackLink ownerEmailLower={letter.email_lower} />
 
       <LetterCard letter={letter} />
 
