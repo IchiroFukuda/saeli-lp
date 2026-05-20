@@ -8,6 +8,7 @@ import { trackLetters } from "@/lib/analytics";
 export default function NewLetterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const verified = searchParams.get("verified") === "1";
   const [step, setStep] = useState<"form" | "magic-sent" | "verified">("form");
   const [email, setEmail] = useState("");
   const [petName, setPetName] = useState("");
@@ -19,17 +20,17 @@ export default function NewLetterPage() {
 
   // 投稿ページ表示計測（verified=1ありなら "verified" view、なしなら新規view）
   useEffect(() => {
-    const verified = searchParams.get("verified") === "1";
     trackLetters("letter_new_view", { verified });
-  }, [searchParams]);
+  }, [verified]);
 
-  // magic linkを踏んで戻ってきた場合：localStorageの下書きを復元して自動投稿
+  // magic linkを踏んで戻ってきた場合：localStorageの下書きを復元（投稿は明示的に押させる）
   useEffect(() => {
-    if (searchParams.get("verified") !== "1") return;
+    if (!verified) return;
     (async () => {
       const supabase = supabaseBrowser();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user?.email) return;
+      setEmail(user.email);
 
       const raw = localStorage.getItem("pendingLetter");
       if (!raw) return;
@@ -38,16 +39,15 @@ export default function NewLetterPage() {
         setPetName(pending.petName ?? "");
         setOwnerNickname(pending.ownerNickname ?? "");
         setBody(pending.body ?? "");
-        // 投稿は明示的に押させる（自動投稿だと違和感）
       } catch {}
     })();
-  }, [searchParams]);
+  }, [verified]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
-    if (!petName || !ownerNickname || !body || !email) {
+    if (!petName || !ownerNickname || !body || (!verified && !email)) {
       setError("すべての必須項目をご入力ください。");
       return;
     }
@@ -143,6 +143,14 @@ export default function NewLetterPage() {
     <div>
       <h1 className="text-xl font-bold mb-6 text-center">あの子へ手紙を書く</h1>
 
+      {verified && (
+        <div className="mb-5 text-sm text-stone-700 bg-orange-50 border border-orange-200 rounded-md p-3 text-center">
+          ✓ メール認証が完了しました。
+          <br />
+          投稿ボタンを押すと、お手紙が広場に届きます。
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-5">
         <Field label="あの子のお名前" required>
           <input
@@ -189,18 +197,20 @@ export default function NewLetterPage() {
           />
         </Field>
 
-        <Field label="メールアドレス" required>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border border-stone-300 rounded-md bg-white"
-            placeholder="hello@example.com"
-          />
-          <p className="text-xs text-stone-500 mt-1">
-            初回のみ、確認メールをお送りします。投稿の削除にも必要です。
-          </p>
-        </Field>
+        {!verified && (
+          <Field label="メールアドレス" required>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 border border-stone-300 rounded-md bg-white"
+              placeholder="hello@example.com"
+            />
+            <p className="text-xs text-stone-500 mt-1">
+              初回のみ、確認メールをお送りします。投稿の削除にも必要です。
+            </p>
+          </Field>
+        )}
 
         {error && (
           <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">
@@ -213,7 +223,11 @@ export default function NewLetterPage() {
           disabled={submitting}
           className="w-full bg-orange-500 text-white font-bold py-3 rounded-full hover:bg-orange-600 disabled:opacity-50 transition"
         >
-          {submitting ? "送信中..." : "確認メールを送る"}
+          {submitting
+            ? "送信中..."
+            : verified
+            ? "広場に投稿する"
+            : "確認メールを送る"}
         </button>
       </form>
     </div>
