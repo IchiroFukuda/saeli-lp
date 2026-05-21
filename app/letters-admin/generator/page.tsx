@@ -7,6 +7,7 @@ type GenResult = {
   petType: string;
   ownerNickname: string;
   season: string;
+  previousReply: string;
   letterText: string;
   imageBase64: string | null;
   mimeType?: string;
@@ -190,10 +191,14 @@ export default function GeneratorPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg p-4 text-sm text-stone-600 space-y-1">
+            <div className="bg-white rounded-lg p-4 text-sm text-stone-600 space-y-2">
               <div><span className="font-bold">ペット：</span>{result.petName}（{result.petType}）</div>
               <div><span className="font-bold">飼い主：</span>{result.ownerNickname}</div>
               <div><span className="font-bold">季節：</span>{result.season}</div>
+              <div className="pt-2 border-t border-stone-200">
+                <div className="font-bold mb-1">飼い主からの手紙（この返事を踏まえてあの子が返信）：</div>
+                <div className="text-xs text-stone-500 italic">{result.previousReply}</div>
+              </div>
             </div>
           </div>
         )}

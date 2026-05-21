@@ -20,6 +20,39 @@ const PERSONALITIES = [
   "マイペースで自由気まま、お昼寝が一番好き",
 ];
 
+// 飼い主からあの子へ送った前回の手紙（previousReply）テンプレ集
+// バリエーション豊富にすることで、生成される返事も多様化する
+const OWNER_REPLIES = [
+  // 寂しさ系
+  "今日は雨だったね。あなたがいない部屋がとても静かで、少し寂しいよ。",
+  "あなたがいなくなってから、家の中の音が変わった気がする。元気にしてる？",
+  "今日もあなたのお気に入りだった毛布を見て、思わず泣いてしまったよ。",
+  // 日常報告系
+  "今日、あなたとよく散歩した公園に行ってきたよ。桜が咲いてた。",
+  "新しいごはん見つけたんだけど、あなたきっと好きだったろうな。",
+  "おばあちゃんが家に来てくれたよ。あなたに会いたかったって言ってた。",
+  // 思い出系
+  "あなたが初めてうちに来た日のこと、よく思い出すよ。あの日は雪だったね。",
+  "写真を整理してたら、あなたが子供の頃の動画が出てきた。可愛すぎて笑った。",
+  "あなたが一番喜んでくれたおもちゃ、まだ大切にとってあるよ。",
+  // 季節・行事系
+  "今日はクリスマスだよ。あなたと過ごした去年のクリスマスを覚えてる？",
+  "もうすぐお正月だね。お雑煮あなたにもあげたかったな。",
+  "夏が来たね。あなたが大好きだった扇風機の風、まだ覚えてる？",
+  // 夢系
+  "昨日夢にあなたが出てきたよ。元気に走り回ってて、本当に嬉しかった。",
+  "最近よくあなたの夢を見るんだ。そっちから会いに来てくれてるのかな。",
+  // 質問系
+  "そっちは寒くない？ちゃんとご飯食べてる？お友達はできた？",
+  "あなたは今、痛くない？苦しくない？それだけが心配で。",
+  // 感謝系
+  "あの子、本当にありがとう。あなたがいてくれた毎日が、私の宝物です。",
+  "あなたと過ごした時間が、私を強くしてくれました。",
+  // 前向き系
+  "少しずつ、笑えるようになってきたよ。あなたが見守ってくれてるからかな。",
+  "新しい子をお迎えするかどうか、迷ってる。あなたはどう思う？",
+];
+
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -47,6 +80,7 @@ export async function POST(req: NextRequest) {
   const petType = body.petType || pick(PET_TYPES);
   const ownerNickname = body.ownerNickname || pick(OWNER_NAMES);
   const personality = body.personality || pick(PERSONALITIES);
+  const previousReply = body.previousReply || pick(OWNER_REPLIES);
   const season = currentSeason();
 
   try {
@@ -62,6 +96,7 @@ export async function POST(req: NextRequest) {
         ownerName: ownerNickname,
         weatherInfo: `今は${season}です`,
         eventInfo: "",
+        previousReply,
         daysSinceLastLetter: 1,
       }),
     });
@@ -80,6 +115,7 @@ export async function POST(req: NextRequest) {
       petType,
       ownerNickname,
       season,
+      previousReply,
       letterText: data.diaryText || "",
       imageBase64: data.imageBase64 || null,
       mimeType: data.mimeType || "image/png",
