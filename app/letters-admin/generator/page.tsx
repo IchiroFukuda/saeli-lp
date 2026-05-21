@@ -155,42 +155,101 @@ export default function GeneratorPage() {
           )}
         </div>
 
-        {/* 結果表示 — 9:16 縦長フレーム（スクショ用） */}
+        {/* 結果表示 — 段落ごとに画像背景+大文字のフレームを複数 */}
         {result && (
           <div className="space-y-4">
             <div className="text-xs text-stone-500 text-center">
-              下のフレームをスクショして使う（9:16）
+              各フレームをスクショして繋げる（9:16 × 段落数）
             </div>
-            <div className="mx-auto" style={{ maxWidth: "420px" }}>
-              <div
-                className="bg-[#FDFBF5] border border-stone-300 shadow-lg overflow-hidden flex flex-col"
-                style={{ aspectRatio: "9/16" }}
-              >
-                {/* ペット画像 上部 */}
-                <div className="w-full bg-stone-200 shrink-0" style={{ height: "38%" }}>
-                  {result.imageBase64 ? (
-                    <img
-                      src={`data:${result.mimeType || "image/png"};base64,${result.imageBase64}`}
-                      alt={result.petName}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-stone-400 text-sm">
-                      （画像生成失敗）
-                    </div>
-                  )}
-                </div>
 
-                {/* 手紙テキスト：残り領域いっぱい、長文時はフォント縮小で収める */}
-                <div className="flex-1 px-5 py-4 font-serif text-stone-700 leading-relaxed whitespace-pre-wrap overflow-hidden"
-                     style={{
-                       fontSize: result.letterText.length > 280 ? "10px" : result.letterText.length > 200 ? "11px" : "13px",
-                       lineHeight: 1.7,
-                     }}>
-                  {result.letterText}
+            {(() => {
+              // 段落分割（空行 or 改行で区切る、空文字除外）
+              const paragraphs = result.letterText
+                .split(/\n\s*\n|\n/)
+                .map((p) => p.trim())
+                .filter((p) => p.length > 0);
+              const imgSrc = result.imageBase64
+                ? `data:${result.mimeType || "image/png"};base64,${result.imageBase64}`
+                : null;
+
+              const frames = [
+                // 最初は画像のみ（オープニング）
+                { type: "opening" as const, text: "" },
+                // 各段落
+                ...paragraphs.map((text) => ({ type: "para" as const, text })),
+              ];
+
+              return (
+                <div className="space-y-6">
+                  {frames.map((frame, i) => (
+                    <div key={i} className="mx-auto" style={{ maxWidth: "420px" }}>
+                      <div className="text-xs text-stone-400 mb-1 text-center">
+                        フレーム {i + 1} / {frames.length}
+                      </div>
+                      <div
+                        className="relative overflow-hidden shadow-lg bg-stone-300"
+                        style={{ aspectRatio: "9/16" }}
+                      >
+                        {imgSrc && (
+                          <img
+                            src={imgSrc}
+                            alt={result.petName}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        )}
+
+                        {/* 段落フレーム：下部に半透明オーバーレイ + 大きい文字 */}
+                        {frame.type === "para" && (
+                          <>
+                            <div
+                              className="absolute inset-x-0 bottom-0"
+                              style={{
+                                height: "55%",
+                                background:
+                                  "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.85) 100%)",
+                              }}
+                            />
+                            <div
+                              className="absolute inset-x-0 bottom-0 px-6 py-8 font-serif text-white leading-loose whitespace-pre-wrap"
+                              style={{
+                                fontSize: frame.text.length > 80 ? "18px" : frame.text.length > 50 ? "21px" : "24px",
+                                lineHeight: 1.7,
+                                textShadow: "0 1px 4px rgba(0,0,0,0.6)",
+                              }}
+                            >
+                              {frame.text}
+                            </div>
+                          </>
+                        )}
+
+                        {/* オープニングフレーム：上部に小さくキャプション */}
+                        {frame.type === "opening" && (
+                          <>
+                            <div
+                              className="absolute inset-x-0 top-0"
+                              style={{
+                                height: "30%",
+                                background:
+                                  "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)",
+                              }}
+                            />
+                            <div className="absolute inset-x-0 top-6 text-center font-serif text-white"
+                                 style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
+                              <div className="text-sm opacity-80">空の町から</div>
+                              <div className="text-lg mt-1">お手紙が届きました</div>
+                            </div>
+                            <div className="absolute inset-x-0 bottom-6 text-center font-serif text-white"
+                                 style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
+                              <div className="text-base">— {result.petName} より —</div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </div>
+              );
+            })()}
 
             <div className="bg-white rounded-lg p-4 text-sm text-stone-600 space-y-2">
               <div><span className="font-bold">ペット：</span>{result.petName}（{result.petType}）</div>
