@@ -33,3 +33,7 @@ Thumbs.db
 *.bak
 *.backup
 .vercel
+
+# Supabase CLI ローカル
+supabase/.temp/
+supabase/.branches/
