@@ -163,25 +163,25 @@ export default function GeneratorPage() {
             </div>
 
             {(() => {
-              // 段落分割（空行 or 改行で区切る、空文字除外）
-              const paragraphs = result.letterText
-                .split(/\n\s*\n|\n/)
-                .map((p) => p.trim())
-                .filter((p) => p.length > 0);
+              // 句点で分割して、3文ごとに1フレームにまとめる
+              const SENTENCES_PER_FRAME = 3;
+              const sentences = result.letterText
+                .split(/(?<=。)/)
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0);
+
+              const frames: string[] = [];
+              for (let i = 0; i < sentences.length; i += SENTENCES_PER_FRAME) {
+                frames.push(sentences.slice(i, i + SENTENCES_PER_FRAME).join(""));
+              }
+
               const imgSrc = result.imageBase64
                 ? `data:${result.mimeType || "image/png"};base64,${result.imageBase64}`
                 : null;
 
-              const frames = [
-                // 最初は画像のみ（オープニング）
-                { type: "opening" as const, text: "" },
-                // 各段落
-                ...paragraphs.map((text) => ({ type: "para" as const, text })),
-              ];
-
               return (
                 <div className="space-y-6">
-                  {frames.map((frame, i) => (
+                  {frames.map((text, i) => (
                     <div key={i} className="mx-auto" style={{ maxWidth: "420px" }}>
                       <div className="text-xs text-stone-400 mb-1 text-center">
                         フレーム {i + 1} / {frames.length}
@@ -197,53 +197,24 @@ export default function GeneratorPage() {
                             className="absolute inset-0 w-full h-full object-cover"
                           />
                         )}
-
-                        {/* 段落フレーム：下部に半透明オーバーレイ + 大きい文字 */}
-                        {frame.type === "para" && (
-                          <>
-                            <div
-                              className="absolute inset-x-0 bottom-0"
-                              style={{
-                                height: "55%",
-                                background:
-                                  "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.85) 100%)",
-                              }}
-                            />
-                            <div
-                              className="absolute inset-x-0 bottom-0 px-6 py-8 font-serif text-white leading-loose whitespace-pre-wrap"
-                              style={{
-                                fontSize: frame.text.length > 80 ? "18px" : frame.text.length > 50 ? "21px" : "24px",
-                                lineHeight: 1.7,
-                                textShadow: "0 1px 4px rgba(0,0,0,0.6)",
-                              }}
-                            >
-                              {frame.text}
-                            </div>
-                          </>
-                        )}
-
-                        {/* オープニングフレーム：上部に小さくキャプション */}
-                        {frame.type === "opening" && (
-                          <>
-                            <div
-                              className="absolute inset-x-0 top-0"
-                              style={{
-                                height: "30%",
-                                background:
-                                  "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)",
-                              }}
-                            />
-                            <div className="absolute inset-x-0 top-6 text-center font-serif text-white"
-                                 style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
-                              <div className="text-sm opacity-80">空の町から</div>
-                              <div className="text-lg mt-1">お手紙が届きました</div>
-                            </div>
-                            <div className="absolute inset-x-0 bottom-6 text-center font-serif text-white"
-                                 style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
-                              <div className="text-base">— {result.petName} より —</div>
-                            </div>
-                          </>
-                        )}
+                        <div
+                          className="absolute inset-x-0 bottom-0"
+                          style={{
+                            height: "55%",
+                            background:
+                              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.85) 100%)",
+                          }}
+                        />
+                        <div
+                          className="absolute inset-x-0 bottom-0 px-6 py-8 font-serif text-white leading-loose whitespace-pre-wrap"
+                          style={{
+                            fontSize: text.length > 100 ? "17px" : text.length > 70 ? "20px" : "23px",
+                            lineHeight: 1.7,
+                            textShadow: "0 1px 4px rgba(0,0,0,0.6)",
+                          }}
+                        >
+                          {text}
+                        </div>
                       </div>
                     </div>
                   ))}
