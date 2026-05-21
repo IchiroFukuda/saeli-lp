@@ -9,6 +9,7 @@ type GenResult = {
   season: string;
   letterText: string;
   imageBase64: string | null;
+  mimeType?: string;
 };
 
 export default function GeneratorPage() {
@@ -168,7 +169,7 @@ export default function GeneratorPage() {
                 <div className="w-full bg-stone-200" style={{ height: "45%" }}>
                   {result.imageBase64 ? (
                     <img
-                      src={`data:image/png;base64,${result.imageBase64}`}
+                      src={`data:${result.mimeType || "image/png"};base64,${result.imageBase64}`}
                       alt={result.petName}
                       className="w-full h-full object-cover"
                     />
