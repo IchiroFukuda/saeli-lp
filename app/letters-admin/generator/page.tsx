@@ -163,11 +163,11 @@ export default function GeneratorPage() {
             </div>
             <div className="mx-auto" style={{ maxWidth: "420px" }}>
               <div
-                className="bg-[#FDFBF5] border border-stone-300 shadow-lg overflow-hidden"
+                className="bg-[#FDFBF5] border border-stone-300 shadow-lg overflow-hidden flex flex-col"
                 style={{ aspectRatio: "9/16" }}
               >
-                {/* ペット画像 上半分 */}
-                <div className="w-full bg-stone-200" style={{ height: "45%" }}>
+                {/* ペット画像 上部 */}
+                <div className="w-full bg-stone-200 shrink-0" style={{ height: "38%" }}>
                   {result.imageBase64 ? (
                     <img
                       src={`data:${result.mimeType || "image/png"};base64,${result.imageBase64}`}
@@ -181,11 +181,12 @@ export default function GeneratorPage() {
                   )}
                 </div>
 
-                {/* 手紙テキスト 下半分 */}
-                <div
-                  className="px-5 py-4 font-serif text-stone-700 text-[13px] leading-loose whitespace-pre-wrap overflow-hidden"
-                  style={{ height: "55%" }}
-                >
+                {/* 手紙テキスト：残り領域いっぱい、長文時はフォント縮小で収める */}
+                <div className="flex-1 px-5 py-4 font-serif text-stone-700 leading-relaxed whitespace-pre-wrap overflow-hidden"
+                     style={{
+                       fontSize: result.letterText.length > 280 ? "10px" : result.letterText.length > 200 ? "11px" : "13px",
+                       lineHeight: 1.7,
+                     }}>
                   {result.letterText}
                 </div>
               </div>
