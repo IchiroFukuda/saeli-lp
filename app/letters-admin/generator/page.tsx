@@ -99,7 +99,7 @@ export default function GeneratorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-100 p-4 sm:p-8">
+    <div className="min-h-screen bg-stone-100 p-4 sm:p-8 pb-24 sm:pb-16">
       <div className="max-w-3xl mx-auto space-y-6">
         <header className="flex items-center justify-between">
           <h1 className="text-lg font-bold">あの子カフェ ジェネレーター</h1>
