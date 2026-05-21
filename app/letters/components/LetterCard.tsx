@@ -103,7 +103,7 @@ export function LetterCard({ letter }: { letter: Letter }) {
             alt={`${letter.pet_name}の写真`}
             width={600}
             height={600}
-            className="w-full h-auto rounded-md"
+            className="w-full h-auto rounded-xl"
             unoptimized
           />
         </div>
