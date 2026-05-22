@@ -69,17 +69,11 @@ function EmptyState() {
     <div className="text-center py-20 px-6">
       <div className="text-5xl mb-4">✉️</div>
       <h2 className="text-lg font-bold mb-2">まだ手紙が届いていません</h2>
-      <p className="text-sm text-stone-600 leading-relaxed mb-6">
+      <p className="text-sm text-stone-600 leading-relaxed">
         最初の一通を、あなたから書いてみませんか。
         <br />
         どんな言葉でも、あの子に届きます。
       </p>
-      <Link
-        href="/letters/new"
-        className="inline-block bg-orange-500 text-white text-sm font-bold px-6 py-3 rounded-full hover:bg-orange-600 transition"
-      >
-        手紙を書く
-      </Link>
     </div>
   );
 }
