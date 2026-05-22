@@ -198,7 +198,11 @@ export default function GeneratorPage() {
                           />
                         )}
                         {/* 中央エリアに半透明オーバーレイ＋テキスト */}
-                        <div className="absolute inset-0 flex items-center justify-center px-6">
+                        {/* 右側はTikTokのいいね/コメント/シェアボタンと被るので余白広め */}
+                        <div
+                          className="absolute inset-0 flex items-center justify-center"
+                          style={{ paddingLeft: "6%", paddingRight: "22%" }}
+                        >
                           <div
                             className="font-serif text-white leading-loose whitespace-pre-wrap text-center"
                             style={{
