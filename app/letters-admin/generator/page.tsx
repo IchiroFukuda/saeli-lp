@@ -268,15 +268,15 @@ function ResultFrames({ result }: { result: GenResult }) {
                 style={{ paddingLeft: "6%", paddingRight: "22%" }}
               >
                 <div
-                  className="font-serif text-white leading-loose whitespace-pre-wrap text-center"
+                  className="font-serif leading-loose whitespace-pre-wrap text-center"
                   style={{
                     fontSize: text.length > 100 ? "17px" : text.length > 70 ? "20px" : "23px",
                     lineHeight: 1.7,
-                    textShadow: "0 2px 6px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)",
-                    background: "rgba(0,0,0,0.35)",
-                    padding: "20px 18px",
+                    color: "#44403c",
+                    background: "rgba(253, 251, 245, 0.92)",
+                    padding: "22px 20px",
                     borderRadius: "10px",
-                    backdropFilter: "blur(2px)",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
                   }}
                 >
                   {text}
