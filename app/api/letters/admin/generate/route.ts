@@ -9,9 +9,25 @@ export const maxDuration = 60;
 
 const CITY_API_URL = "https://city-api-six.vercel.app/api/generate-petdiary";
 
-const PET_TYPES = ["柴犬", "トイプードル", "ミニチュアダックスフンド", "猫", "ハムスター", "ウサギ", "セキセイインコ"];
-const PET_NAMES = ["もも", "ハナ", "ココ", "そら", "ゆず", "あんこ", "ちゃちゃ", "コタロウ", "リリィ", "ムギ", "マロン", "シロ"];
-const OWNER_NAMES = ["お母さん", "お父さん", "お姉ちゃん", "お兄ちゃん", "ママ", "パパ"];
+// 犬猫中心、他は時々（メインターゲット＝犬猫飼い主層）
+const PET_TYPES_COMMON = [
+  "柴犬", "トイプードル", "ミニチュアダックスフンド", "チワワ", "ポメラニアン",
+  "ゴールデンレトリバー", "コーギー", "シーズー", "フレンチブルドッグ", "ヨークシャテリア",
+  "ミックス犬",
+  "猫", "雑種猫", "アメリカンショートヘア", "スコティッシュフォールド", "マンチカン", "ロシアンブルー",
+];
+const PET_TYPES_RARE = ["ハムスター", "ウサギ", "セキセイインコ", "文鳥", "フェレット"];
+
+const PET_NAMES = [
+  "もも", "ハナ", "ココ", "そら", "ゆず", "あんこ", "ちゃちゃ", "コタロウ", "リリィ", "ムギ",
+  "マロン", "シロ", "レオ", "リン", "さくら", "モカ", "きなこ", "クロ", "ミルク", "ベル",
+  "ロン", "ナナ", "ふく", "タロ", "シナモン", "ハル", "ノエル", "ラム", "リク", "クッキー",
+  "ジャム", "チョコ", "クー", "テン", "バニラ", "ミント", "あん", "きら", "コタ", "ぽん",
+];
+
+// メインターゲット＝母（お母さん／ママ）を高頻度に
+const OWNER_NAMES_COMMON = ["お母さん", "ママ"];
+const OWNER_NAMES_RARE = ["お父さん", "お姉ちゃん", "お兄ちゃん", "パパ"];
 const PERSONALITIES = [
   "元気で甘えん坊、ご飯と散歩が大好き",
   "落ち着いていて優しい、静かに寄り添うのが好き",
@@ -57,6 +73,11 @@ function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// 確率で主リスト・サブリストから選ぶ（commonRatio=0.85なら85%でcommon側）
+function pickWeighted<T>(common: T[], rare: T[], commonRatio: number): T {
+  return Math.random() < commonRatio ? pick(common) : pick(rare);
+}
+
 function checkAuth(req: NextRequest): boolean {
   const password = req.headers.get("x-admin-password");
   return password === process.env.LETTERS_ADMIN_PASSWORD;
@@ -77,8 +98,10 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json().catch(() => ({}));
   const petName = body.petName || pick(PET_NAMES);
-  const petType = body.petType || pick(PET_TYPES);
-  const ownerNickname = body.ownerNickname || pick(OWNER_NAMES);
+  // 犬猫を88%、その他（ハム・ウサ・鳥）を12%で選ぶ
+  const petType = body.petType || pickWeighted(PET_TYPES_COMMON, PET_TYPES_RARE, 0.88);
+  // お母さん／ママを75%、その他を25%
+  const ownerNickname = body.ownerNickname || pickWeighted(OWNER_NAMES_COMMON, OWNER_NAMES_RARE, 0.75);
   const personality = body.personality || pick(PERSONALITIES);
   const previousReply = body.previousReply || pick(OWNER_REPLIES);
   const season = currentSeason();
