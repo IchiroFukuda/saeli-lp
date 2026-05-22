@@ -4,6 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { toPng } from "html-to-image";
 import JSZip from "jszip";
 
+// Klee One: 手書き風日本語フォント。便箋感を出すために使う
+const LETTER_FONT_URL =
+  "https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap";
+const LETTER_FONT_FAMILY = "'Klee One', serif";
+
 type GenResult = {
   petName: string;
   petType: string;
@@ -32,6 +37,17 @@ export default function GeneratorPage() {
       setPassword(saved);
       setAuthed(true);
     }
+  }, []);
+
+  // 便箋用の手書きフォントを動的に読み込み
+  useEffect(() => {
+    const id = "letter-font-link";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = LETTER_FONT_URL;
+    document.head.appendChild(link);
   }, []);
 
   async function generate() {
@@ -213,6 +229,14 @@ function ResultFrames({ result }: { result: GenResult }) {
         })
       );
 
+      // 手書きフォントのロード完了を待つ（html-to-imageでフォント脱落対策）
+      if (typeof document !== "undefined" && "fonts" in document) {
+        try {
+          await document.fonts.load(`16px ${LETTER_FONT_FAMILY}`);
+          await document.fonts.ready;
+        } catch {}
+      }
+
       // html-to-image の初回キャプチャでスタイル/フォントが未確定のことがあるのでwarm-up
       const first = frameRefs.current.find((n) => n);
       if (first) {
@@ -274,35 +298,66 @@ function ResultFrames({ result }: { result: GenResult }) {
             </div>
             <div
               ref={(el) => { frameRefs.current[i] = el; }}
-              className="relative overflow-hidden shadow-lg bg-stone-300"
+              className="relative overflow-hidden shadow-lg bg-stone-200"
               style={{ aspectRatio: "9/16" }}
             >
               {imgSrc && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={imgSrc}
-                  alt={result.petName}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+                <>
+                  {/* 背景: 同じ画像をぼかして全面に敷く（ベージュ単色だと浮くので画像で繋ぐ） */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={imgSrc}
+                    alt=""
+                    aria-hidden
+                    className="absolute inset-0 w-full h-full object-cover"
+                    style={{ filter: "blur(12px) brightness(0.9)", transform: "scale(1.08)" }}
+                  />
+                  {/* 前景: 上72%にシャープなペット画像（残り28%はぼかし背景+便箋） */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={imgSrc}
+                    alt={result.petName}
+                    className="absolute top-0 left-0 w-full object-cover"
+                    style={{
+                      height: "72%",
+                      objectPosition: "center 30%",
+                    }}
+                  />
+                </>
               )}
+              {/* 便箋は中央〜やや下に配置。下25%はTikTokキャプション領域として空ける */}
               <div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{ paddingLeft: "6%", paddingRight: "22%" }}
+                className="absolute left-0 right-0 flex justify-center"
+                style={{
+                  top: "38%",
+                  bottom: "25%",
+                  paddingLeft: "8%",
+                  paddingRight: "20%",
+                  alignItems: "center",
+                }}
               >
+                {/* 便箋風カード。手書きフォント＋クリーム色背景＋紙テクスチャ */}
                 <div
-                  className="font-serif leading-loose whitespace-pre-wrap text-center"
+                  className="whitespace-pre-wrap"
                   style={{
-                    fontSize: text.length > 100 ? "17px" : text.length > 70 ? "20px" : "23px",
-                    lineHeight: 1.7,
-                    color: "#ffffff",
-                    padding: "0 8px",
-                    // text-shadow はライブ表示向け（html-to-imageでは脱落することあり）
-                    textShadow:
-                      "0 2px 8px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.6)",
-                    // WebkitTextStroke は確実にキャプチャされる縁取り（ダウンロード画像でも残る）
-                    WebkitTextStroke: "1.2px rgba(0,0,0,0.85)",
-                    paintOrder: "stroke fill",
-                    fontWeight: 600,
+                    fontFamily: LETTER_FONT_FAMILY,
+                    fontSize: text.length > 100 ? "16px" : text.length > 70 ? "18px" : "20px",
+                    lineHeight: 2.0,
+                    color: "#3a2f24",
+                    fontWeight: 500,
+                    padding: "22px 24px",
+                    width: "100%",
+                    // 紙の質感: 縦のグラデーション＋微妙な暖色（92%透過で背景のペットがうっすら見える）
+                    background:
+                      "linear-gradient(180deg, rgba(250,242,224,0.6) 0%, rgba(243,232,207,0.6) 50%, rgba(237,224,192,0.6) 100%)",
+                    boxShadow:
+                      "0 6px 18px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.25), inset 0 0 30px rgba(120,90,40,0.08)",
+                    borderRadius: "3px",
+                    transform: "rotate(-1.2deg)",
+                    // 罫線風の subtle なライン
+                    backgroundImage:
+                      "linear-gradient(180deg, rgba(250,242,224,0.6) 0%, rgba(243,232,207,0.6) 50%, rgba(237,224,192,0.6) 100%), repeating-linear-gradient(transparent, transparent 31px, rgba(120,90,40,0.08) 31px, rgba(120,90,40,0.08) 32px)",
+                    backgroundBlendMode: "multiply",
                   }}
                 >
                   {text}
