@@ -104,7 +104,7 @@ export default function MainichiAnokoPage() {
               母のために作りました。
             </h2>
             <p className="text-stone-700 leading-relaxed text-sm sm:text-base">
-              虹の橋を渡ったあの子の存在を、いつも近くに感じられるように。
+              虹の橋のふもとで暮らすあの子の存在を、いつも近くに感じられるように。
               <br />
               いつも心の中であの子と繋がっていられるように。
               <br />
