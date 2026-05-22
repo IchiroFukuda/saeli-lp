@@ -197,23 +197,22 @@ export default function GeneratorPage() {
                             className="absolute inset-0 w-full h-full object-cover"
                           />
                         )}
-                        <div
-                          className="absolute inset-x-0 bottom-0"
-                          style={{
-                            height: "55%",
-                            background:
-                              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.85) 100%)",
-                          }}
-                        />
-                        <div
-                          className="absolute inset-x-0 bottom-0 px-6 py-8 font-serif text-white leading-loose whitespace-pre-wrap"
-                          style={{
-                            fontSize: text.length > 100 ? "17px" : text.length > 70 ? "20px" : "23px",
-                            lineHeight: 1.7,
-                            textShadow: "0 1px 4px rgba(0,0,0,0.6)",
-                          }}
-                        >
-                          {text}
+                        {/* 中央エリアに半透明オーバーレイ＋テキスト */}
+                        <div className="absolute inset-0 flex items-center justify-center px-6">
+                          <div
+                            className="font-serif text-white leading-loose whitespace-pre-wrap text-center"
+                            style={{
+                              fontSize: text.length > 100 ? "17px" : text.length > 70 ? "20px" : "23px",
+                              lineHeight: 1.7,
+                              textShadow: "0 2px 6px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)",
+                              background: "rgba(0,0,0,0.35)",
+                              padding: "20px 18px",
+                              borderRadius: "10px",
+                              backdropFilter: "blur(2px)",
+                            }}
+                          >
+                            {text}
+                          </div>
                         </div>
                       </div>
                     </div>
