@@ -199,6 +199,28 @@ function ResultFrames({ result }: { result: GenResult }) {
   async function downloadAll() {
     setDownloading(true);
     try {
+      // 全フレーム内の画像がロードされるのを待つ（1枚目欠け対策）
+      await Promise.all(
+        frameRefs.current.map((node) => {
+          if (!node) return Promise.resolve();
+          const img = node.querySelector("img");
+          if (!img) return Promise.resolve();
+          if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+          return new Promise<void>((resolve) => {
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+          });
+        })
+      );
+
+      // html-to-image の初回キャプチャでスタイル/フォントが未確定のことがあるのでwarm-up
+      const first = frameRefs.current.find((n) => n);
+      if (first) {
+        try {
+          await toPng(first, { pixelRatio: 1, cacheBust: false });
+        } catch {}
+      }
+
       const zip = new JSZip();
       for (let i = 0; i < frameRefs.current.length; i++) {
         const node = frameRefs.current[i];
