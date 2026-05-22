@@ -110,13 +110,21 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await cityRes.json();
+    let letterText: string = (data.diaryText || "").trim();
+
+    // 末尾に「○○より」の署名を付与（既に署名がある場合はスキップ）
+    const hasSignature = /より\s*$/.test(letterText) || letterText.includes(`${petName}より`);
+    if (letterText && !hasSignature) {
+      letterText = `${letterText}\n\n${petName}より`;
+    }
+
     return NextResponse.json({
       petName,
       petType,
       ownerNickname,
       season,
       previousReply,
-      letterText: data.diaryText || "",
+      letterText,
       imageBase64: data.imageBase64 || null,
       mimeType: data.mimeType || "image/png",
     });
