@@ -163,8 +163,8 @@ export default function GeneratorPage() {
             </div>
 
             {(() => {
-              // 句点・！・？で分割して、3文ごとに1フレームにまとめる
-              const SENTENCES_PER_FRAME = 3;
+              // 句点・！・？で分割して、2文ごとに1フレームにまとめる
+              const SENTENCES_PER_FRAME = 2;
               const sentences = result.letterText
                 .split(/(?<=[。！？!?])/)
                 .map((s) => s.trim())
