@@ -296,8 +296,12 @@ function ResultFrames({ result }: { result: GenResult }) {
                     lineHeight: 1.7,
                     color: "#ffffff",
                     padding: "0 8px",
+                    // text-shadow はライブ表示向け（html-to-imageでは脱落することあり）
                     textShadow:
                       "0 2px 8px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.6)",
+                    // WebkitTextStroke は確実にキャプチャされる縁取り（ダウンロード画像でも残る）
+                    WebkitTextStroke: "1.2px rgba(0,0,0,0.85)",
+                    paintOrder: "stroke fill",
                     fontWeight: 600,
                   }}
                 >
