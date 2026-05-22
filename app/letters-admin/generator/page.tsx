@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { toPng } from "html-to-image";
+import JSZip from "jszip";
 
 type GenResult = {
   petName: string;
@@ -155,77 +157,11 @@ export default function GeneratorPage() {
           )}
         </div>
 
-        {/* 結果表示 — 段落ごとに画像背景+大文字のフレームを複数 */}
+        {/* 結果表示 — フレーム + メタ情報 */}
         {result && (
-          <div className="space-y-4">
-            <div className="text-xs text-stone-500 text-center">
-              各フレームをスクショして繋げる（9:16 × 段落数）
-            </div>
-
-            {(() => {
-              // 句点・！・？で分割して、2文ごとに1フレームにまとめる
-              const SENTENCES_PER_FRAME = 2;
-              const sentences = result.letterText
-                .split(/(?<=[。！？!?])/)
-                .map((s) => s.trim())
-                .filter((s) => s.length > 0);
-
-              const frames: string[] = [];
-              for (let i = 0; i < sentences.length; i += SENTENCES_PER_FRAME) {
-                frames.push(sentences.slice(i, i + SENTENCES_PER_FRAME).join(""));
-              }
-
-              const imgSrc = result.imageBase64
-                ? `data:${result.mimeType || "image/png"};base64,${result.imageBase64}`
-                : null;
-
-              return (
-                <div className="space-y-6">
-                  {frames.map((text, i) => (
-                    <div key={i} className="mx-auto" style={{ maxWidth: "420px" }}>
-                      <div className="text-xs text-stone-400 mb-1 text-center">
-                        フレーム {i + 1} / {frames.length}
-                      </div>
-                      <div
-                        className="relative overflow-hidden shadow-lg bg-stone-300"
-                        style={{ aspectRatio: "9/16" }}
-                      >
-                        {imgSrc && (
-                          <img
-                            src={imgSrc}
-                            alt={result.petName}
-                            className="absolute inset-0 w-full h-full object-cover"
-                          />
-                        )}
-                        {/* 中央エリアに半透明オーバーレイ＋テキスト */}
-                        {/* 右側はTikTokのいいね/コメント/シェアボタンと被るので余白広め */}
-                        <div
-                          className="absolute inset-0 flex items-center justify-center"
-                          style={{ paddingLeft: "6%", paddingRight: "22%" }}
-                        >
-                          <div
-                            className="font-serif text-white leading-loose whitespace-pre-wrap text-center"
-                            style={{
-                              fontSize: text.length > 100 ? "17px" : text.length > 70 ? "20px" : "23px",
-                              lineHeight: 1.7,
-                              textShadow: "0 2px 6px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)",
-                              background: "rgba(0,0,0,0.35)",
-                              padding: "20px 18px",
-                              borderRadius: "10px",
-                              backdropFilter: "blur(2px)",
-                            }}
-                          >
-                            {text}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
-
-            <div className="bg-white rounded-lg p-4 text-sm text-stone-600 space-y-2">
+          <>
+            <ResultFrames result={result} />
+            <div className="bg-white rounded-lg p-4 text-sm text-stone-600 space-y-2 mt-4">
               <div><span className="font-bold">ペット：</span>{result.petName}（{result.petType}）</div>
               <div><span className="font-bold">飼い主：</span>{result.ownerNickname}</div>
               <div><span className="font-bold">季節：</span>{result.season}</div>
@@ -234,8 +170,121 @@ export default function GeneratorPage() {
                 <div className="text-xs text-stone-500 italic">{result.previousReply}</div>
               </div>
             </div>
-          </div>
+          </>
         )}
+      </div>
+    </div>
+  );
+}
+
+function ResultFrames({ result }: { result: GenResult }) {
+  const SENTENCES_PER_FRAME = 2;
+  const sentences = result.letterText
+    .split(/(?<=[。！？!?])/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+
+  const frames: string[] = [];
+  for (let i = 0; i < sentences.length; i += SENTENCES_PER_FRAME) {
+    frames.push(sentences.slice(i, i + SENTENCES_PER_FRAME).join(""));
+  }
+
+  const imgSrc = result.imageBase64
+    ? `data:${result.mimeType || "image/png"};base64,${result.imageBase64}`
+    : null;
+
+  const frameRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [downloading, setDownloading] = useState(false);
+
+  async function downloadAll() {
+    setDownloading(true);
+    try {
+      const zip = new JSZip();
+      for (let i = 0; i < frameRefs.current.length; i++) {
+        const node = frameRefs.current[i];
+        if (!node) continue;
+        // 9:16 縦長で出力（pixelRatio で解像度UP、TikTok向け1080×1920）
+        const dataUrl = await toPng(node, {
+          pixelRatio: 3,
+          cacheBust: true,
+        });
+        const base64 = dataUrl.split(",")[1];
+        const fileName = `${result.petName}-${String(i + 1).padStart(2, "0")}.png`;
+        zip.file(fileName, base64, { base64: true });
+      }
+      const blob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${result.petName}-frames.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error("download failed", e);
+      alert("ダウンロードに失敗しました");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="text-xs text-stone-500">
+          {frames.length}フレーム生成
+        </div>
+        <button
+          onClick={downloadAll}
+          disabled={downloading}
+          className="bg-stone-700 text-white text-sm px-4 py-2 rounded-md hover:bg-stone-800 disabled:opacity-50"
+        >
+          {downloading ? "ダウンロード中..." : "全フレーム ZIP ダウンロード"}
+        </button>
+      </div>
+
+      <div className="space-y-6">
+        {frames.map((text, i) => (
+          <div key={i} className="mx-auto" style={{ maxWidth: "420px" }}>
+            <div className="text-xs text-stone-400 mb-1 text-center">
+              フレーム {i + 1} / {frames.length}
+            </div>
+            <div
+              ref={(el) => { frameRefs.current[i] = el; }}
+              className="relative overflow-hidden shadow-lg bg-stone-300"
+              style={{ aspectRatio: "9/16" }}
+            >
+              {imgSrc && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={imgSrc}
+                  alt={result.petName}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              )}
+              <div
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ paddingLeft: "6%", paddingRight: "22%" }}
+              >
+                <div
+                  className="font-serif text-white leading-loose whitespace-pre-wrap text-center"
+                  style={{
+                    fontSize: text.length > 100 ? "17px" : text.length > 70 ? "20px" : "23px",
+                    lineHeight: 1.7,
+                    textShadow: "0 2px 6px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)",
+                    background: "rgba(0,0,0,0.35)",
+                    padding: "20px 18px",
+                    borderRadius: "10px",
+                    backdropFilter: "blur(2px)",
+                  }}
+                >
+                  {text}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
