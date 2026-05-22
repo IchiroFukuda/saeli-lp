@@ -272,14 +272,11 @@ function ResultFrames({ result }: { result: GenResult }) {
                   style={{
                     fontSize: text.length > 100 ? "17px" : text.length > 70 ? "20px" : "23px",
                     lineHeight: 1.7,
-                    color: "#292524",
-                    background: "rgba(253, 251, 245, 0.25)",
-                    padding: "22px 20px",
-                    borderRadius: "10px",
-                    backdropFilter: "blur(8px)",
+                    color: "#ffffff",
+                    padding: "0 8px",
                     textShadow:
-                      "0 0 6px rgba(255,255,255,0.9), 0 0 3px rgba(255,255,255,0.95), 0 1px 2px rgba(255,255,255,0.8)",
-                    fontWeight: 500,
+                      "0 2px 8px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.6)",
+                    fontWeight: 600,
                   }}
                 >
                   {text}
