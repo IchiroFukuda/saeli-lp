@@ -301,42 +301,67 @@ function ResultFrames({ result }: { result: GenResult }) {
               className="relative overflow-hidden shadow-lg bg-stone-200"
               style={{ aspectRatio: "9/16" }}
             >
+              {/* 背景: 木目テーブル */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: `
+                    radial-gradient(ellipse at 50% 35%, rgba(0,0,0,0) 35%, rgba(40,20,10,0.45) 100%),
+                    repeating-linear-gradient(
+                      88deg,
+                      #8b6f47 0px,
+                      #9a7a52 9px,
+                      #8b6f47 21px,
+                      #6b5037 33px,
+                      #9a7a52 45px
+                    )
+                  `,
+                }}
+              />
               {imgSrc && (
                 <>
-                  {/* 背景: 同じ画像をぼかして全面に敷く（ベージュ単色だと浮くので画像で繋ぐ） */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={imgSrc}
-                    alt=""
-                    aria-hidden
-                    className="absolute inset-0 w-full h-full object-cover"
-                    style={{ filter: "blur(12px) brightness(0.9)", transform: "scale(1.08)" }}
-                  />
-                  {/* 前景: 上72%にシャープなペット画像（残り28%はぼかし背景+便箋） */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={imgSrc}
-                    alt={result.petName}
-                    className="absolute top-0 left-0 w-full object-cover"
+                  {/* Polaroid 写真: 白フレーム+下余白(polaroid 風)、傾き、強いドロップシャドウ */}
+                  <div
+                    className="absolute"
                     style={{
-                      height: "72%",
-                      objectPosition: "center 30%",
+                      top: "5%",
+                      left: "15%",
+                      width: "70%",
+                      background: "#fefcf7",
+                      padding: "14px 14px 50px",
+                      borderRadius: "2px",
+                      transform: "rotate(2.8deg)",
+                      boxShadow:
+                        "0 22px 40px rgba(0,0,0,0.5), 0 8px 14px rgba(0,0,0,0.35)",
                     }}
-                  />
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={imgSrc}
+                      alt={result.petName}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "1 / 1",
+                        objectFit: "cover",
+                        objectPosition: "center 30%",
+                        display: "block",
+                      }}
+                    />
+                  </div>
                 </>
               )}
-              {/* 便箋は中央〜やや下に配置。下25%はTikTokキャプション領域として空ける */}
+              {/* 便箋カード: 写真と少し重ねて、逆方向に傾けて置く。下23%はTikTokキャプション領域として空ける */}
               <div
                 className="absolute left-0 right-0 flex justify-center"
                 style={{
-                  top: "38%",
-                  bottom: "25%",
-                  paddingLeft: "8%",
-                  paddingRight: "20%",
+                  top: "46%",
+                  bottom: "23%",
+                  paddingLeft: "10%",
+                  paddingRight: "18%",
                   alignItems: "center",
                 }}
               >
-                {/* 便箋風カード。手書きフォント＋クリーム色背景＋紙テクスチャ */}
+                {/* 便箋風カード。手書きフォント＋クリーム色背景＋紙テクスチャ。木目上なので不透明 */}
                 <div
                   className="whitespace-pre-wrap"
                   style={{
@@ -347,16 +372,14 @@ function ResultFrames({ result }: { result: GenResult }) {
                     fontWeight: 500,
                     padding: "22px 24px",
                     width: "100%",
-                    // 紙の質感: 縦のグラデーション＋微妙な暖色（92%透過で背景のペットがうっすら見える）
                     background:
-                      "linear-gradient(180deg, rgba(250,242,224,0.6) 0%, rgba(243,232,207,0.6) 50%, rgba(237,224,192,0.6) 100%)",
+                      "linear-gradient(180deg, #faf2e0 0%, #f3e8cf 50%, #ede0c0 100%)",
                     boxShadow:
-                      "0 6px 18px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.25), inset 0 0 30px rgba(120,90,40,0.08)",
+                      "0 16px 32px rgba(0,0,0,0.45), 0 6px 12px rgba(0,0,0,0.3), inset 0 0 30px rgba(120,90,40,0.08)",
                     borderRadius: "3px",
-                    transform: "rotate(-1.2deg)",
-                    // 罫線風の subtle なライン
+                    transform: "rotate(-2deg)",
                     backgroundImage:
-                      "linear-gradient(180deg, rgba(250,242,224,0.6) 0%, rgba(243,232,207,0.6) 50%, rgba(237,224,192,0.6) 100%), repeating-linear-gradient(transparent, transparent 31px, rgba(120,90,40,0.08) 31px, rgba(120,90,40,0.08) 32px)",
+                      "linear-gradient(180deg, #faf2e0 0%, #f3e8cf 50%, #ede0c0 100%), repeating-linear-gradient(transparent, transparent 31px, rgba(120,90,40,0.1) 31px, rgba(120,90,40,0.1) 32px)",
                     backgroundBlendMode: "multiply",
                   }}
                 >
