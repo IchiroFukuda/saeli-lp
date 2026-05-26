@@ -298,6 +298,12 @@ export default function TachinaoriArticle() {
               {" "}— 期間が気になる方へ
             </li>
             <li>
+              <Link href="/blog/symptom" className="text-orange-600 underline">
+                ペットロス症候群の症状
+              </Link>
+              {" "}— 自分の症状が気になる方へ
+            </li>
+            <li>
               <a
                 href="https://saeli.org/pet-loss"
                 target="_blank"
