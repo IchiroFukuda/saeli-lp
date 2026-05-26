@@ -10,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const base = "https://mainichi-anoko.com";
     const items: MetadataRoute.Sitemap = [
       { url: `${base}/`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
+      { url: `${base}/en`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
       { url: `${base}/blog/atooi`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
       { url: `${base}/blog/tsurai`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
       { url: `${base}/blog/itsumade`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
