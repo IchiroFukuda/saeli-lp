@@ -283,6 +283,18 @@ export default function ItsumadeArticle() {
               {" "}— 自分の症状が気になる方へ
             </li>
             <li>
+              <Link href="/blog/dog" className="text-orange-600 underline">
+                愛犬を亡くした方へ
+              </Link>
+              {" "}— 散歩のない朝に
+            </li>
+            <li>
+              <Link href="/blog/cat" className="text-orange-600 underline">
+                愛猫を亡くした方へ
+              </Link>
+              {" "}— もう膝に乗ってこない夜に
+            </li>
+            <li>
               <a
                 href="https://saeli.org/pet-loss"
                 target="_blank"

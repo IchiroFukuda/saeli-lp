@@ -1,0 +1,71 @@
+import type { Metadata } from "next";
+
+const SITE_URL = "https://mainichi-anoko.com";
+const PAGE_URL = `${SITE_URL}/blog/dog`;
+const TITLE = "愛犬を亡くした方へ — 散歩のない朝を生きるあなたに";
+const DESCRIPTION =
+  "愛犬を亡くした悲しみは、犬と過ごした日常そのものを失うことです。散歩、玄関、寝顔——犬特有の喪失を言語化し、寄り添う言葉で書きました。";
+
+export const metadata: Metadata = {
+  title: `${TITLE} | 毎日あの子`,
+  description: DESCRIPTION,
+  alternates: {
+    canonical: "/blog/dog",
+  },
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PAGE_URL,
+    siteName: "毎日あの子",
+    locale: "ja_JP",
+    type: "article",
+    images: [
+      {
+        url: "/images/mainichi-anoko/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: TITLE,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/images/mainichi-anoko/og-image.jpg"],
+  },
+};
+
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: TITLE,
+  description: DESCRIPTION,
+  url: PAGE_URL,
+  image: `${SITE_URL}/images/mainichi-anoko/og-image.jpg`,
+  author: {
+    "@type": "Organization",
+    name: "毎日あの子",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "合同会社SAELI",
+    email: "hello@saeli.org",
+  },
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": PAGE_URL,
+  },
+};
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      {children}
+    </>
+  );
+}
