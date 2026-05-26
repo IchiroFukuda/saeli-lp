@@ -278,6 +278,12 @@ export default function TsuraiArticle() {
               {" "}— 期間が気になる方へ
             </li>
             <li>
+              <Link href="/blog/tachinaori" className="text-orange-600 underline">
+                ペットロスの乗り越え方
+              </Link>
+              {" "}— 行動を起こしたい方へ
+            </li>
+            <li>
               <a
                 href="https://saeli.org/pet-loss"
                 target="_blank"
