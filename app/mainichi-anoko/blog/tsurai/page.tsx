@@ -272,6 +272,12 @@ export default function TsuraiArticle() {
           <h2 className="text-lg font-bold text-stone-800 mb-3">もう少し読みたい方へ</h2>
           <ul className="space-y-2 list-disc list-inside text-stone-700">
             <li>
+              <Link href="/blog/itsumade" className="text-orange-600 underline">
+                ペットロスは、いつまで続くのか
+              </Link>
+              {" "}— 期間が気になる方へ
+            </li>
+            <li>
               <a
                 href="https://saeli.org/pet-loss"
                 target="_blank"
