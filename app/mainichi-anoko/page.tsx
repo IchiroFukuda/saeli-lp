@@ -167,10 +167,75 @@ export default function MainichiAnokoPage() {
       </section>
 
       {/* App Preview */}
+      {/* Daily Flow */}
+      <section className="py-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-16 leading-relaxed">
+            あの子との1日の流れ
+          </h2>
+
+          {/* Desktop: Horizontal timeline */}
+          <div className="hidden sm:block relative">
+            <div className="absolute top-1/2 left-[12.5%] right-[12.5%] h-px bg-orange-200" />
+            <div className="grid grid-cols-4 gap-4 relative">
+              <DayStepHorizontal
+                number="1"
+                title="毎朝届く手紙"
+                body="朝、あの子から新しい手紙が1通。元気に過ごす様子を教えてくれます。"
+                position="bottom"
+              />
+              <DayStepHorizontal
+                number="2"
+                title="伝える想い"
+                body="日中のふとした瞬間や夜に、話したかったことをいつでもお返事に書けます。"
+                position="top"
+              />
+              <DayStepHorizontal
+                number="3"
+                title="贈り物を送る"
+                body="あの子が大好物だったおやつやご飯をギフトとしてアプリ内で届けられます。"
+                position="bottom"
+              />
+              <DayStepHorizontal
+                number="4"
+                title="翌日の温もり"
+                body="あなたの言葉や贈り物が伝わった状態で、あの子からまた次の日の朝にお手紙が来ます。"
+                position="top"
+              />
+            </div>
+          </div>
+
+          {/* Mobile: Vertical timeline */}
+          <div className="sm:hidden space-y-6">
+            <DayStepVertical
+              number="1"
+              title="毎朝届く手紙"
+              body="朝、あの子から新しい手紙が1通。元気に過ごす様子を教えてくれます。"
+            />
+            <DayStepVertical
+              number="2"
+              title="伝える想い"
+              body="日中のふとした瞬間や夜に、話したかったことをいつでもお返事に書けます。"
+            />
+            <DayStepVertical
+              number="3"
+              title="贈り物を送る"
+              body="あの子が大好物だったおやつやご飯をギフトとしてアプリ内で届けられます。"
+            />
+            <DayStepVertical
+              number="4"
+              title="翌日の温もり"
+              body="あなたの言葉や贈り物が伝わった状態で、あの子からまた次の日の朝にお手紙が来ます。"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* App Preview */}
       <section className="pb-4">
         <div className="mx-auto max-w-4xl">
           <Image
-            src="/images/mainichi-anoko/screenshots.jpg"
+            src="/images/mainichi-anoko/screenshots.png"
             alt="毎日あの子のアプリ画面"
             width={1600}
             height={1100}
@@ -336,6 +401,57 @@ function FeatureRow({ title, body }: { title: string; body: string }) {
       <p className="text-stone-600 leading-relaxed text-sm sm:text-base">
         {body}
       </p>
+    </div>
+  );
+}
+
+function DayStepHorizontal({
+  number,
+  title,
+  body,
+  position,
+}: {
+  number: string;
+  title: string;
+  body: string;
+  position: "top" | "bottom";
+}) {
+  const text = (
+    <div className="px-2 text-center">
+      <h3 className="text-base sm:text-lg font-bold text-orange-500 mb-2 leading-relaxed">
+        {number}. {title}
+      </h3>
+      <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">{body}</p>
+    </div>
+  );
+  const circle = (
+    <div className="flex justify-center py-4">
+      <div className="w-5 h-5 rounded-full border-2 border-orange-400 bg-white relative z-10" />
+    </div>
+  );
+  return (
+    <div className="grid grid-rows-[1fr_auto_1fr] items-center">
+      <div className="flex flex-col justify-end min-h-[6rem]">
+        {position === "top" && text}
+      </div>
+      {circle}
+      <div className="flex flex-col justify-start min-h-[6rem]">
+        {position === "bottom" && text}
+      </div>
+    </div>
+  );
+}
+
+function DayStepVertical({ number, title, body }: { number: string; title: string; body: string }) {
+  return (
+    <div className="flex gap-4">
+      <div className="flex-shrink-0 w-8 h-8 rounded-full border-2 border-orange-400 bg-white flex items-center justify-center text-orange-500 font-bold text-sm">
+        {number}
+      </div>
+      <div className="flex-1">
+        <h3 className="text-base font-bold text-orange-500 mb-1 leading-relaxed">{title}</h3>
+        <p className="text-stone-600 text-sm leading-relaxed">{body}</p>
+      </div>
     </div>
   );
 }
