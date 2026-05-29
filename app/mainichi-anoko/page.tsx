@@ -297,7 +297,7 @@ export default function MainichiAnokoPage() {
               hello@saeli.org
             </a>
           </p>
-          <div className="mt-6 flex justify-center gap-4 text-xs text-stone-500">
+          <div className="mt-6 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-stone-500">
             <a
               href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
               target="_blank"
@@ -313,6 +313,12 @@ export default function MainichiAnokoPage() {
               className="hover:text-stone-300"
             >
               プライバシーポリシー
+            </a>
+            <a href="/tokusho" className="hover:text-stone-300">
+              特定商取引法に基づく表記
+            </a>
+            <a href="/contact" className="hover:text-stone-300">
+              お問い合わせ
             </a>
           </div>
         </div>

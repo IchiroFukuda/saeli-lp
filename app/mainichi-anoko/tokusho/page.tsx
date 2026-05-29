@@ -210,9 +210,19 @@ export default function TokushoPage() {
         <section className="mt-14">
           <h2 className="text-2xl font-semibold tracking-tight">お問い合わせ</h2>
           <p className="mt-3 text-stone-700 leading-loose">
-            特定商取引法に関するお問い合わせ、その他サービスに関するご質問は、以下のメールアドレスまでお願いいたします。
+            特定商取引法に関するお問い合わせ、その他サービスに関するご質問は、以下のフォームまたはメールアドレスよりご連絡ください。
           </p>
-          <p className="mt-2">
+          <p className="mt-3">
+            <a
+              href="/contact"
+              className="inline-flex items-center rounded-full bg-stone-800 px-5 py-2 text-sm font-medium text-white hover:bg-stone-700 transition"
+            >
+              お問い合わせフォームはこちら
+            </a>
+          </p>
+          <p className="mt-3 text-sm text-stone-600">
+            メールでのご連絡：
+            {" "}
             <a
               href="mailto:hello@saeli.org"
               className="underline underline-offset-4 hover:text-stone-900"
