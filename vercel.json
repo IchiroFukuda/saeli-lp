@@ -23,6 +23,11 @@
       "source": "/privacy-approach",
       "destination": "/privacy-approach.html",
       "has": [{ "type": "host", "value": "saeli.org" }]
+    },
+    {
+      "source": "/privacy-en",
+      "destination": "/privacy-en.html",
+      "has": [{ "type": "host", "value": "saeli.org" }]
     }
   ]
 }
