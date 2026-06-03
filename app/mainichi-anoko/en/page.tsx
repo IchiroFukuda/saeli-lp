@@ -1,9 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Heart, Mail, Star } from "lucide-react";
+
+const APP_STORE_URL = "https://apps.apple.com/app/id6760970361";
+const GOOGLE_PLAY_URL =
+  "https://play.google.com/store/apps/details?id=com.petletter.app";
+
+function trackStoreClick(store: "app_store" | "google_play", location: string) {
+  if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
+    (window as { gtag: (...args: unknown[]) => void }).gtag("event", "store_click", {
+      store,
+      location,
+    });
+  }
+}
 
 const reviews = [
   {
@@ -19,35 +31,6 @@ const reviews = [
 ];
 
 export default function MainichiAnokoEnPage() {
-  const [email, setEmail] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/waitlist-en", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, source: "lp" }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Failed to register.");
-      } else {
-        setSubmitted(true);
-        setEmail("");
-      }
-    } catch {
-      setError("Network error. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FAF6EF] to-[#F5EFDF] text-stone-800">
       {/* Hero */}
@@ -64,9 +47,6 @@ export default function MainichiAnokoEnPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/80 backdrop-blur-sm mb-6 shadow-sm">
             <Mail className="w-8 h-8 text-orange-500" />
           </div>
-          <p className="text-xs sm:text-sm font-bold text-orange-600 tracking-widest mb-4 uppercase">
-            Coming Soon · English Version
-          </p>
           <h1 className="text-3xl sm:text-5xl font-bold mb-6 leading-relaxed">
             A daily letter from
             <br />
@@ -77,53 +57,28 @@ export default function MainichiAnokoEnPage() {
             <br />
             Bring your feelings to your beloved one, one letter at a time.
           </p>
-
-          {/* Inline waitlist form */}
-          <form
-            onSubmit={handleSubmit}
-            className="mx-auto max-w-md bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-5 sm:p-6"
-          >
-            {submitted ? (
-              <div className="text-center py-4">
-                <Heart className="w-8 h-8 text-orange-500 mx-auto mb-3" />
-                <p className="font-bold text-stone-800 mb-1">Thank you.</p>
-                <p className="text-sm text-stone-600">
-                  We&apos;ll email you when we launch in English.
-                </p>
-              </div>
-            ) : (
-              <>
-                <label className="block text-sm font-medium text-stone-700 mb-3 text-left">
-                  Join the waitlist
-                </label>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    className="flex-1 px-4 py-3 rounded-full border border-stone-200 focus:outline-none focus:border-orange-400 text-sm"
-                    disabled={submitting}
-                  />
-                  <button
-                    type="submit"
-                    disabled={submitting || !email}
-                    className="inline-flex items-center justify-center gap-2 bg-orange-500 text-white font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform shadow-sm disabled:opacity-50 disabled:hover:scale-100"
-                  >
-                    {submitting ? "..." : "Join"}
-                    {!submitting && <ArrowRight className="w-4 h-4" />}
-                  </button>
-                </div>
-                {error && (
-                  <p className="text-xs text-red-500 mt-3 text-left">{error}</p>
-                )}
-                <p className="text-xs text-stone-500 mt-3 text-left">
-                  No spam. One email when we launch.
-                </p>
-              </>
-            )}
-          </form>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href={APP_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackStoreClick("app_store", "hero")}
+              className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
+            >
+              Open in App Store
+              <ArrowRight className="w-4 h-4" />
+            </a>
+            <a
+              href={GOOGLE_PLAY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackStoreClick("google_play", "hero")}
+              className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
+            >
+              Open in Google Play
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
         </div>
       </section>
 
@@ -204,57 +159,40 @@ export default function MainichiAnokoEnPage() {
         </div>
       </section>
 
-      {/* Final CTA — waitlist form again */}
+      {/* Final CTA */}
       <section className="bg-gradient-to-br from-orange-400 to-orange-500 py-20 text-white">
         <div className="mx-auto max-w-2xl px-4 sm:px-6 text-center">
           <Heart className="w-12 h-12 mx-auto mb-6" />
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 leading-relaxed">
-            Be the first to know
+            Start writing letters
             <br />
-            when we launch in English.
+            with your beloved one.
           </h2>
           <p className="text-white/90 mb-8">
-            We&apos;re currently available in Japan. Drop your email and we&apos;ll let you know.
+            Download Mainichi Anoko and begin today.
           </p>
-          <form
-            onSubmit={handleSubmit}
-            className="mx-auto max-w-md bg-white/95 backdrop-blur-sm rounded-2xl p-5 sm:p-6"
-          >
-            {submitted ? (
-              <div className="text-center py-4 text-stone-800">
-                <Heart className="w-8 h-8 text-orange-500 mx-auto mb-3" />
-                <p className="font-bold mb-1">Thank you.</p>
-                <p className="text-sm text-stone-600">
-                  We&apos;ll email you when we launch in English.
-                </p>
-              </div>
-            ) : (
-              <>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    className="flex-1 px-4 py-3 rounded-full border border-stone-200 focus:outline-none focus:border-orange-400 text-sm text-stone-800"
-                    disabled={submitting}
-                  />
-                  <button
-                    type="submit"
-                    disabled={submitting || !email}
-                    className="inline-flex items-center justify-center gap-2 bg-stone-900 text-white font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
-                  >
-                    {submitting ? "..." : "Join"}
-                    {!submitting && <ArrowRight className="w-4 h-4" />}
-                  </button>
-                </div>
-                {error && (
-                  <p className="text-xs text-red-200 mt-3 text-left">{error}</p>
-                )}
-              </>
-            )}
-          </form>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href={APP_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackStoreClick("app_store", "footer")}
+              className="inline-flex items-center gap-2 bg-white text-orange-600 font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
+            >
+              Open in App Store
+              <ArrowRight className="w-4 h-4" />
+            </a>
+            <a
+              href={GOOGLE_PLAY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackStoreClick("google_play", "footer")}
+              className="inline-flex items-center gap-2 bg-stone-900 text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
+            >
+              Open in Google Play
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
         </div>
       </section>
 

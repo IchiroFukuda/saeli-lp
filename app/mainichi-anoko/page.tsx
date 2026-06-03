@@ -3,9 +3,6 @@
 import Image from "next/image";
 import { ArrowRight, BookOpen, Heart, Mail, Star } from "lucide-react";
 
-const NOTE_ARTICLE_URL =
-  "https://note.com/charo_i/n/n32314699356b?sub_rt=share_pw";
-
 const APP_STORE_URL =
   "https://apps.apple.com/jp/app/%E6%AF%8E%E6%97%A5%E3%81%82%E3%81%AE%E5%AD%90-%E3%83%9A%E3%83%83%E3%83%88%E3%83%AD%E3%82%B9%E3%81%AB%E5%AF%84%E3%82%8A%E6%B7%BB%E3%81%86%E6%89%8B%E7%B4%99%E3%82%A2%E3%83%97%E3%83%AA/id6760970361";
 
