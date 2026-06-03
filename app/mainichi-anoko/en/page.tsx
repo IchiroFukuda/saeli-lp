@@ -96,7 +96,7 @@ export default function MainichiAnokoEnPage() {
       <section className="py-16">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12 leading-relaxed">
-            What you can do with Mainichi Anoko
+            What you can do with Still With Me
           </h2>
           <div className="grid gap-6 sm:gap-8">
             <FeatureRow
@@ -158,7 +158,7 @@ export default function MainichiAnokoEnPage() {
             with your beloved one.
           </h2>
           <p className="text-white/90 mb-8">
-            Download Mainichi Anoko and begin today.
+            Download Still With Me and begin today.
           </p>
           <div className="flex justify-center">
             <a
@@ -178,7 +178,7 @@ export default function MainichiAnokoEnPage() {
       {/* Footer */}
       <footer className="bg-stone-900 text-stone-300 py-12">
         <div className="mx-auto max-w-2xl px-4 sm:px-6 text-center text-sm">
-          <p className="font-bold text-white mb-2">Mainichi Anoko</p>
+          <p className="font-bold text-white mb-2">Still With Me</p>
           <p className="mb-4 text-stone-400">
             A daily letter app for pet loss
           </p>
