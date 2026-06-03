@@ -5,10 +5,9 @@ import Link from "next/link";
 import { ArrowRight, Heart, Mail, Star } from "lucide-react";
 
 const APP_STORE_URL = "https://apps.apple.com/app/id6760970361";
-const GOOGLE_PLAY_URL =
-  "https://play.google.com/store/apps/details?id=com.petletter.app";
 
-function trackStoreClick(store: "app_store" | "google_play", location: string) {
+// 英語版Google Play掲載情報が未整備のため、英語LPではApp Storeのみ案内する。
+function trackStoreClick(store: "app_store", location: string) {
   if (typeof window !== "undefined" && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
     (window as { gtag: (...args: unknown[]) => void }).gtag("event", "store_click", {
       store,
@@ -57,7 +56,7 @@ export default function MainichiAnokoEnPage() {
             <br />
             Bring your feelings to your beloved one, one letter at a time.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="flex justify-center">
             <a
               href={APP_STORE_URL}
               target="_blank"
@@ -66,16 +65,6 @@ export default function MainichiAnokoEnPage() {
               className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
             >
               Open in App Store
-              <ArrowRight className="w-4 h-4" />
-            </a>
-            <a
-              href={GOOGLE_PLAY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackStoreClick("google_play", "hero")}
-              className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
-            >
-              Open in Google Play
               <ArrowRight className="w-4 h-4" />
             </a>
           </div>
@@ -171,7 +160,7 @@ export default function MainichiAnokoEnPage() {
           <p className="text-white/90 mb-8">
             Download Mainichi Anoko and begin today.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="flex justify-center">
             <a
               href={APP_STORE_URL}
               target="_blank"
@@ -180,16 +169,6 @@ export default function MainichiAnokoEnPage() {
               className="inline-flex items-center gap-2 bg-white text-orange-600 font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
             >
               Open in App Store
-              <ArrowRight className="w-4 h-4" />
-            </a>
-            <a
-              href={GOOGLE_PLAY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackStoreClick("google_play", "footer")}
-              className="inline-flex items-center gap-2 bg-stone-900 text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
-            >
-              Open in Google Play
               <ArrowRight className="w-4 h-4" />
             </a>
           </div>
