@@ -18,7 +18,7 @@ function trackStoreClick(store: "app_store", location: string) {
 
 const reviews = [
   {
-    text: "It really feels like I'm connected with my beloved one. I almost cried.",
+    text: "It really feels like I'm connected with my furbaby. I almost cried.",
     author: "Woman, 30s",
     platform: "Translated from App Store review",
   },
@@ -47,14 +47,14 @@ export default function MainichiAnokoEnPage() {
             <Mail className="w-8 h-8 text-orange-500" />
           </div>
           <h1 className="text-3xl sm:text-5xl font-bold mb-6 leading-relaxed">
-            A daily letter from
+            Your furbaby
             <br />
-            your beloved one
+            still writes to you
           </h1>
           <p className="text-stone-700 text-base sm:text-lg leading-relaxed mb-8">
-            An AI letter app that gently walks with you through pet loss.
+            A letter app for walking gently through pet loss,
             <br />
-            Bring your feelings to your beloved one, one letter at a time.
+            one day at a time.
           </p>
           <div className="flex justify-center">
             <a
@@ -100,8 +100,8 @@ export default function MainichiAnokoEnPage() {
           </h2>
           <div className="grid gap-6 sm:gap-8">
             <FeatureRow
-              title="A daily letter from your beloved one"
-              body="Running across a field of flowers, making new friends, thinking of you and living gently. Every morning, you can hear how your beloved one is doing."
+              title="A daily letter from your furbaby"
+              body="Running across a field of flowers, making new friends, thinking of you and living gently. Every morning, you can hear how your furbaby is doing."
             />
             <FeatureRow
               title="Your replies are reflected in tomorrow's letter"
@@ -155,7 +155,7 @@ export default function MainichiAnokoEnPage() {
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 leading-relaxed">
             Start writing letters
             <br />
-            with your beloved one.
+            with your furbaby.
           </h2>
           <p className="text-white/90 mb-8">
             Download Still With Me and begin today.
