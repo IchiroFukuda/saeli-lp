@@ -19,14 +19,14 @@ create table if not exists public.letters (
 create index if not exists letters_created_at_idx on public.letters (created_at desc);
 create index if not exists letters_email_idx on public.letters (email_lower);
 
--- リアクション（絵文字を送る）。数は表示しないが、誰が何を送ったかは保持
--- （重複防止のため email + letter + emoji の一意制約）
+-- リアクション（絵文字を送る）。数は表示しない。ログイン不要で誰でも送れる。
+-- email_lower は任意（匿名送信では null）。重複防止はクライアント側(localStorage)で行う。
 create type reaction_emoji as enum ('heart', 'flower', 'pray', 'paw');
 
 create table if not exists public.letter_reactions (
   id uuid primary key default uuid_generate_v4(),
   letter_id uuid not null references public.letters(id) on delete cascade,
-  email_lower text not null,
+  email_lower text,
   emoji reaction_emoji not null,
   created_at timestamptz not null default now(),
   unique (letter_id, email_lower, emoji)
@@ -59,13 +59,12 @@ create policy "users can delete own letter"
 create policy "reactions are readable by anyone"
   on public.letter_reactions for select using (true);
 
--- 認証ユーザーは自分のリアクションを追加できる
-create policy "authenticated users can react"
+-- リアクションは誰でも（ログイン不要・匿名）送れる
+create policy "anyone can react"
   on public.letter_reactions for insert
-  with check (
-    auth.role() = 'authenticated'
-    and lower(auth.email()) = email_lower
-  );
+  with check (true);
+
+grant insert on public.letter_reactions to anon;
 
 -- Storage: letter-photos バケット
 -- 事前にDashboardで letter-photos バケットを作成（Public）してから以下を実行する。
