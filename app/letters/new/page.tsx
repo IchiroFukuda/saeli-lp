@@ -20,6 +20,8 @@ export default function NewLetterPage() {
   const [photo, setPhoto] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // 実際のログインセッションのメール（URLパラメータではなくこれでUIを判定する）
+  const [authedEmail, setAuthedEmail] = useState<string | null>(null);
 
   // 投稿ページ表示計測（verified=1ありなら "verified" view、なしなら新規view）
   useEffect(() => {
@@ -41,6 +43,7 @@ export default function NewLetterPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user?.email) return;
       setEmail(user.email);
+      setAuthedEmail(user.email);
 
       const raw = localStorage.getItem("pendingLetter");
       if (!raw) return;
@@ -57,7 +60,7 @@ export default function NewLetterPage() {
     e.preventDefault();
     setError(null);
 
-    if (!petName || !ownerNickname || !body || (!verified && !email)) {
+    if (!petName || !ownerNickname || !body) {
       setError("すべての必須項目をご入力ください。");
       return;
     }
@@ -74,14 +77,21 @@ export default function NewLetterPage() {
       return;
     }
 
-    // 未認証 → 入力内容をlocalStorageに退避してmagic link送信
+    // 未認証 → メールアドレスが必須
+    if (!email.trim()) {
+      setError("メールアドレスをご入力ください。");
+      setSubmitting(false);
+      return;
+    }
+
+    // 入力内容をlocalStorageに退避（リンクで戻ってきた場合の保険）
     localStorage.setItem(
       "pendingLetter",
       JSON.stringify({ petName, ownerNickname, body })
     );
 
     const { error: authErr } = await supabase.auth.signInWithOtp({
-      email,
+      email: email.trim(),
       options: {
         emailRedirectTo: `${window.location.origin}/letters/new?verified=1`,
       },
@@ -102,12 +112,18 @@ export default function NewLetterPage() {
   async function verifyCode(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    if (!email.trim()) {
+      setError("メールアドレスが見つかりません。お手数ですが最初からやり直してください。");
+      return;
+    }
+
     setSubmitting(true);
     trackLetters("letter_otp_verify_attempt");
 
     const supabase = supabaseBrowser();
     const { error: verifyErr } = await supabase.auth.verifyOtp({
-      email,
+      email: email.trim(),
       token: code.trim(),
       type: "email",
     });
@@ -212,7 +228,7 @@ export default function NewLetterPage() {
     <div>
       <h1 className="text-xl font-bold mb-6 text-center">あの子へ手紙を書く</h1>
 
-      {verified && (
+      {authedEmail && (
         <div className="mb-5 text-sm text-stone-700 bg-orange-50 border border-orange-200 rounded-md p-3 text-center">
           ✓ メール認証が完了しました。
           <br />
@@ -283,7 +299,7 @@ export default function NewLetterPage() {
           />
         </Field>
 
-        {!verified && (
+        {!authedEmail && (
           <Field label="メールアドレス" required>
             <input
               type="email"
@@ -311,7 +327,7 @@ export default function NewLetterPage() {
         >
           {submitting
             ? "送信中..."
-            : verified
+            : authedEmail
             ? "広場に投稿する"
             : "確認メールを送る"}
         </button>
