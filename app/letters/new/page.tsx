@@ -182,7 +182,7 @@ export default function NewLetterPage() {
           <div className="text-4xl mb-4">📬</div>
           <h2 className="text-lg font-bold mb-2">確認メールをお送りしました</h2>
           <p className="text-sm text-stone-600 leading-relaxed">
-            {email} に届いた<strong>6桁の番号</strong>を入力してください。
+            {email} に届いた<strong>確認番号</strong>を入力してください。
             <br />
             このページを離れずに認証できます（お手紙はそのまま残ります）。
           </p>
@@ -195,9 +195,9 @@ export default function NewLetterPage() {
             autoComplete="one-time-code"
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))}
-            maxLength={6}
-            placeholder="123456"
-            className="w-full px-3 py-3 border border-stone-300 rounded-md bg-white text-center text-2xl tracking-[0.4em] font-mono"
+            maxLength={8}
+            placeholder="12345678"
+            className="w-full px-3 py-3 border border-stone-300 rounded-md bg-white text-center text-2xl tracking-[0.3em] font-mono"
           />
 
           {error && (
