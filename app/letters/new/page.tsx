@@ -11,7 +11,8 @@ export default function NewLetterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const verified = searchParams.get("verified") === "1";
-  const [step, setStep] = useState<"form" | "magic-sent" | "verified">("form");
+  const [step, setStep] = useState<"form" | "verify">("form");
+  const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
   const [petName, setPetName] = useState("");
   const [ownerNickname, setOwnerNickname] = useState("");
@@ -92,9 +93,33 @@ export default function NewLetterPage() {
       return;
     }
 
-    setStep("magic-sent");
+    setStep("verify");
     setSubmitting(false);
     trackLetters("letter_magic_link_sent");
+  }
+
+  // 6桁コードで認証（ページを離れないので、フォーム内容・写真がそのまま残る）。
+  async function verifyCode(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    trackLetters("letter_otp_verify_attempt");
+
+    const supabase = supabaseBrowser();
+    const { error: verifyErr } = await supabase.auth.verifyOtp({
+      email,
+      token: code.trim(),
+      type: "email",
+    });
+
+    if (verifyErr) {
+      setError("認証番号が正しくないか、有効期限が切れています。もう一度お試しください。");
+      setSubmitting(false);
+      return;
+    }
+
+    // 認証成功 → フォーム内容はメモリに残っているのでそのまま投稿
+    await submitLetter(email);
   }
 
   async function submitLetter(userEmail: string) {
@@ -134,16 +159,51 @@ export default function NewLetterPage() {
     router.push("/letters");
   }
 
-  if (step === "magic-sent") {
+  if (step === "verify") {
     return (
-      <div className="text-center py-16">
-        <div className="text-4xl mb-4">📬</div>
-        <h2 className="text-lg font-bold mb-3">確認メールをお送りしました</h2>
-        <p className="text-sm text-stone-600 leading-relaxed">
-          メール内のリンクを開いていただくと、
-          <br />
-          お手紙が広場に届きます。
-        </p>
+      <div className="py-10">
+        <div className="text-center mb-7">
+          <div className="text-4xl mb-4">📬</div>
+          <h2 className="text-lg font-bold mb-2">確認メールをお送りしました</h2>
+          <p className="text-sm text-stone-600 leading-relaxed">
+            {email} に届いた<strong>6桁の番号</strong>を入力してください。
+            <br />
+            このページを離れずに認証できます（お手紙はそのまま残ります）。
+          </p>
+        </div>
+
+        <form onSubmit={verifyCode} className="space-y-4 max-w-xs mx-auto">
+          <input
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))}
+            maxLength={6}
+            placeholder="123456"
+            className="w-full px-3 py-3 border border-stone-300 rounded-md bg-white text-center text-2xl tracking-[0.4em] font-mono"
+          />
+
+          {error && (
+            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={submitting || code.length < 6}
+            className="w-full bg-orange-500 text-white font-bold py-3 rounded-full hover:bg-orange-600 disabled:opacity-50 transition"
+          >
+            {submitting ? "確認中..." : "認証してお手紙を届ける"}
+          </button>
+
+          <p className="text-xs text-stone-500 text-center leading-relaxed">
+            番号が届かない場合は、メール内のリンクからも認証できます。
+            <br />
+            その場合はこのページに戻り、もう一度内容をご確認ください。
+          </p>
+        </form>
       </div>
     );
   }
